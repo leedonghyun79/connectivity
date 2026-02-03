@@ -18,13 +18,6 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-8 ml-8">
-        <div className="hidden lg:flex items-center gap-6">
-          <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-colors">
-            <Globe size={14} />
-            <span>KO-KR</span>
-          </button>
-          <div className="w-px h-4 bg-gray-100"></div>
-        </div>
 
         <button className="p-2 text-gray-300 hover:text-black relative transition-all group">
           <Bell size={22} />

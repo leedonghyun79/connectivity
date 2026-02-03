@@ -14,27 +14,27 @@ export default function WorkStatusCards() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       <StatCard
-        label="Daily Visitors"
+        label="일간 방문자"
         value={stats.todayVisitors.toLocaleString()}
-        unit="Users"
+        unit="명"
         icon={Users}
       />
       <StatCard
-        label="Pending Inquiries"
+        label="대기 중인 문의"
         value={stats.pendingInquiries.toLocaleString()}
-        unit="Units"
+        unit="건"
         icon={MessageSquare}
       />
       <StatCard
-        label="Pending Estimates"
+        label="대기 중인 견적"
         value={stats.pendingEstimates.toLocaleString()}
-        unit="Cases"
+        unit="건"
         icon={FileText}
       />
       <StatCard
-        label="Total Revenue"
+        label="전체 누적 매출"
         value={Number(stats.totalRevenue).toLocaleString()}
-        unit="KRW"
+        unit="원"
         icon={Banknote}
         black
       />

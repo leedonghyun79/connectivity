@@ -4,21 +4,21 @@ import { Users, CheckCircle2, MessageSquare, TrendingUp, Calendar } from 'lucide
 
 export default function DailySummary() {
   const today = new Date().toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' });
-  const weekday = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+  const weekday = new Date().toLocaleDateString('ko-KR', { weekday: 'long' }).toUpperCase();
 
   const stats = [
-    { label: 'New Entities', count: 12, icon: Users, color: 'text-black', bg: 'bg-gray-50' },
-    { label: 'Completed Jobs', count: 5, icon: CheckCircle2, color: 'text-black', bg: 'bg-gray-50' },
-    { label: 'System Inquiries', count: 8, icon: MessageSquare, color: 'text-black', bg: 'bg-gray-50' },
-    { label: 'Revenue Flow', count: 3, icon: TrendingUp, color: 'text-black', bg: 'bg-gray-50' },
+    { label: '신규 가입자', count: 12, icon: Users, color: 'text-black', bg: 'bg-gray-50' },
+    { label: '완료된 작업', count: 5, icon: CheckCircle2, color: 'text-black', bg: 'bg-gray-50' },
+    { label: '시스템 문의', count: 8, icon: MessageSquare, color: 'text-black', bg: 'bg-gray-50' },
+    { label: '매출 발생건', count: 3, icon: TrendingUp, color: 'text-black', bg: 'bg-gray-50' },
   ];
 
   return (
     <div className="bg-white p-10 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] h-full flex flex-col">
       <div className="flex justify-between items-start mb-8">
         <div>
-          <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">Journal Entry</div>
-          <h3 className="text-2xl font-black text-black uppercase tracking-tighter">Daily Sync</h3>
+          <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">일 업무 일지</div>
+          <h3 className="text-2xl font-black text-black uppercase tracking-tighter">일별 브리핑</h3>
         </div>
         <div className="text-right">
           <div className="text-[10px] font-black text-black uppercase tracking-widest mb-1 border-b border-black">{weekday}</div>
@@ -37,14 +37,14 @@ export default function DailySummary() {
             </div>
             <div className="flex items-end gap-1.5">
               <span className="text-2xl font-black text-black tracking-tighter">{stat.count}</span>
-              <span className="text-[10px] font-bold text-gray-300 uppercase mb-1">Items</span>
+              <span className="text-[10px] font-bold text-gray-300 uppercase mb-1">건</span>
             </div>
           </div>
         ))}
       </div>
 
       <button className="w-full mt-10 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-2xl hover:bg-black hover:text-white hover:border-black transition-all">
-        Access Full Journal
+        전체 로그 확인
       </button>
     </div>
   );

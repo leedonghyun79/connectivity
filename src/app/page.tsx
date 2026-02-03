@@ -30,12 +30,12 @@ export default function Dashboard() {
         <div>
           <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3 flex items-center gap-2">
             <LayoutDashboard size={12} />
-            System Control Center
+            시스템 제어 센터
           </div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">Operational Dashboard</h1>
+          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">운영 대시보드</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
-            <Zap size={14} className="text-black" />
-            환영합니다, 관리자님. 시스템이 <span className="text-black uppercase">Optimal Condition</span>으로 운영 중입니다.
+            < Zap size={14} className="text-black" />
+            환영합니다, 관리자님. 시스템이 <span className="text-black uppercase">최적 상태</span>로 운영 중입니다.
           </p>
         </div>
         <div className="flex gap-4">
@@ -49,12 +49,12 @@ export default function Dashboard() {
             <AlertCircle size={20} className="text-white" />
           </div>
           <div>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Intelligence Notice</p>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">지능형 알림</p>
             <p className="text-sm font-bold text-white">복구된 시스템이 정상 작동 중입니다. 모든 인프라 링크가 활성화되었습니다.</p>
           </div>
         </div>
         <button className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1">
-          Details <ArrowUpRight size={12} />
+          상세 보기 <ArrowUpRight size={12} />
         </button>
       </div>
 

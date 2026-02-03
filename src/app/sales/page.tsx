@@ -32,10 +32,10 @@ export default function SalesPage() {
 
   const COLORS = ['#000000', '#333333', '#666666', '#999999'];
   const serviceShareData = [
-    { name: 'Web Dev', value: 45 },
-    { name: 'App Dev', value: 25 },
-    { name: 'Branding', value: 15 },
-    { name: 'Maintenance', value: 15 },
+    { name: '웹 개발', value: 45 },
+    { name: '앱 개발', value: 25 },
+    { name: '브랜딩', value: 15 },
+    { name: '유지보수', value: 15 },
   ];
 
   return (
@@ -43,17 +43,17 @@ export default function SalesPage() {
       {/* 헤더 섹션 */}
       <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
-          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">Financial Intelligence</div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">Revenue Analytics</h1>
+          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">금융 재무 분석</div>
+          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">매출 통계 분석</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <TrendingUp size={14} className="text-black" />
-            실시간 재무 지표 및 매출 흐름을 모니터링합니다. <span className="text-black uppercase">Fiscal Year 2024</span>
+            실시간 재무 지표 및 매출 흐름을 모니터링합니다. <span className="text-black uppercase">2024 회계연도</span>
           </p>
         </div>
         <div className="flex gap-4">
           <button className="px-6 py-3 bg-white border border-gray-100 rounded-2xl text-[11px] font-black text-black uppercase tracking-widest hover:bg-black hover:text-white transition-all flex items-center gap-2 active:scale-95 shadow-lg shadow-black/5">
             <Download size={16} />
-            Export Audit
+            감사 리포트 추출
           </button>
         </div>
       </div>
@@ -61,33 +61,32 @@ export default function SalesPage() {
       {/* 핵심 지표 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <MetricCard
-          title="Gross Revenue"
+          title="총 매출액"
           value={`${Number(stats.totalRevenue).toLocaleString()}`}
-          unit="KRW"
-          trend="Total accumulated flow"
+          unit="원"
+          trend="전체 누적 매출 흐름"
           icon={DollarSign}
           black
         />
         <MetricCard
-          title="Settled Invoices"
+          title="정산 완료"
           value={`${stats.completedCount}`}
-          unit="Cases"
-          trend="Payment verified"
+          unit="건"
+          trend="결제 승인 완료"
           icon={TrendingUp}
         />
         <MetricCard
-          title="Receivables"
+          title="미결제 잔액"
           value={`${stats.pendingCount}`}
-          unit="Cases"
-          trend="Awaiting clearance"
+          unit="건"
+          trend="입금 확인 대기 중"
           icon={CreditCard}
-          highlight
         />
         <MetricCard
-          title="Active Volume"
+          title="거래 활성량"
           value={`${transactions.length}`}
-          unit="TX"
-          trend="Global transaction logs"
+          unit="건"
+          trend="전체 거래 로그 데이터"
           icon={Activity}
         />
       </div>
@@ -97,8 +96,8 @@ export default function SalesPage() {
         <div className="lg:col-span-2 bg-white p-10 rounded-[40px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.02)] h-[480px] flex flex-col group">
           <div className="flex justify-between items-start mb-8">
             <div>
-              <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">Periodic Growth</div>
-              <h3 className="text-2xl font-black text-black uppercase tracking-tighter">Fiscal Progress</h3>
+              <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">기간별 성장</div>
+              <h3 className="text-2xl font-black text-black uppercase tracking-tighter">회계 성장 추이</h3>
             </div>
             <button className="p-3 bg-gray-50 rounded-2xl text-gray-300 group-hover:text-black group-hover:bg-black group-hover:text-white transition-all">
               <ArrowUpRight size={20} />
@@ -126,8 +125,8 @@ export default function SalesPage() {
         <div className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.02)] h-[480px] flex flex-col group">
           <div className="flex justify-between items-start mb-10">
             <div>
-              <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">Asset Distribution</div>
-              <h3 className="text-2xl font-black text-black uppercase tracking-tighter">Portfolio</h3>
+              <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">자산 구성</div>
+              <h3 className="text-2xl font-black text-black uppercase tracking-tighter">서비스 비중</h3>
             </div>
             <div className="p-3 bg-gray-50 rounded-2xl text-gray-300 group-hover:text-black transition-all">
               <PieIcon size={20} />
@@ -170,22 +169,22 @@ export default function SalesPage() {
       <div className="bg-white rounded-[40px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.03)] overflow-hidden">
         <div className="px-10 py-8 border-b border-gray-50 flex justify-between items-end">
           <div>
-            <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Transaction History</div>
-            <h3 className="text-2xl font-black text-black uppercase tracking-tighter">Ledger Entries</h3>
+            <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">거래 히스토리</div>
+            <h3 className="text-2xl font-black text-black uppercase tracking-tighter">종합 거래 원장</h3>
           </div>
           <button className="flex items-center gap-2 px-6 py-3 bg-gray-50 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all shadow-sm">
-            <Filter size={16} /> Filter Results
+            <Filter size={16} /> 결과 필터링
           </button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="bg-gray-50/30">
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">Entry Reference</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">Party Responsible</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-right">Amount Flow</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">Status</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">Protocol Date</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">거래 참조 번호</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">책임 당사자</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-right">거래 금액</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">상태</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">프로토콜 날짜</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -203,7 +202,7 @@ export default function SalesPage() {
                   <td className="px-10 py-8 text-center">
                     <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border
                       ${tx.status === 'completed' ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-400 border-gray-200'}`}>
-                      {tx.status === 'completed' ? 'Settled' : 'Pending'}
+                      {tx.status === 'completed' ? '정산 완료' : '대기 중'}
                     </span>
                   </td>
                   <td className="px-10 py-8 text-center text-gray-400 font-mono text-xs font-bold">

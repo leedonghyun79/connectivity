@@ -4,11 +4,11 @@ import { BarChart3, PieChart } from 'lucide-react';
 
 export default function TrafficSource() {
   const data = [
-    { label: 'Google Search', value: 45, color: '#000000', bg: 'bg-black' },
-    { label: 'Naver Direct', value: 25, color: '#444444', bg: 'bg-gray-700' },
-    { label: 'Social Media', value: 15, color: '#888888', bg: 'bg-gray-400' },
-    { label: 'Direct Entry', value: 10, color: '#CCCCCC', bg: 'bg-gray-300' },
-    { label: 'Referrals', value: 5, color: '#EEEEEE', bg: 'bg-gray-100' },
+    { label: '구글 검색', value: 45, color: '#000000', bg: 'bg-black' },
+    { label: '네이버 검색', value: 25, color: '#444444', bg: 'bg-gray-700' },
+    { label: '소셜 미디어', value: 15, color: '#888888', bg: 'bg-gray-400' },
+    { label: '직접 유입', value: 10, color: '#CCCCCC', bg: 'bg-gray-300' },
+    { label: '참조 링크', value: 5, color: '#EEEEEE', bg: 'bg-gray-100' },
   ];
 
   let currentPercent = 0;
@@ -23,8 +23,8 @@ export default function TrafficSource() {
     <div className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.02)] h-full flex flex-col group">
       <div className="flex justify-between items-start mb-10">
         <div>
-          <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">Acquisition Log</div>
-          <h3 className="text-2xl font-black text-black uppercase tracking-tighter">Traffic Origin</h3>
+          <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">유입 로그</div>
+          <h3 className="text-2xl font-black text-black uppercase tracking-tighter">유입 경로 분석</h3>
         </div>
         <div className="p-3 bg-gray-50 rounded-2xl text-gray-300 group-hover:text-black transition-all">
           <PieChart size={20} />
@@ -34,7 +34,7 @@ export default function TrafficSource() {
       <div className="flex flex-col items-center gap-10">
         <div className="relative w-48 h-48 rounded-full flex-shrink-0 shadow-2xl shadow-black/5" style={{ background: gradientString }}>
           <div className="absolute inset-5 bg-white rounded-full flex items-center justify-center flex-col border border-gray-50">
-            <span className="text-[10px] text-gray-300 font-black uppercase tracking-widest mb-1">Total Visits</span>
+            <span className="text-[10px] text-gray-300 font-black uppercase tracking-widest mb-1">전체 방문</span>
             <span className="text-3xl font-black text-black tracking-tighter">3.4K</span>
             <div className="w-8 h-1 bg-black rounded-full mt-2"></div>
           </div>
