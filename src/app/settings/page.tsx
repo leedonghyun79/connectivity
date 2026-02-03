@@ -1,8 +1,9 @@
-"use client";
-import { SettingsLayout } from "@/components/settings/SettingsLayout";
+'use client';
+
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import PageLoader from "@/components/common/PageLoader";
+import { Settings, Shield, User, Bell, Globe, Database, Save, ArrowRight } from "lucide-react";
 
 export default function SettingsPage() {
   const [isSaving, setIsSaving] = useState(false);
@@ -19,9 +20,9 @@ export default function SettingsPage() {
     setIsSaving(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
-      toast.success("설정이 저장되었습니다.");
+      toast.success("System configurations successfully updated.");
     } catch {
-      toast.error("설정 저장 중 오류가 발생했습니다.");
+      toast.error("Failed to update configurations.");
     } finally {
       setIsSaving(false);
     }
@@ -29,28 +30,103 @@ export default function SettingsPage() {
 
   if (isLoading) return <PageLoader />;
 
-  // ... (Full Tailwind content from previous turn)
   return (
-    <SettingsLayout>
-      <div className="w-full max-w-5xl mx-auto space-y-8">
-        <div className="flex justify-between items-start border-b border-gray-200 pb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">설정</h1>
-            <p className="text-sm text-gray-500 mt-1">시스템 설정을 관리하세요.</p>
-          </div>
-          <button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="px-4 py-2 bg-[#2271b1] text-white rounded-md text-sm font-semibold hover:bg-[#135e96] transition-colors disabled:opacity-50"
-          >
-            {isSaving ? "저장 중..." : "변경사항 저장"}
-          </button>
+    <div className="space-y-10 py-10 max-w-6xl">
+      {/* 헤더 섹션 */}
+      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
+        <div>
+          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">System Framework</div>
+          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">Configuration</h1>
+          <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
+            <Settings size={14} className="text-black" />
+            핵심 플랫폼 환경설정 및 보안 프로토콜을 관리합니다. <span className="text-black uppercase">v2.4.0 Stable</span>
+          </p>
         </div>
-        <div className="bg-white p-6 border rounded-lg shadow-sm">
-          <h2 className="font-bold mb-4">준비중</h2>
-          <p className="text-gray-500">설정 폼 내용은 안전하게 복구되었습니다.</p>
+        <button
+          onClick={handleSave}
+          disabled={isSaving}
+          className="px-8 py-3 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all shadow-xl shadow-black/20 active:scale-95 disabled:opacity-50 flex items-center gap-2"
+        >
+          {isSaving ? "Synchronizing..." : "Save Changes"}
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
+        {/* 네비게이션 */}
+        <div className="lg:col-span-1 space-y-2">
+          <SettingNav label="General Identity" active icon={User} />
+          <SettingNav label="Security & Access" icon={Shield} />
+          <SettingNav label="Notification Engine" icon={Bell} />
+          <SettingNav label="Regional Assets" icon={Globe} />
+          <SettingNav label="Storage & Logs" icon={Database} />
+        </div>
+
+        {/* 설정 본문 */}
+        <div className="lg:col-span-3 space-y-8">
+          <div className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.02)] space-y-8">
+            <div>
+              <h3 className="text-[10px] font-black text-black uppercase tracking-[0.3em] mb-6 border-b pb-2">Core Identity Log</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="group">
+                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2 px-1">Organization Name</label>
+                  <input type="text" defaultValue="Connectivity Inc." className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all" />
+                </div>
+                <div className="group">
+                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2 px-1">Admin User ID</label>
+                  <input type="text" defaultValue="admin_master_01" className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all text-gray-400" readOnly />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-[10px] font-black text-black uppercase tracking-[0.3em] mb-6 border-b pb-2">Communication Channel</h3>
+              <div className="space-y-6">
+                <div className="group">
+                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2 px-1">Primary Email Protocol</label>
+                  <input type="email" defaultValue="admin@connectivity.com" className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all" />
+                </div>
+              </div>
+            </div>
+
+            <div className="p-8 bg-gray-50 rounded-[32px] border border-dashed border-gray-200">
+              <div className="flex items-center gap-4 opacity-30 select-none">
+                <Settings size={28} className="animate-spin-slow" />
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-widest">Advanced Module Under Development</p>
+                  <p className="text-[10px] font-bold">Additional sub-modules will be synchronized in the next version.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-4">
+            <button className="px-8 py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-2xl hover:bg-black hover:text-white transition-all active:scale-95">Discards All</button>
+          </div>
         </div>
       </div>
-    </SettingsLayout>
+
+      <style jsx>{`
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 8s linear infinite;
+        }
+      `}</style>
+    </div>
   );
+}
+
+function SettingNav({ label, active, icon: Icon }: any) {
+  return (
+    <button className={`w-full flex items-center justify-between px-6 py-4 rounded-2xl transition-all duration-300 group
+            ${active ? 'bg-black text-white shadow-xl shadow-black/10' : 'text-gray-400 hover:bg-gray-50 hover:text-black'}`}>
+      <div className="flex items-center gap-3">
+        <Icon size={18} className={active ? 'text-white' : 'text-gray-300 group-hover:text-black'} />
+        <span className="text-[11px] font-black uppercase tracking-widest">{label}</span>
+      </div>
+      {active && <ArrowRight size={14} className="text-gray-500" />}
+    </button>
+  )
 }

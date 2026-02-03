@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
   Legend
 } from 'recharts';
+import { ArrowUpRight } from 'lucide-react';
 
 export default function VisitorChart() {
   const data = [
@@ -18,84 +19,90 @@ export default function VisitorChart() {
     { date: '01-31', pv: 5, visitor: 3 },
     { date: '02-01', pv: 3, visitor: 3 },
     { date: '02-02', pv: 2, visitor: 2 },
-    { date: '02-03', pv: 4, visitor: 3 }, // 데이터 살짝 수정 (0은 너무 없어서)
+    { date: '02-03', pv: 4, visitor: 3 },
     { date: '02-04', pv: 6, visitor: 4 },
   ];
 
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] h-full flex flex-col">
-      <div className="flex justify-between items-center mb-2">
-        <h3 className="text-lg font-bold text-gray-900">방문자</h3>
-        <button className="text-xs text-gray-400 hover:text-gray-600">더보기</button>
+    <div className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.02)] h-[480px] flex flex-col group">
+      <div className="flex justify-between items-start mb-8">
+        <div>
+          <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">Traffic Analysis</div>
+          <h3 className="text-2xl font-black text-black uppercase tracking-tighter">Visitor Trends</h3>
+        </div>
+        <button className="p-3 bg-gray-50 rounded-2xl text-gray-300 group-hover:text-black group-hover:bg-black group-hover:text-white transition-all">
+          <ArrowUpRight size={20} />
+        </button>
       </div>
 
       <div className="flex-1 min-h-0 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}
-            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+            margin={{ top: 10, right: 10, left: -25, bottom: 0 }}
           >
             <defs>
               <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#bae6fd" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#bae6fd" stopOpacity={0} />
+                <stop offset="5%" stopColor="#000" stopOpacity={0.1} />
+                <stop offset="95%" stopColor="#000" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="colorVisitor" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                <stop offset="5%" stopColor="#000" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#000" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f8fafc" />
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 12, fill: '#94a3b8' }}
+              tick={{ fontSize: 10, fill: '#cbd5e1', fontWeight: 700 }}
               axisLine={false}
               tickLine={false}
-              tickMargin={10}
+              tickMargin={15}
             />
             <YAxis
-              tick={{ fontSize: 12, fill: '#94a3b8' }}
+              tick={{ fontSize: 10, fill: '#cbd5e1', fontWeight: 700 }}
               axisLine={false}
               tickLine={false}
               tickCount={5}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#fff',
-                borderRadius: '8px',
-                border: '1px solid #e2e8f0',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                backgroundColor: '#000',
+                borderRadius: '16px',
+                border: 'none',
+                color: '#fff',
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)',
+                padding: '12px'
               }}
-              itemStyle={{ fontSize: '12px' }}
+              itemStyle={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', color: '#fff' }}
+              labelStyle={{ color: '#64748b', fontSize: '10px', marginBottom: '4px', fontWeight: 700 }}
             />
             <Legend
-              iconType="circle"
-              wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}
+              iconType="rect"
+              wrapperStyle={{ fontSize: '10px', fontWeight: 900, paddingTop: '20px', textTransform: 'uppercase', letterSpacing: '0.1em' }}
               align="right"
               verticalAlign="top"
               height={36}
             />
-            {/* 페이지뷰 (연한 하늘색) */}
             <Area
               type="monotone"
               dataKey="pv"
-              name="페이지뷰"
-              stroke="#7dd3fc"
-              strokeWidth={2}
+              name="Page Views"
+              stroke="#e2e8f0"
+              strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorPv)"
-              activeDot={{ r: 6, strokeWidth: 0 }}
+              activeDot={{ r: 6, strokeWidth: 0, fill: '#000' }}
             />
-            {/* 방문자 (진한 파란색) */}
             <Area
               type="monotone"
               dataKey="visitor"
-              name="방문자"
-              stroke="#2563eb"
-              strokeWidth={2}
+              name="Unique Visitors"
+              stroke="#000"
+              strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorVisitor)"
-              activeDot={{ r: 6, strokeWidth: 0 }}
+              activeDot={{ r: 8, strokeWidth: 4, stroke: '#fff', fill: '#000' }}
             />
           </AreaChart>
         </ResponsiveContainer>

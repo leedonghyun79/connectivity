@@ -59,7 +59,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
           </p>
         </div>
         <div className="flex gap-4">
-          <button className="px-6 py-3 bg-white border-2 border-black rounded-2xl text-[11px] font-black text-black uppercase tracking-widest hover:bg-gray-50 transition-all flex items-center gap-2 active:scale-95 shadow-lg shadow-black/5">
+          <button className="px-6 py-3 bg-white border border-gray-100 rounded-2xl text-[11px] font-black text-black uppercase tracking-widest hover:bg-gray-50 transition-all flex items-center gap-2 active:scale-95 shadow-lg shadow-black/5">
             <Download size={16} />
             Export Data
           </button>

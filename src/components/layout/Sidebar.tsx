@@ -75,14 +75,6 @@ export default function Sidebar() {
       </div>
 
       <div className="mt-auto p-8">
-        <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-          <div className="text-[10px] font-black text-gray-400 tracking-widest uppercase mb-2">Usage Plan</div>
-          <div className="text-sm font-black text-black mb-4">PREMIUM ENTERPRISE</div>
-          <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-            <div className="h-full bg-black w-4/5"></div>
-          </div>
-          <p className="text-[10px] text-gray-400 mt-2 font-bold">80% of storage used</p>
-        </div>
       </div>
     </aside>
   );

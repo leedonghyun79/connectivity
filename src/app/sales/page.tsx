@@ -4,7 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { DollarSign, TrendingUp, CreditCard, Download, Activity, Calendar } from 'lucide-react';
+import { DollarSign, TrendingUp, CreditCard, Download, Activity, Calendar, ArrowUpRight, Filter, PieChart as PieIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import PageLoader from '@/components/common/PageLoader';
 import { getTransactions, getSalesStats } from '@/lib/actions';
@@ -30,142 +30,184 @@ export default function SalesPage() {
 
   if (isLoading || !stats) return <PageLoader />;
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  const COLORS = ['#000000', '#333333', '#666666', '#999999'];
   const serviceShareData = [
-    { name: '웹 개발', value: 45 },
-    { name: '앱 개발', value: 25 },
-    { name: '디자인', value: 15 },
-    { name: '유지보수', value: 15 },
+    { name: 'Web Dev', value: 45 },
+    { name: 'App Dev', value: 25 },
+    { name: 'Branding', value: 15 },
+    { name: 'Maintenance', value: 15 },
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="space-y-10 py-10">
+      {/* 헤더 섹션 */}
+      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">매출 분석</h1>
-          <p className="text-sm text-gray-500 mt-1">회사의 주요 재무 지표와 매출 현황을 분석합니다.</p>
+          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">Financial Intelligence</div>
+          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">Revenue Analytics</h1>
+          <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
+            <TrendingUp size={14} className="text-black" />
+            실시간 재무 지표 및 매출 흐름을 모니터링합니다. <span className="text-black uppercase">Fiscal Year 2024</span>
+          </p>
         </div>
-        <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2">
-          <Download size={16} />
-          리포트 다운로드
-        </button>
+        <div className="flex gap-4">
+          <button className="px-6 py-3 bg-white border border-gray-100 rounded-2xl text-[11px] font-black text-black uppercase tracking-widest hover:bg-black hover:text-white transition-all flex items-center gap-2 active:scale-95 shadow-lg shadow-black/5">
+            <Download size={16} />
+            Export Audit
+          </button>
+        </div>
       </div>
 
-      {/* 1. 핵심 지표 카드 - 실시간 데이터 연동 */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* 핵심 지표 카드 */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <MetricCard
-          title="총 누적 매출"
-          value={`${Number(stats.totalRevenue).toLocaleString()}원`}
-          trend="누적 합계"
-          trendUp={true}
+          title="Gross Revenue"
+          value={`${Number(stats.totalRevenue).toLocaleString()}`}
+          unit="KRW"
+          trend="Total accumulated flow"
           icon={DollarSign}
-          color="blue"
+          black
         />
         <MetricCard
-          title="결제 완료"
-          value={`${stats.completedCount}건`}
-          trend="현재 완료"
-          trendUp={true}
+          title="Settled Invoices"
+          value={`${stats.completedCount}`}
+          unit="Cases"
+          trend="Payment verified"
           icon={TrendingUp}
-          color="green"
         />
         <MetricCard
-          title="결제 대기"
-          value={`${stats.pendingCount}건`}
-          trend="미결제건"
-          trendUp={false}
+          title="Receivables"
+          value={`${stats.pendingCount}`}
+          unit="Cases"
+          trend="Awaiting clearance"
           icon={CreditCard}
-          color="orange"
+          highlight
         />
         <MetricCard
-          title="최근 거래"
-          value={`${transactions.length}건`}
-          trend="전체 거래"
-          trendUp={true}
+          title="Active Volume"
+          value={`${transactions.length}`}
+          unit="TX"
+          trend="Global transaction logs"
           icon={Activity}
-          color="purple"
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 2. 월별 매출 그래프 */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-96">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-bold text-gray-900">최근 매출 추이</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* 월별 매출 그래프 */}
+        <div className="lg:col-span-2 bg-white p-10 rounded-[40px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.02)] h-[480px] flex flex-col group">
+          <div className="flex justify-between items-start mb-8">
+            <div>
+              <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">Periodic Growth</div>
+              <h3 className="text-2xl font-black text-black uppercase tracking-tighter">Fiscal Progress</h3>
+            </div>
+            <button className="p-3 bg-gray-50 rounded-2xl text-gray-300 group-hover:text-black group-hover:bg-black group-hover:text-white transition-all">
+              <ArrowUpRight size={20} />
+            </button>
           </div>
-          <div className="h-[280px] w-full">
+          <div className="flex-1 min-h-0 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={stats.monthlySales}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f8fafc" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#cbd5e1', fontSize: 10, fontWeight: 700 }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#cbd5e1', fontSize: 10, fontWeight: 700 }} />
                 <RechartsTooltip
-                  cursor={{ fill: '#f9fafb' }}
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  cursor={{ fill: '#f8fafc' }}
+                  contentStyle={{ backgroundColor: '#000', borderRadius: '16px', border: 'none', color: '#fff', padding: '12px' }}
+                  itemStyle={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase' }}
+                  labelStyle={{ display: 'none' }}
                 />
-                <Bar dataKey="amount" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={40} />
+                <Bar dataKey="amount" fill="#000000" radius={[12, 12, 0, 0]} barSize={40} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* 3. 서비스 비중 차트 */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-96">
-          <h3 className="text-lg font-bold text-gray-900 mb-6">서비스별 비중</h3>
-          <div className="h-[280px] w-full">
+        {/* 서비스 비중 차트 */}
+        <div className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.02)] h-[480px] flex flex-col group">
+          <div className="flex justify-between items-start mb-10">
+            <div>
+              <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">Asset Distribution</div>
+              <h3 className="text-2xl font-black text-black uppercase tracking-tighter">Portfolio</h3>
+            </div>
+            <div className="p-3 bg-gray-50 rounded-2xl text-gray-300 group-hover:text-black transition-all">
+              <PieIcon size={20} />
+            </div>
+          </div>
+          <div className="flex-1 min-h-0 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={serviceShareData}
                   cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
+                  cy="45%"
+                  innerRadius={80}
+                  outerRadius={100}
+                  paddingAngle={8}
                   dataKey="value"
+                  stroke="none"
                 >
                   {serviceShareData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <RechartsTooltip />
-                <Legend layout="horizontal" verticalAlign="bottom" align="center" />
+                <RechartsTooltip
+                  contentStyle={{ backgroundColor: '#000', borderRadius: '16px', border: 'none', color: '#fff', fontSize: '10px' }}
+                />
+                <Legend
+                  layout="vertical"
+                  verticalAlign="bottom"
+                  align="center"
+                  iconType="circle"
+                  wrapperStyle={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* 4. 최근 거래 목록 */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-          <h3 className="text-lg font-bold text-gray-900">최근 거래 내역 (실시간)</h3>
+      {/* 최근 거래 목록 */}
+      <div className="bg-white rounded-[40px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.03)] overflow-hidden">
+        <div className="px-10 py-8 border-b border-gray-50 flex justify-between items-end">
+          <div>
+            <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Transaction History</div>
+            <h3 className="text-2xl font-black text-black uppercase tracking-tighter">Ledger Entries</h3>
+          </div>
+          <button className="flex items-center gap-2 px-6 py-3 bg-gray-50 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all shadow-sm">
+            <Filter size={16} /> Filter Results
+          </button>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="text-gray-500 border-b border-gray-100">
-              <tr>
-                <th className="px-6 py-4 font-medium">거래 ID</th>
-                <th className="px-6 py-4 font-medium">고객사</th>
-                <th className="px-6 py-4 font-medium">금액</th>
-                <th className="px-6 py-4 font-medium text-center">상태</th>
-                <th className="px-6 py-4 font-medium text-center">거래일</th>
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-gray-50/30">
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">Entry Reference</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">Party Responsible</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-right">Amount Flow</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">Status</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">Protocol Date</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {transactions.map((tx) => (
-                <tr key={tx.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-gray-700">{tx.id.substring(0, 8)}</td>
-                  <td className="px-6 py-4 text-gray-600">{tx.customerName || tx.customer?.name}</td>
-                  <td className="px-6 py-4 font-bold text-gray-900">{Number(tx.amount).toLocaleString()}원</td>
-                  <td className="px-6 py-4 text-center">
-                    <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold ${tx.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
-                      }`}>
-                      {tx.status === 'completed' ? '완료' : '대기'}
+                <tr key={tx.id} className="hover:bg-gray-50/50 transition-all group">
+                  <td className="px-10 py-8 font-mono font-bold text-gray-300 group-hover:text-black transition-colors">
+                    #{tx.id.substring(0, 8).toUpperCase()}
+                  </td>
+                  <td className="px-10 py-8">
+                    <div className="font-black text-gray-900 uppercase tracking-tight">{tx.customerName || tx.customer?.name}</div>
+                  </td>
+                  <td className="px-10 py-8 text-right font-black text-black text-lg">
+                    {Number(tx.amount).toLocaleString()} <span className="text-xs text-gray-300">₩</span>
+                  </td>
+                  <td className="px-10 py-8 text-center">
+                    <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border
+                      ${tx.status === 'completed' ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-400 border-gray-200'}`}>
+                      {tx.status === 'completed' ? 'Settled' : 'Pending'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-center text-gray-500">
-                    {new Date(tx.date).toLocaleDateString()}
+                  <td className="px-10 py-8 text-center text-gray-400 font-mono text-xs font-bold">
+                    {new Date(tx.date).toLocaleDateString('ko-KR')}
                   </td>
                 </tr>
               ))}
@@ -178,27 +220,28 @@ export default function SalesPage() {
 }
 
 // 보조 컴포넌트:MetricCard
-function MetricCard({ title, value, trend, trendUp, icon: Icon, color }: any) {
-  const colorMap: any = {
-    blue: 'bg-blue-50 text-blue-600',
-    green: 'bg-green-50 text-green-600',
-    orange: 'bg-orange-50 text-orange-600',
-    red: 'bg-red-50 text-red-600',
-    purple: 'bg-purple-50 text-purple-600',
-  };
-
+function MetricCard({ title, value, unit, trend, icon: Icon, black, highlight }: any) {
   return (
-    <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
-      <div className="flex justify-between items-start mb-4">
-        <div className={`p-2 rounded-lg ${colorMap[color]}`}>
-          <Icon size={20} />
+    <div className={`p-8 rounded-[32px] border transition-all duration-500 shadow-[0_20px_50px_rgba(0,0,0,0.02)] relative overflow-hidden group
+        ${black ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-100'}
+        ${highlight ? 'border-l-4 border-l-black' : ''}`}>
+
+      <div className="flex justify-between items-start mb-6">
+        <div className={`text-[10px] font-black uppercase tracking-widest group-hover:tracking-[0.2em] transition-all ${black ? 'text-gray-500' : 'text-gray-300'}`}>
+          {title}
+        </div>
+        <div className={`p-2 rounded-xl transition-colors ${black ? 'bg-white/10 text-white' : 'bg-gray-50 text-gray-300 group-hover:text-black'}`}>
+          <Icon size={18} />
         </div>
       </div>
-      <div>
-        <p className="text-sm text-gray-500 mb-1">{title}</p>
-        <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
-        <p className="text-xs text-gray-400 mt-2">{trend}</p>
+
+      <div className="flex items-end gap-2">
+        <div className="text-3xl font-black tracking-tighter">{value}</div>
+        <div className={`text-[10px] font-bold mb-1.5 uppercase tracking-widest ${black ? 'text-gray-500' : 'text-gray-300'}`}>
+          {unit}
+        </div>
       </div>
+      <p className={`text-[10px] font-bold mt-2 uppercase tracking-widest ${black ? 'text-gray-600' : 'text-gray-400'}`}>{trend}</p>
     </div>
   );
 }
