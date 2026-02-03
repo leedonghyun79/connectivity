@@ -268,3 +268,31 @@ export async function getTransactions() {
     return [];
   }
 }
+
+export async function getDailyStats() {
+  try {
+    const stats = await prisma.dailyStat.findMany({
+      orderBy: { date: 'desc' },
+      take: 7
+    });
+    return stats.map(s => ({
+      ...s,
+      revenue: s.revenue.toString()
+    }));
+  } catch (error) {
+    console.error('Failed to fetch daily stats:', error);
+    return [];
+  }
+}
+
+export async function syncAllStats() {
+  try {
+    // 임시 동기화 로직 (실제로는 GA4 API 등을 호출)
+    // 여기서는 간단히 리밸리데이션만 처리하거나 더미 데이터 업데이트
+    revalidatePath('/');
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to sync stats:', error);
+    return { success: false };
+  }
+}
