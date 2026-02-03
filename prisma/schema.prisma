@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id        String    @id @default(cuid())
+  name      String
+  email     String?
+  company   String?
+  phone     String?
+  address   String?
+  status    String    @default("pending") // pending(대기), processing(진행), closed(종료)
+  lastLogin DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  projects     Project[]
+  inquiries    Inquiry[]
+  estimates    Estimate[]
+  transactions Transaction[]
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  customerId  String
+  customer    Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  status      String        @default("PENDING") // PENDING, PROGRESS, REST, COMPLETED
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  maintenances Maintenance[]
+}
+
+model Maintenance {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title     String
+  content   String?
+  status    String   @default("PENDING") // PENDING, PROGRESS, COMPLETED
+  cost      Int      @default(0)
+  workDate  DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Inquiry {
+  id         String    @id @default(cuid())
+  title      String
+  content    String
+  authorName String?
+  type       String? // 기술지원, 일반문의, 결제/환불
+  status     String    @default("pending") // pending, answered, closed
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Estimate {
+  id           String    @id @default(cuid())
+  estimateNum  String? // EST-2024-xxxx 형식
+  title        String
+  amount       Decimal?
+  status       String    @default("pending") // pending, sent, approved, rejected
+  issueDate    DateTime? @default(now())
+  validUntil   DateTime?
+  customerId   String?
+  customer     Customer? @relation(fields: [customerId], references: [id])
+  customerName String? // 비회원 고객일 경우
+  
+  // 사업자 정보 (공급자)
+  bizNumber    String?   // 사업자 번호
+  bizName      String?   // 상호
+  bizCEO       String?   // 대표자
+  bizAddress   String?   // 주소
+  bizPhone     String?   // 전화번호
+  bizEmail     String?   // 이메일
+
+  items        EstimateItem[]
+  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model EstimateItem {
+  id          String   @id @default(cuid())
+  estimateId  String
+  estimate    Estimate @relation(fields: [estimateId], references: [id], onDelete: Cascade)
+  itemName    String   // 품명
+  spec        String?  // 세부항목/사양
+  quantity    Int      @default(1)
+  unitPrice   Decimal  @default(0)
+  supplyValue Decimal  @default(0)
+  vat         Decimal  @default(0)
+}
+
+model Transaction {
+  id           String    @id @default(cuid())
+  serviceType  String? // 웹사이트 리뉴얼, 앱 개발 등
+  amount       Decimal
+  status       String    @default("pending") // pending, completed
+  date         DateTime  @default(now())
+  customerId   String?
+  customer     Customer? @relation(fields: [customerId], references: [id])
+  customerName String? // 비회원일 경우
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model DailyStat {
+  date        DateTime @id             // 기준 날짜
+  pageViews   Int      @default(0)     // GA4 데이터
+  visitors    Int      @default(0)     // GA4 데이터
+  signups     Int      @default(0)     // DB (Customer) 데이터
+  inquiries   Int      @default(0)     // DB (Inquiry) 데이터
+  revenue     Decimal  @default(0)     // DB (Transaction) 데이터
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
