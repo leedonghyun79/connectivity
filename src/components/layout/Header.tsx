@@ -40,7 +40,6 @@ export default function Header() {
             <div className="h-12 w-12 rounded-2xl bg-gray-50 flex items-center justify-center text-black border border-gray-100 group-hover:bg-black group-hover:text-white transition-all duration-300 overflow-hidden shadow-sm">
               <User size={24} />
             </div>
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
           </div>
         </div>
       </div>

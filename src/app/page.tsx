@@ -39,13 +39,6 @@ export default function Dashboard() {
           </p>
         </div>
         <div className="flex gap-4">
-          <div className="px-6 py-3 bg-white border border-gray-100 rounded-2xl flex items-center gap-4 shadow-sm">
-            <div className="flex flex-col">
-              <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Server Status</span>
-              <span className="text-[10px] font-black text-green-500 uppercase">Online</span>
-            </div>
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-          </div>
         </div>
       </div>
 
