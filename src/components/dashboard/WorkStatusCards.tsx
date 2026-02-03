@@ -24,7 +24,6 @@ export default function WorkStatusCards() {
         value={stats.pendingInquiries.toLocaleString()}
         unit="Units"
         icon={MessageSquare}
-        highlight
       />
       <StatCard
         label="Pending Estimates"
