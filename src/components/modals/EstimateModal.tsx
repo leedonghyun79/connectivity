@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { X, Search, Loader2, Plus, Trash2, Printer } from 'lucide-react';
-import { createEstimate, getCustomers } from '@/lib/actions';
+import { createEstimate, updateEstimate, getCustomers } from '@/lib/actions';
 import { toast } from 'sonner';
 
 interface EstimateItem {
@@ -19,9 +19,10 @@ interface EstimateModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  editData?: any;
 }
 
-export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateModalProps) {
+export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: EstimateModalProps) {
   const [customers, setCustomers] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -48,8 +49,43 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
   useEffect(() => {
     if (isOpen) {
       getCustomers().then(setCustomers);
+
+      if (editData) {
+        setFormData({
+          title: editData.title,
+          customerId: editData.customerId,
+          issueDate: new Date(editData.issueDate).toISOString().split('T')[0],
+          bizNumber: editData.bizNumber || defaultBizInfo.bizNumber,
+          bizName: editData.bizName || defaultBizInfo.bizName,
+          bizCEO: editData.bizCEO || defaultBizInfo.bizCEO,
+          bizAddress: editData.bizAddress || defaultBizInfo.bizAddress,
+          bizPhone: editData.bizPhone || defaultBizInfo.bizPhone,
+          bizEmail: editData.bizEmail || defaultBizInfo.bizEmail,
+        });
+
+        if (editData.items && editData.items.length > 0) {
+          setItems(editData.items.map((item: any) => ({
+            id: item.id || Math.random().toString(),
+            itemName: item.itemName,
+            spec: item.spec || '',
+            quantity: Number(item.quantity),
+            unitPrice: Number(item.unitPrice),
+            supplyValue: Number(item.supplyValue),
+            vat: Number(item.vat)
+          })));
+        }
+      } else {
+        // Reset form for create mode
+        setFormData({
+          title: '',
+          customerId: '',
+          issueDate: new Date().toISOString().split('T')[0],
+          ...defaultBizInfo
+        });
+        setItems([{ id: '1', itemName: '', spec: '', quantity: 1, unitPrice: 0, supplyValue: 0, vat: 0 }]);
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, editData]);
 
   const calculateItemValues = (quantity: number, unitPrice: number) => {
     const supplyValue = quantity * unitPrice;
@@ -62,12 +98,19 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
     const item = { ...newItems[index], [field]: value };
 
     if (field === 'quantity' || field === 'unitPrice') {
-      const { supplyValue, vat } = calculateItemValues(
-        field === 'quantity' ? Number(value) : item.quantity,
-        field === 'unitPrice' ? Number(value) : item.unitPrice
-      );
+      const q = field === 'quantity' ? Number(value) : item.quantity;
+      const up = field === 'unitPrice' ? Number(value) : item.unitPrice;
+      const { supplyValue, vat } = calculateItemValues(q, up);
       item.supplyValue = supplyValue;
       item.vat = vat;
+    } else if (field === 'supplyValue') {
+      const sv = Number(value);
+      item.supplyValue = sv;
+      item.vat = Math.floor(sv * 0.1);
+      // 수량이 있는 경우 단가 역산
+      if (item.quantity > 0) {
+        item.unitPrice = Math.floor(sv / item.quantity);
+      }
     }
 
     newItems[index] = item;
@@ -93,17 +136,28 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
     if (items.some(item => !item.itemName)) return toast.error('품목 이름을 입력해 주세요.');
 
     setIsSubmitting(true);
-    const result = await createEstimate({
-      ...formData,
-      items: items.map(({ id, ...rest }) => rest)
-    });
+    let result;
+
+    if (editData) {
+      result = await updateEstimate(editData.id, {
+        ...formData,
+        issueDate: new Date(formData.issueDate),
+        items: items.map(({ id, ...rest }) => rest)
+      });
+    } else {
+      result = await createEstimate({
+        ...formData,
+        items: items.map(({ id, ...rest }) => rest)
+      });
+    }
+
     setIsSubmitting(false);
 
     if (result.success) {
-      toast.success('견적서가 저장되었습니다.');
+      toast.success(editData ? '견적서가 수정되었습니다.' : '견적서가 저장되었습니다.');
       onSuccess();
       onClose();
-      setItems([{ id: '1', itemName: '', spec: '', quantity: 1, unitPrice: 0, supplyValue: 0, vat: 0 }]);
+      // Reset is handled by useEffect when modal re-opens or mode changes
     } else {
       toast.error(result.error);
     }
@@ -112,13 +166,19 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="bg-[#fcfcfc] rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col border border-gray-200">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
+        className="bg-[#fcfcfc] rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col border border-gray-200"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* 모달 헤더 */}
         <div className="px-8 py-5 border-b border-gray-100 flex items-center justify-between bg-white/50 backdrop-blur-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white font-bold text-xl">C</div>
-            <h3 className="text-xl font-black text-gray-900 tracking-tight">신규 견적서 작성</h3>
+            <h3 className="text-xl font-black text-gray-900 tracking-tight">{editData ? '견적서 수정' : '신규 견적서 작성'}</h3>
           </div>
           <button onClick={onClose} className="p-2.5 hover:bg-gray-100 rounded-full transition-all text-gray-400 hover:text-gray-900 border border-transparent hover:border-gray-200">
             <X size={20} />
@@ -273,22 +333,35 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
                           type="number"
                           value={item.quantity}
                           onChange={(e) => handleItemChange(index, 'quantity', e.target.value)}
+                          onFocus={(e) => e.target.select()}
                           className="w-full bg-transparent text-center font-mono outline-none"
                         />
                       </td>
                       <td className="py-4 text-right pr-4">
                         <input
                           type="text"
-                          value={item.unitPrice.toLocaleString()}
+                          value={item.unitPrice === 0 ? '' : item.unitPrice.toLocaleString()}
                           onChange={(e) => {
                             const val = e.target.value.replace(/[^0-9]/g, '');
                             handleItemChange(index, 'unitPrice', Number(val));
                           }}
-                          className="w-full bg-transparent text-right font-mono outline-none"
+                          onFocus={(e) => e.target.select()}
+                          placeholder="0"
+                          className="w-full bg-transparent text-right font-mono outline-none placeholder:text-gray-200"
                         />
                       </td>
-                      <td className="py-4 text-right font-mono font-bold text-gray-900">
-                        {item.supplyValue.toLocaleString()}
+                      <td className="py-4 text-right pr-4 font-mono font-bold text-gray-900">
+                        <input
+                          type="text"
+                          value={item.supplyValue === 0 ? '' : item.supplyValue.toLocaleString()}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/[^0-9]/g, '');
+                            handleItemChange(index, 'supplyValue', Number(val));
+                          }}
+                          onFocus={(e) => e.target.select()}
+                          placeholder="0"
+                          className="w-full bg-transparent text-right outline-none placeholder:text-gray-200"
+                        />
                       </td>
                       <td className="py-4 text-right">
                         <button
@@ -372,11 +445,11 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
                   <Loader2 size={18} className="animate-spin" />
                   저장 중...
                 </>
-              ) : '견적서 저장'}
+              ) : (editData ? '견적서 수정' : '견적서 저장')}
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

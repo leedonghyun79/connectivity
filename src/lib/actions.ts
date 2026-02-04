@@ -143,6 +143,128 @@ export async function getEstimates() {
   }
 }
 
+// 견적서 수정
+export async function updateEstimate(id: string, data: {
+  title: string;
+  customerId: string;
+  bizNumber?: string;
+  bizName?: string;
+  bizCEO?: string;
+  bizAddress?: string;
+  bizPhone?: string;
+  bizEmail?: string;
+  issueDate?: Date;
+  items: any[];
+}) {
+  try {
+    // 항목들의 총액 계산
+    const totalAmount = data.items.reduce((acc, item) => acc + (Number(item.supplyValue) || 0) + (Number(item.vat) || 0), 0);
+
+    const estimate = await prisma.estimate.update({
+      where: { id },
+      data: {
+        title: data.title,
+        amount: totalAmount,
+        customerId: data.customerId,
+        issueDate: data.issueDate,
+        bizNumber: data.bizNumber,
+        bizName: data.bizName,
+        bizCEO: data.bizCEO,
+        bizAddress: data.bizAddress,
+        bizPhone: data.bizPhone,
+        bizEmail: data.bizEmail,
+        // 기존 항목 삭제 후 재생성
+        items: {
+          deleteMany: {},
+          create: data.items.map(item => ({
+            itemName: item.itemName,
+            spec: item.spec,
+            quantity: Number(item.quantity) || 1,
+            unitPrice: Number(item.unitPrice) || 0,
+            supplyValue: Number(item.supplyValue) || 0,
+            vat: Number(item.vat) || 0,
+          }))
+        }
+      },
+    });
+    revalidatePath('/estimates');
+    return { success: true, data: estimate };
+  } catch (error) {
+    console.error('Failed to update estimate:', error);
+    return { success: false, error: '견적서 수정에 실패했습니다.' };
+  }
+}
+
+// 견적서 삭제
+export async function deleteEstimate(id: string) {
+  try {
+    await prisma.estimate.delete({
+      where: { id },
+    });
+    revalidatePath('/estimates');
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to delete estimate:', error);
+    return { success: false, error: '견적서 삭제에 실패했습니다.' };
+  }
+}
+
+// 견적서 이메일 발송 (Resend 연동)
+export async function sendEstimateEmail(estimateId: string, email: string, pdfBase64?: string) {
+  try {
+    const { Resend } = await import('resend');
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    const estimate = await prisma.estimate.findUnique({
+      where: { id: estimateId },
+      include: { customer: true, items: true }
+    });
+
+    if (!estimate) return { success: false, error: '견적서를 찾을 수 없습니다.' };
+
+    // Buffer 모듈 동적 로드 (클라이언트 빌드 에러 방지)
+    const { Buffer } = await import('buffer');
+
+    const attachments = pdfBase64 ? [
+      {
+        filename: `견적서_${estimate.title}.pdf`,
+        content: Buffer.from(pdfBase64.split(',')[1], 'base64'),
+      }
+    ] : [];
+
+    const { data, error } = await resend.emails.send({
+      from: 'Connectivity <onboarding@resend.dev>', // 나중에 본인 도메인으로 변경 가능
+      to: [email],
+      subject: `[견적서] ${estimate.title} - Connectivity`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+          <h1 style="color: #000; font-size: 24px; font-weight: 800; margin-bottom: 20px;">견적서가 도착했습니다.</h1>
+          <p style="font-size: 16px; color: #666; line-height: 1.6;">안녕하세요, <strong>${estimate.customer?.name || estimate.customerName}</strong>님.</p>
+          <p style="font-size: 16px; color: #666; line-height: 1.6;">요청하신 <strong>'${estimate.title}'</strong>에 대한 견적 상세 내용을 확인해 주세요.</p>
+          
+          <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <p style="margin: 5px 0;"><strong>견적 총액:</strong> ${Number(estimate.amount).toLocaleString()} KRW</p>
+            <p style="margin: 5px 0;"><strong>발행 일자:</strong> ${estimate.issueDate?.toLocaleDateString('ko-KR')}</p>
+          </div>
+
+          <p style="font-size: 14px; color: #999; margin-top: 40px;">첨부된 PDF 파일을 확인해 주시기 바랍니다.<br/>본 메일은 Connectivity 시스템에서 자동으로 발송되었습니다.</p>
+        </div>
+      `,
+      attachments,
+    });
+
+    if (error) {
+      console.error('Resend error:', error);
+      return { success: false, error: '이메일 발송 중 오류가 발생했습니다.' };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Failed to send email:', error);
+    return { success: false, error: '이메일 발송에 실패했습니다.' };
+  }
+}
+
 /**
  * 문의 관련 액션
  */

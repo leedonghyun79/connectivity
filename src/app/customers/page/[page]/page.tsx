@@ -6,6 +6,7 @@ import PageLoader from '@/components/common/PageLoader';
 import { getCustomers, deleteCustomer } from '@/lib/actions';
 import { toast } from 'sonner';
 import CustomerModal from '@/components/modals/CustomerModal';
+import DataTable, { Column } from '@/components/common/DataTable';
 
 export default function CustomersPage({ params }: { params: { page: string } }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -16,6 +17,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isReadOnly, setIsReadOnly] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
 
   const fetchData = async () => {
@@ -25,10 +27,15 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
     setIsLoading(false);
   };
 
+  // 메뉴 및 필터 외부 클릭 감지
   useEffect(() => {
-    fetchData();
-
     const handleClickOutside = (event: MouseEvent) => {
+      // 1. 드롭다운 메뉴 닫기 로직
+      if (activeMenuId && !(event.target as Element).closest('.action-menu')) {
+        setActiveMenuId(null);
+      }
+
+      // 2. 필터 닫기 로직
       if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
         setIsFilterOpen(false);
       }
@@ -36,7 +43,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [activeMenuId]);
 
   const filteredCustomers = customers.filter(customer => {
     const matchesSearch =
@@ -48,6 +55,10 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
 
     return matchesSearch && matchesStatus;
   });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleDelete = async (id: string, name: string) => {
     if (confirm(`'${name}' 고객 정보를 삭제하시겠습니까?`)) {
@@ -63,6 +74,14 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
 
   const handleEdit = (customer: any) => {
     setEditingCustomer(customer);
+    setIsReadOnly(false);
+    setIsModalOpen(true);
+    setActiveMenuId(null);
+  };
+
+  const handleViewProfile = (customer: any) => {
+    setEditingCustomer(customer);
+    setIsReadOnly(true);
     setIsModalOpen(true);
     setActiveMenuId(null);
   };
@@ -71,7 +90,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
   if (!customers) return <div>데이터를 불러오지 못했습니다.</div>;
 
   return (
-    <div className="space-y-10 py-10" onClick={() => setActiveMenuId(null)}>
+    <div className="space-y-10 py-10">
       {/* 헤더 섹션 */}
       <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
@@ -91,6 +110,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
             onClick={(e) => {
               e.stopPropagation();
               setEditingCustomer(null);
+              setIsReadOnly(false);
               setIsModalOpen(true);
             }}
             className="px-8 py-3 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 flex items-center gap-2"
@@ -108,6 +128,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
         }}
         onSuccess={fetchData}
         customer={editingCustomer}
+        isReadOnly={isReadOnly}
       />
 
       {/* 통계 요약 */}
@@ -206,100 +227,107 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
       </div>
 
       {/* 테이블 */}
-      <div className="bg-white rounded-[40px] border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto min-h-[500px]">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-100">
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">참조번호</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">고객 정보</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">소속 및 아이덴티티</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">상태 프로필</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-24">관리</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {filteredCustomers.length > 0 ? (
-                filteredCustomers.map((customer) => (
-                  <tr key={customer.id} className="hover:bg-gray-50/50 transition-all group cursor-pointer">
-                    <td className="px-10 py-8 font-mono font-bold text-gray-300 group-hover:text-black transition-colors">
-                      #{customer.id.substring(0, 8).toUpperCase()}
-                    </td>
-                    <td className="px-10 py-8">
-                      <div className="font-black text-xl text-gray-900 group-hover:translate-x-1 transition-transform">{customer.name}</div>
-                      <div className="text-gray-400 text-xs font-bold mt-1 uppercase tracking-tight">{customer.email || '이메일 정보 없음'}</div>
-                    </td>
-                    <td className="px-10 py-8">
-                      <div className="text-gray-900 font-black text-sm uppercase tracking-tight">{customer.company || '개인 고객'}</div>
-                      <div className="text-gray-400 text-xs font-mono mt-1">{customer.phone}</div>
-                    </td>
-                    <td className="px-10 py-8 text-center">
-                      <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.1em] border
-                        ${customer.status === 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' :
-                          customer.status === 'processing' ? 'bg-black text-white border-black' :
-                            'bg-gray-50 text-gray-400 border-gray-200'}`}>
-                        {customer.status === 'pending' ? '대기' :
-                          customer.status === 'processing' ? '진행' : '완료'}
-                      </span>
-                    </td>
-                    <td className="px-10 py-8 text-center relative">
+      {/* 테이블 */}
+      <DataTable
+        data={filteredCustomers}
+        noDataIcon={<Search size={48} />}
+        noDataMessage="일치하는 고객 정보가 없습니다."
+        onRowClick={(customer) => {
+          // 행 클릭 시 동작이 필요하다면 여기에 추가 (현재는 별도 동작 없음, 관리 버튼만 작동)
+          // 기존 코드에서도 tr에 cursor-pointer는 있지만 onClick 핸들러는 없었음 (편집 버튼 등만 존재)
+          // 확인해보니 tr에는 onClick이 없고, hover 효과만 있었음. 
+          // 하지만 EstimatesPage는 handleRowClick이 있으므로, 여기서는 그냥 undefined로 두거나 빈 함수
+        }}
+        columns={[
+          {
+            header: '참조번호',
+            className: 'px-10 py-8 font-mono font-bold text-gray-300 group-hover:text-black transition-colors',
+            cell: (customer) => `#${customer.id.substring(0, 8).toUpperCase()}`
+          },
+          {
+            header: '고객 정보',
+            className: 'px-10 py-8',
+            cell: (customer) => (
+              <>
+                <div className="font-black text-xl text-gray-900 group-hover:translate-x-1 transition-transform">{customer.name}</div>
+                <div className="text-gray-400 text-xs font-bold mt-1 uppercase tracking-tight">{customer.email || '이메일 정보 없음'}</div>
+              </>
+            )
+          },
+          {
+            header: '소속 및 아이덴티티',
+            className: 'px-10 py-8',
+            cell: (customer) => (
+              <>
+                <div className="text-gray-900 font-black text-sm uppercase tracking-tight">{customer.company || '개인 고객'}</div>
+                <div className="text-gray-400 text-xs font-mono mt-1">{customer.phone}</div>
+              </>
+            )
+          },
+          {
+            header: '상태 프로필',
+            className: 'px-10 py-8 text-center',
+            cell: (customer) => (
+              <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.1em] border
+                ${customer.status === 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' :
+                  customer.status === 'processing' ? 'bg-black text-white border-black' :
+                    'bg-gray-50 text-gray-400 border-gray-200'}`}>
+                {customer.status === 'pending' ? '대기' :
+                  customer.status === 'processing' ? '진행' : '완료'}
+              </span>
+            )
+          },
+          {
+            header: '관리',
+            className: 'px-10 py-8 text-center relative action-menu w-24', // action-menu 클래스 유지
+            cell: (customer) => (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveMenuId(activeMenuId === customer.id ? null : customer.id);
+                  }}
+                  className="p-3 text-gray-300 hover:text-black rounded-2xl hover:bg-gray-100 transition-all border border-transparent hover:border-gray-200"
+                >
+                  <MoreHorizontal size={20} />
+                </button>
+
+                {/* 드롭다운 메뉴 */}
+                {activeMenuId === customer.id && (
+                  <div className="absolute right-10 top-20 w-48 bg-white border border-gray-100 rounded-2xl shadow-[0_30px_60px_rgba(0,0,0,0.12)] z-30 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
+                    <div className="p-2 space-y-1">
                       <button
+                        className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-gray-700 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
+                        onClick={(e) => { e.stopPropagation(); handleViewProfile(customer); }}
+                      >
+                        <Eye size={16} /> 프로필 확인
+                      </button>
+                      <button
+                        className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-black hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
+                        onClick={(e) => { e.stopPropagation(); handleEdit(customer); }}
+                      >
+                        <Edit2 size={16} /> 정보 수정
+                      </button>
+                      <div className="h-px bg-gray-50 my-1"></div>
+                      <button
+                        className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-red-600 hover:bg-red-50 rounded-xl flex items-center gap-3 transition-colors"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setActiveMenuId(activeMenuId === customer.id ? null : customer.id);
+                          setActiveMenuId(null);
+                          handleDelete(customer.id, customer.name);
                         }}
-                        className="p-3 text-gray-300 hover:text-black rounded-2xl hover:bg-gray-100 transition-all border border-transparent hover:border-gray-200"
                       >
-                        <MoreHorizontal size={20} />
+                        <Trash2 size={16} /> 데이터 삭제
                       </button>
-
-                      {/* 드롭다운 메뉴 */}
-                      {activeMenuId === customer.id && (
-                        <div className="absolute right-10 top-20 w-48 bg-white border border-gray-100 rounded-2xl shadow-[0_30px_60px_rgba(0,0,0,0.12)] z-30 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
-                          <div className="p-2 space-y-1">
-                            <button
-                              className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-gray-700 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
-                              onClick={() => toast.info(`${customer.name} 상세 정보 보기 기능을 개발 중입니다.`)}
-                            >
-                              <Eye size={16} /> 프로필 확인
-                            </button>
-                            <button
-                              className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-black hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
-                              onClick={() => handleEdit(customer)}
-                            >
-                              <Edit2 size={16} /> 정보 수정
-                            </button>
-                            <div className="h-px bg-gray-50 my-1"></div>
-                            <button
-                              className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-red-600 hover:bg-red-50 rounded-xl flex items-center gap-3 transition-colors"
-                              onClick={() => {
-                                setActiveMenuId(null);
-                                handleDelete(customer.id, customer.name);
-                              }}
-                            >
-                              <Trash2 size={16} /> 데이터 삭제
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} className="px-10 py-20 text-center">
-                    <div className="flex flex-col items-center gap-4 opacity-20">
-                      <Search size={48} />
-                      <p className="text-sm font-black uppercase tracking-widest">일치하는 고객 정보가 없습니다.</p>
                     </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* 푸터 정보 */}
+                  </div>
+                )}
+              </>
+            )
+          }
+        ]}
+      >
+        {/* 푸터 정보 (children으로 전달) */}
         <div className="px-10 py-8 border-t border-gray-50 bg-gray-50/30 flex items-center justify-between">
           <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
             데이터 매칭 결과: <span className="text-black">{filteredCustomers.length} 개의 항목</span>이 안전하게 보관 중입니다.
@@ -310,7 +338,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
             <button className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-black uppercase hover:bg-gray-50 transition-all">다음</button>
           </div>
         </div>
-      </div>
+      </DataTable>
     </div>
   );
 }
