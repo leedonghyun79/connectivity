@@ -55,7 +55,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
     if (formData.phone) {
       const phoneDigits = formData.phone.replace(/[^0-9]/g, '');
       if (!/^01[016789][0-9]{7,8}$/.test(phoneDigits)) {
-        newErrors.phone = '올바른 연락처 형식명이 아닙니다.';
+        newErrors.phone = '올바른 연락처 형식이 아닙니다.';
         isValid = false;
       }
     }
@@ -99,10 +99,10 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
               {customer ? <Briefcase className="text-white" size={24} /> : <User className="text-white" size={24} />}
             </div>
             <h3 className="text-2xl font-black uppercase tracking-tighter leading-tight mb-4">
-              {customer ? 'Update Client' : 'Register New Entity'}
+              {customer ? '정보 수정' : '신규 고객 등록'}
             </h3>
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-relaxed">
-              Professional identity mapping and database registration for enterprise synchronization.
+              전문적인 고객 아이덴티티 매핑 및 데이터베이스 동기화를 진행합니다.
             </p>
           </div>
 
@@ -111,14 +111,13 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
             <div className="text-6xl font-black italic tracking-tighter uppercase leading-none -mt-4 ml-6">CORE</div>
           </div>
 
-          {/* 백그라운드 워터마크 아이콘 */}
           <User className="absolute -bottom-10 -right-10 text-white/5 w-64 h-64" />
         </div>
 
         {/* 폼 영역 */}
         <div className="flex-1 p-12 bg-[#fcfcfc]">
           <div className="flex justify-between items-center mb-10">
-            <div className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">Data Entry Form</div>
+            <div className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">데이터 입력 폼</div>
             <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-black">
               <X size={20} />
             </button>
@@ -127,7 +126,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="grid grid-cols-1 gap-8">
               <div className="group">
-                <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">Identity Name *</label>
+                <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">고객 성함 *</label>
                 <div className="relative">
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-black transition-colors" size={18} />
                   <input
@@ -142,7 +141,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
               </div>
 
               <div className="group">
-                <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">Secure Email</label>
+                <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">보안 이메일</label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-black transition-colors" size={18} />
                   <input
@@ -162,7 +161,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="group">
-                  <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">Corporation</label>
+                  <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">소속 회사</label>
                   <div className="relative">
                     <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-black transition-colors" size={18} />
                     <input
@@ -175,7 +174,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                   </div>
                 </div>
                 <div className="group">
-                  <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">Contact No.</label>
+                  <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">연락처</label>
                   <div className="relative">
                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-black transition-colors" size={18} />
                     <input
@@ -197,15 +196,15 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
 
               {customer && (
                 <div className="group">
-                  <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">Account Status</label>
+                  <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">계정 상태</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                     className="w-full px-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold appearance-none cursor-pointer"
                   >
-                    <option value="pending">Waiting (대기)</option>
-                    <option value="processing">Active (진행)</option>
-                    <option value="closed">Completed (종료)</option>
+                    <option value="pending">대기 중 (Waiting)</option>
+                    <option value="processing">활성 상태 (Active)</option>
+                    <option value="closed">종료됨 (Completed)</option>
                   </select>
                 </div>
               )}
@@ -217,19 +216,19 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                 onClick={onClose}
                 className="flex-1 px-8 py-4 border border-gray-200 rounded-2xl text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-black hover:bg-gray-50 transition-all active:scale-95"
               >
-                Discard
+                취소
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-[2] px-8 py-4 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all shadow-xl shadow-black/10 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-[2] px-8 py-4 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all shadow-xl shadow-black/20 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 size={18} className="animate-spin" />
-                    Processing...
+                    처리 중...
                   </>
-                ) : (customer ? 'Confirm Updates' : 'Sync Identity')}
+                ) : (customer ? '변경사항 확정' : '고객 등록')}
               </button>
             </div>
           </form>

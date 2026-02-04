@@ -51,8 +51,8 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
       {/* 헤더 섹션 */}
       <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
-          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">Database Management</div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">Customer Directory</h1>
+          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">고객 데이터베이스 관리</div>
+          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">고객 디렉토리</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <Users size={14} />
             현재 총 <span className="text-black">{customers.length}</span>명의 핵심 고객이 데이터베이스에 등록되어 있습니다.
@@ -61,7 +61,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
         <div className="flex gap-4">
           <button className="px-6 py-3 bg-white border border-gray-100 rounded-2xl text-[11px] font-black text-black uppercase tracking-widest hover:bg-gray-50 transition-all flex items-center gap-2 active:scale-95 shadow-lg shadow-black/5">
             <Download size={16} />
-            Export Data
+            데이터 추출
           </button>
           <button
             onClick={(e) => {
@@ -71,7 +71,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
             }}
             className="px-8 py-3 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all shadow-xl shadow-black/20 active:scale-95 flex items-center gap-2"
           >
-            + New Client
+            + 신규 고객 등록
           </button>
         </div>
       </div>
@@ -90,27 +90,27 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)]">
           <div className="flex justify-between items-start mb-6">
-            <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Active Clients</div>
+            <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest">활성 고객</div>
             <div className="p-2 bg-green-50 rounded-lg"><ArrowUpRight size={16} className="text-green-600" /></div>
           </div>
           <div className="text-4xl font-black text-black">84%</div>
-          <div className="text-xs font-bold text-gray-400 mt-2">+12% from last fiscal month</div>
+          <div className="text-xs font-bold text-gray-400 mt-2">지난 달 기준 +12% 신장</div>
         </div>
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] border-l-4 border-l-black">
+        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)]">
           <div className="flex justify-between items-start mb-6">
-            <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Growth Index</div>
-            <div className="p-2 bg-black rounded-lg text-white font-black text-[10px]">MAX</div>
+            <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest">성장 지표</div>
+            <div className="p-2 bg-black rounded-lg text-white font-black text-[10px]">최고치</div>
           </div>
           <div className="text-4xl font-black text-black">A+++</div>
-          <div className="text-xs font-bold text-gray-400 mt-2">Premium Client Retention rate</div>
+          <div className="text-xs font-bold text-gray-400 mt-2">프리미엄 고객 유지율 안정</div>
         </div>
         <div className="bg-black p-8 rounded-[32px] shadow-2xl shadow-black/10">
           <div className="flex justify-between items-start mb-6">
-            <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Total Valuation</div>
+            <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest">총 가치 평가</div>
             <FileText size={20} className="text-gray-600" />
           </div>
           <div className="text-4xl font-black text-white">4.2B</div>
-          <div className="text-xs font-bold text-gray-500 mt-2">Combined project revenue flow</div>
+          <div className="text-xs font-bold text-gray-500 mt-2">통합 프로젝트 수익 흐름</div>
         </div>
       </div>
 
@@ -120,13 +120,13 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-black transition-colors" size={22} />
           <input
             type="text"
-            placeholder="Search by client name, company or secure email..."
+            placeholder="고객 이름, 회사명 또는 프로젝트 검색..."
             className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold shadow-sm transition-all"
           />
         </div>
         <button className="flex items-center gap-3 px-8 py-4 bg-white border border-gray-100 rounded-2xl text-gray-400 hover:text-black hover:border-black text-[11px] font-black uppercase tracking-widest transition-all shadow-sm">
           <Filter size={18} />
-          Refine Search
+          상세 검색 필터
         </button>
       </div>
 
@@ -136,11 +136,11 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
           <table className="w-full text-left">
             <thead>
               <tr className="bg-gray-50/50 border-b border-gray-100">
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">Reference</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">Client Info</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">Professional Identity</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">Lifecycle</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-24">Actions</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">참조번호</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">고객 정보</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">소속 및 아이덴티티</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">상태 프로필</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-24">관리</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -151,10 +151,10 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
                   </td>
                   <td className="px-10 py-8">
                     <div className="font-black text-xl text-gray-900 group-hover:translate-x-1 transition-transform">{customer.name}</div>
-                    <div className="text-gray-400 text-xs font-bold mt-1 uppercase tracking-tight">{customer.email || 'NO_ENCRYPTED_EMAIL'}</div>
+                    <div className="text-gray-400 text-xs font-bold mt-1 uppercase tracking-tight">{customer.email || '이메일 정보 없음'}</div>
                   </td>
                   <td className="px-10 py-8">
-                    <div className="text-gray-900 font-black text-sm uppercase tracking-tight">{customer.company || 'Private Individual'}</div>
+                    <div className="text-gray-900 font-black text-sm uppercase tracking-tight">{customer.company || '개인 고객'}</div>
                     <div className="text-gray-400 text-xs font-mono mt-1">{customer.phone}</div>
                   </td>
                   <td className="px-10 py-8 text-center">
@@ -162,8 +162,8 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
                       ${customer.status === 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' :
                         customer.status === 'processing' ? 'bg-black text-white border-black shadow-lg shadow-black/10' :
                           'bg-gray-50 text-gray-400 border-gray-200'}`}>
-                      {customer.status === 'pending' ? 'Waiting' :
-                        customer.status === 'processing' ? 'Active' : 'Closed'}
+                      {customer.status === 'pending' ? '대기 중' :
+                        customer.status === 'processing' ? '활성 상태' : '해결 완료'}
                     </span>
                   </td>
                   <td className="px-10 py-8 text-center relative">
@@ -185,13 +185,13 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
                             className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-gray-700 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
                             onClick={() => toast.info(`${customer.name} 상세 정보 보기 기능을 개발 중입니다.`)}
                           >
-                            <Eye size={16} /> View Profile
+                            <Eye size={16} /> 프로필 확인
                           </button>
                           <button
                             className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-black hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
                             onClick={() => handleEdit(customer)}
                           >
-                            <Edit2 size={16} /> Edit Record
+                            <Edit2 size={16} /> 정보 수정
                           </button>
                           <div className="h-px bg-gray-50 my-1"></div>
                           <button
@@ -201,7 +201,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
                               handleDelete(customer.id, customer.name);
                             }}
                           >
-                            <Trash2 size={16} /> Archive Info
+                            <Trash2 size={16} /> 데이터 삭제
                           </button>
                         </div>
                       </div>
@@ -216,12 +216,12 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
         {/* 푸터 정보 */}
         <div className="px-10 py-8 border-t border-gray-50 bg-gray-50/30 flex items-center justify-between">
           <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-            Identity results: <span className="text-black">{customers.length} Entries</span> found in secure storage
+            데이터 매칭 결과: <span className="text-black">{customers.length} 개의 항목</span>이 안전하게 보관 중입니다.
           </span>
           <div className="flex gap-2">
-            <button className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-black uppercase hover:bg-gray-50 transition-all">Prev</button>
+            <button className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-black uppercase hover:bg-gray-50 transition-all">이전</button>
             <button className="px-5 py-2 bg-black text-white rounded-xl text-[10px] font-black uppercase shadow-lg shadow-black/10">1</button>
-            <button className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-black uppercase hover:bg-gray-50 transition-all">Next</button>
+            <button className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-black uppercase hover:bg-gray-50 transition-all">다음</button>
           </div>
         </div>
       </div>

@@ -47,7 +47,7 @@ export default function InquiriesPage() {
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] border-l-4 border-l-black group hover:bg-black hover:text-white transition-all duration-500">
+        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] group hover:bg-black hover:text-white transition-all duration-500">
           <div className="flex justify-between items-start mb-6">
             <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest group-hover:text-gray-500">답변 대기 중</p>
             <div className="p-2 bg-gray-50 rounded-xl group-hover:bg-white/10 group-hover:text-white transition-colors">

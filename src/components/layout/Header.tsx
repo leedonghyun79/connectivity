@@ -10,7 +10,7 @@ export default function Header() {
           <Search className="absolute left-0 top-1/2 transform -translate-y-1/2 text-gray-300 group-focus-within:text-black transition-colors" size={20} />
           <input
             type="text"
-            placeholder="Global Search project, customers or invoices..."
+            placeholder="전체 검색: 프로젝트, 고객사, 또는 송장..."
             className="w-full pl-10 pr-4 py-3 bg-transparent text-sm font-medium focus:outline-none transition-all placeholder:text-gray-300 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
           />
           <div className="absolute bottom-0 left-0 w-0 h-px bg-black group-focus-within:w-full transition-all duration-500"></div>
@@ -26,8 +26,8 @@ export default function Header() {
 
         <div className="flex items-center gap-4 pl-8 border-l border-gray-100">
           <div className="text-right hidden sm:block">
-            <p className="text-[11px] font-black text-black uppercase tracking-wider leading-tight">Master Admin</p>
-            <p className="text-[10px] font-bold text-gray-300">ADMINISTRATOR LEVEL</p>
+            <p className="text-[11px] font-black text-black uppercase tracking-wider leading-tight">마스터 관리자</p>
+            <p className="text-[10px] font-bold text-gray-300 uppercase">ADMINISTRATOR LEVEL</p>
           </div>
           <div className="relative group cursor-pointer">
             <div className="h-12 w-12 rounded-2xl bg-gray-50 flex items-center justify-center text-black border border-gray-100 group-hover:bg-black group-hover:text-white transition-all duration-300 overflow-hidden shadow-sm">

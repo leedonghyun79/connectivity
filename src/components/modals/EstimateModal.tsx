@@ -25,7 +25,6 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
   const [customers, setCustomers] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 기본 사업자 정보 (실제 앱에서는 DB나 환경설정에서 가져옴)
   const defaultBizInfo = {
     bizNumber: '123-45-67890',
     bizName: '커넥티비티(Connectivity)',
@@ -52,7 +51,6 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
     }
   }, [isOpen]);
 
-  // 금액 계산 유틸리티
   const calculateItemValues = (quantity: number, unitPrice: number) => {
     const supplyValue = quantity * unitPrice;
     const vat = Math.floor(supplyValue * 0.1);
@@ -102,10 +100,9 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
     setIsSubmitting(false);
 
     if (result.success) {
-      toast.success('견적서가 생성되었습니다.');
+      toast.success('견적서가 저장되었습니다.');
       onSuccess();
       onClose();
-      // 초기화
       setItems([{ id: '1', itemName: '', spec: '', quantity: 1, unitPrice: 0, supplyValue: 0, vat: 0 }]);
     } else {
       toast.error(result.error);
@@ -121,7 +118,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
         <div className="px-8 py-5 border-b border-gray-100 flex items-center justify-between bg-white/50 backdrop-blur-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white font-bold text-xl">C</div>
-            <h3 className="text-xl font-black text-gray-900 tracking-tight">새 견적서 생성</h3>
+            <h3 className="text-xl font-black text-gray-900 tracking-tight">신규 견적서 작성</h3>
           </div>
           <button onClick={onClose} className="p-2.5 hover:bg-gray-100 rounded-full transition-all text-gray-400 hover:text-gray-900 border border-transparent hover:border-gray-200">
             <X size={20} />
@@ -134,7 +131,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
             {/* 상단 섹션: 견적서 제목 및 날짜 */}
             <div className="flex justify-between items-start">
               <div>
-                <h1 className="text-5xl font-black text-gray-900 mb-6 uppercase tracking-tighter">ESTIMATE</h1>
+                <h1 className="text-5xl font-black text-gray-900 mb-6 uppercase tracking-tighter">견적서 (ESTIMATE)</h1>
                 <input
                   required
                   type="text"
@@ -146,7 +143,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
               </div>
               <div className="text-right">
                 <div className="mb-4">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">DATE</label>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">발행일 (DATE)</label>
                   <input
                     type="date"
                     value={formData.issueDate}
@@ -155,8 +152,8 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">REF NO.</label>
-                  <div className="text-lg font-mono text-gray-400"># AUTO-GENERATED</div>
+                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">참조 번호 (REF NO.)</label>
+                  <div className="text-lg font-mono text-gray-400"># 자동 생성됨</div>
                 </div>
               </div>
             </div>
@@ -165,7 +162,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
               {/* 고객 정보 섹션 */}
               <div className="space-y-6">
                 <div>
-                  <label className="text-[11px] font-black text-black uppercase tracking-[0.2em] block mb-4 border-b border-black pb-2">BILL TO</label>
+                  <label className="text-[11px] font-black text-black uppercase tracking-[0.2em] block mb-4 border-b border-black pb-2">수신인 (BILL TO)</label>
                   <div className="space-y-4">
                     <select
                       required
@@ -197,7 +194,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
               {/* 공급자 정보 섹션 */}
               <div className="space-y-6">
                 <div>
-                  <label className="text-[11px] font-black text-black uppercase tracking-[0.2em] block mb-4 border-b border-black pb-2">FROM</label>
+                  <label className="text-[11px] font-black text-black uppercase tracking-[0.2em] block mb-4 border-b border-black pb-2">공급자 (FROM)</label>
                   <div className="space-y-3">
                     <div className="grid grid-cols-3 gap-2 text-xs">
                       <span className="text-gray-400 font-bold">사업자번호</span>
@@ -242,11 +239,11 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="border-b-2 border-black">
-                    <th className="text-[10px] font-black uppercase text-left py-4 tracking-widest w-1/3">Item Description</th>
-                    <th className="text-[10px] font-black uppercase text-left py-4 tracking-widest">Detail</th>
-                    <th className="text-[10px] font-black uppercase text-center py-4 tracking-widest w-16">Qty</th>
-                    <th className="text-[10px] font-black uppercase text-right py-4 tracking-widest">Price</th>
-                    <th className="text-[10px] font-black uppercase text-right py-4 tracking-widest w-32">Supply Value</th>
+                    <th className="text-[10px] font-black uppercase text-left py-4 tracking-widest w-1/3">품목 내용 (Description)</th>
+                    <th className="text-[10px] font-black uppercase text-left py-4 tracking-widest">규격 (Detail)</th>
+                    <th className="text-[10px] font-black uppercase text-center py-4 tracking-widest w-16">수량</th>
+                    <th className="text-[10px] font-black uppercase text-right py-4 tracking-widest">단가</th>
+                    <th className="text-[10px] font-black uppercase text-right py-4 tracking-widest w-32">공급가액</th>
                     <th className="w-10"></th>
                   </tr>
                 </thead>
@@ -323,15 +320,15 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
             <div className="flex justify-end pt-12">
               <div className="w-80 space-y-4">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-400 font-bold uppercase tracking-widest">Subtotal</span>
+                  <span className="text-gray-400 font-bold uppercase tracking-widest">소계 (Subtotal)</span>
                   <span className="font-mono font-bold">{totalSupplyValue.toLocaleString()} KRW</span>
                 </div>
                 <div className="flex justify-between items-center text-sm pb-4 border-b border-gray-100">
-                  <span className="text-gray-400 font-bold uppercase tracking-widest">Tax (VAT 10%)</span>
+                  <span className="text-gray-400 font-bold uppercase tracking-widest">부가세 (VAT 10%)</span>
                   <span className="font-mono font-bold">{totalVat.toLocaleString()} KRW</span>
                 </div>
                 <div className="flex justify-between items-center bg-black text-white p-6 rounded-2xl shadow-xl shadow-black/10">
-                  <span className="font-black uppercase tracking-widest text-xs">Total Amount</span>
+                  <span className="font-black uppercase tracking-widest text-xs">최종 합계액</span>
                   <span className="text-2xl font-black font-mono">{grandTotal.toLocaleString()} KRW</span>
                 </div>
               </div>
@@ -380,22 +377,6 @@ export default function EstimateModal({ isOpen, onClose, onSuccess }: EstimateMo
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #e2e8f0;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #cbd5e1;
-        }
-      `}</style>
     </div>
   );
 }

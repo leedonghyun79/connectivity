@@ -39,21 +39,26 @@ export default function EstimatesPage() {
   if (!estimates) return <div>데이터를 불러오지 못했습니다.</div>;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10 py-10">
       {/* 헤더 섹션 */}
-      {/* ... (No changes here) */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">견적서 관리</h1>
-          <p className="text-sm text-gray-500 mt-1">발행된 견적서를 관리하고 새로운 견적서를 작성합니다.</p>
+          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">문서 관리 시스템</div>
+          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">견적서 관리</h1>
+          <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
+            <FileText size={14} />
+            발행된 견적서를 관리하고 새로운 견적서를 작성합니다.
+          </p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 bg-black text-white rounded-xl text-sm font-bold hover:bg-gray-800 transition-all shadow-md active:scale-95 flex items-center gap-2"
-        >
-          <Plus size={16} />
-          견적서 작성
-        </button>
+        <div className="flex gap-4">
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="px-8 py-3 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all shadow-xl shadow-black/20 active:scale-95 flex items-center gap-2"
+          >
+            <Plus size={16} />
+            신규 견적서 작성
+          </button>
+        </div>
       </div>
 
       <EstimateModal
@@ -69,74 +74,76 @@ export default function EstimatesPage() {
       />
 
       {/* 요약 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm border-l-4 border-l-black">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Total Valuation</span>
-            <FileText size={18} className="text-gray-300" />
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)]">
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">총 가치 평가</span>
+            <FileText size={20} className="text-gray-300" />
           </div>
-          <p className="text-2xl font-black text-gray-900">
-            {Number(stats.totalAmount).toLocaleString()} <span className="text-xs text-gray-400">KRW</span>
+          <p className="text-3xl font-black text-gray-900 tracking-tighter">
+            {Number(stats.totalAmount).toLocaleString()} <span className="text-[10px] text-gray-400">KRW</span>
           </p>
         </div>
-        {/* ... (Other cards updated to match black theme) */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Pending</span>
-            <Clock size={18} className="text-gray-300" />
+        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)]">
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">승인 대기</span>
+            <Clock size={20} className="text-gray-300" />
           </div>
-          <p className="text-2xl font-black text-gray-900">{stats.pending} <span className="text-xs text-gray-400">CASES</span></p>
+          <p className="text-3xl font-black text-gray-900 tracking-tighter">{stats.pending} <span className="text-[10px] text-gray-400">건</span></p>
         </div>
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Approved</span>
-            <CheckCircle size={18} className="text-gray-300" />
+        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)]">
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">최종 승인</span>
+            <CheckCircle size={20} className="text-gray-300" />
           </div>
-          <p className="text-2xl font-black text-gray-900">{stats.approved} <span className="text-xs text-gray-400">CASES</span></p>
+          <p className="text-3xl font-black text-gray-900 tracking-tighter">{stats.approved} <span className="text-[10px] text-gray-400">건</span></p>
         </div>
-        <div className="bg-black p-6 rounded-2xl shadow-xl shadow-black/5">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Published</span>
+        <div className="bg-black p-8 rounded-[32px] shadow-2xl shadow-black/10">
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">전체 발행 수</span>
           </div>
-          <p className="text-2xl font-black text-white">{estimates.length} <span className="text-xs text-gray-500">TOTAL</span></p>
-          <div className="mt-2 w-full h-1 bg-gray-800 rounded-full overflow-hidden">
+          <p className="text-3xl font-black text-white tracking-tighter">{estimates.length} <span className="text-[10px] text-gray-500">전체</span></p>
+          <div className="mt-3 w-full h-1 bg-gray-800 rounded-full overflow-hidden">
             <div className="h-full bg-white w-2/3"></div>
           </div>
         </div>
       </div>
 
       {/* 검색 및 필터 */}
-      <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
-        <div className="relative w-full sm:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+      <div className="flex flex-col sm:flex-row gap-6 items-center justify-between">
+        <div className="relative w-full sm:w-[480px] group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black transition-all" size={20} />
           <input
             type="text"
-            placeholder="견적서 번호, 고객명 검색"
-            className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-black/5 outline-none text-sm transition-all"
+            placeholder="견적서 번호, 고객명 또는 프로젝트명 검색..."
+            className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold shadow-sm transition-all"
           />
         </div>
-        <div className="flex gap-2">
-          <select className="px-4 py-2 border border-gray-100 rounded-xl text-sm bg-white font-bold outline-none cursor-pointer hover:bg-gray-50">
-            <option>All Status</option>
-            <option>Pending</option>
-            <option>Sent</option>
-            <option>Approved</option>
-            <option>Rejected</option>
+        <div className="flex gap-4">
+          <select className="px-6 py-4 bg-white border border-gray-100 rounded-2xl text-[11px] font-black uppercase tracking-widest outline-none cursor-pointer hover:border-black transition-all shadow-sm">
+            <option>전체 상태</option>
+            <option>대기 중</option>
+            <option>발송 완료</option>
+            <option>승인됨</option>
+            <option>거절됨</option>
           </select>
+          <button className="flex items-center gap-2 px-6 py-4 bg-white border border-gray-100 rounded-2xl text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all shadow-sm">
+            <Filter size={16} /> 필터링
+          </button>
         </div>
       </div>
 
-      <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden mb-20">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="bg-[#fafafa] text-gray-400 font-bold border-b border-gray-100">
-              <tr>
-                <th className="px-8 py-4 uppercase tracking-widest text-[10px]">Reference</th>
-                <th className="px-8 py-4 uppercase tracking-widest text-[10px]">Project / Client</th>
-                <th className="px-8 py-4 uppercase tracking-widest text-[10px] text-right">Amount</th>
-                <th className="px-8 py-4 uppercase tracking-widest text-[10px] text-center">Status</th>
-                <th className="px-8 py-4 uppercase tracking-widest text-[10px] text-center">Issued</th>
-                <th className="px-8 py-4 text-center"></th>
+      <div className="bg-white rounded-[40px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.03)] overflow-hidden mb-20">
+        <div className="overflow-x-auto min-h-[500px]">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-gray-50/50 border-b border-gray-100">
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">참조번호</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">프로젝트 / 고객사</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-right">금액</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">상태</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">발행일</th>
+                <th className="px-10 py-6 text-center w-24"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -146,31 +153,33 @@ export default function EstimatesPage() {
                   onClick={() => handleRowClick(estimate)}
                   className="hover:bg-gray-50/50 transition-all cursor-pointer group"
                 >
-                  <td className="px-8 py-6 font-mono font-bold text-gray-400 group-hover:text-black transition-colors">{estimate.estimateNum || estimate.id.substring(0, 8).toUpperCase()}</td>
-                  <td className="px-8 py-6">
-                    <div className="font-black text-gray-900 mb-0.5">{estimate.title}</div>
+                  <td className="px-10 py-8 font-mono font-bold text-gray-400 group-hover:text-black transition-colors">{estimate.estimateNum || estimate.id.substring(0, 8).toUpperCase()}</td>
+                  <td className="px-10 py-8">
+                    <div className="font-black text-xl text-gray-900 mb-0.5 group-hover:translate-x-1 transition-transform">{estimate.title}</div>
                     <div className="text-gray-400 text-[10px] font-bold uppercase tracking-tight">
-                      {estimate.customer?.name || estimate.customerName || 'UNKNOWN CLIENT'}
+                      {estimate.customer?.name || estimate.customerName || '고객 정보 없음'}
                     </div>
                   </td>
-                  <td className="px-8 py-6 text-right font-black text-gray-900 text-lg">
-                    {Number(estimate.amount).toLocaleString()} <span className="text-[10px] text-gray-300">₩</span>
+                  <td className="px-10 py-8 text-right font-black text-gray-900 text-2xl tracking-tighter">
+                    {Number(estimate.amount).toLocaleString()} <span className="text-sm text-gray-300">₩</span>
                   </td>
-                  <td className="px-8 py-6 text-center">
-                    <span className={`inline-block px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border
-                      ${estimate.status === 'pending' ? 'bg-gray-50 text-gray-400 border-gray-200' :
+                  <td className="px-10 py-8 text-center">
+                    <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border
+                      ${estimate.status === 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' :
                         estimate.status === 'sent' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                          estimate.status === 'approved' ? 'bg-black text-white border-black' :
+                          estimate.status === 'approved' ? 'bg-black text-white border-black shadow-lg shadow-black/10' :
                             'bg-red-50 text-red-600 border-red-100'}`}>
-                      {estimate.status}
+                      {estimate.status === 'pending' ? '대기 중' :
+                        estimate.status === 'sent' ? '발송됨' :
+                          estimate.status === 'approved' ? '승인됨' : '거절됨'}
                     </span>
                   </td>
-                  <td className="px-8 py-6 text-center text-gray-400 font-mono text-xs">
+                  <td className="px-10 py-8 text-center text-gray-400 font-mono text-xs font-bold">
                     {estimate.issueDate ? new Date(estimate.issueDate).toLocaleDateString('ko-KR') : '-'}
                   </td>
-                  <td className="px-8 py-6 text-center">
-                    <button className="p-2 text-gray-300 hover:text-black transition-colors">
-                      <MoreHorizontal size={16} />
+                  <td className="px-10 py-8 text-center">
+                    <button className="p-3 text-gray-300 hover:text-black rounded-2xl hover:bg-gray-100 transition-all">
+                      <MoreHorizontal size={20} />
                     </button>
                   </td>
                 </tr>
