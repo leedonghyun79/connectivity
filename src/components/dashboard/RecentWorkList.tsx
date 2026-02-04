@@ -11,7 +11,7 @@ export default function RecentWorkList() {
   ];
 
   return (
-    <div className="bg-white p-10 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] h-full flex flex-col group">
+    <div className="bg-white p-10 rounded-[32px] border border-gray-100 h-full flex flex-col group">
       <div className="flex justify-between items-start mb-8">
         <div>
           <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">운영 감사 로그</div>
@@ -25,7 +25,7 @@ export default function RecentWorkList() {
       <div className="space-y-6 flex-1">
         {activities.map((item) => (
           <div key={item.id} className="flex gap-4 relative pl-8 before:absolute before:left-3 before:top-2 before:bottom-[-24px] before:w-px before:bg-gray-100 last:before:hidden">
-            <div className={`absolute left-0 top-1 w-6 h-6 rounded-full border-2 border-white shadow-sm flex items-center justify-center z-10
+            <div className={`absolute left-0 top-1 w-6 h-6 rounded-full border-2 border-white flex items-center justify-center z-10
                 ${item.type === 'ESTIMATE' ? 'bg-black' : 'bg-gray-200'}`}>
               <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
             </div>

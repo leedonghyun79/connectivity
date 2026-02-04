@@ -14,7 +14,7 @@ export default function DailySummary() {
   ];
 
   return (
-    <div className="bg-white p-10 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] h-full flex flex-col">
+    <div className="bg-white p-10 rounded-[32px] border border-gray-100 h-full flex flex-col">
       <div className="flex justify-between items-start mb-8">
         <div>
           <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">일 업무 일지</div>

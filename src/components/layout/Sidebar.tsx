@@ -33,7 +33,7 @@ export default function Sidebar() {
   }, [pathname]);
 
   return (
-    <aside className="w-72 bg-white border-r border-gray-100 h-full flex flex-col shadow-[1px_0_0_rgba(0,0,0,0.02)]">
+    <aside className="w-72 bg-white border-r border-gray-100 h-full flex flex-col">
       {/* 로고 섹션 */}
       <div className="h-24 flex items-center px-10">
         <Link href="/" className="flex items-center gap-3 group">
@@ -55,7 +55,7 @@ export default function Sidebar() {
                 key={item.path}
                 href={item.path}
                 className={`group flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 ${isActive
-                  ? 'bg-black text-white shadow-xl shadow-black/10'
+                  ? 'bg-black text-white'
                   : 'text-gray-400 hover:bg-gray-50 hover:text-black'
                   }`}
               >

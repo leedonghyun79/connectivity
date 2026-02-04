@@ -4,7 +4,7 @@ import { Bell, Search, User, Menu, Globe } from 'lucide-react';
 
 export default function Header() {
   return (
-    <header className="h-24 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-10 sticky top-0 z-30 shadow-[0_1px_0_rgba(0,0,0,0.01)]">
+    <header className="h-24 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-10 sticky top-0 z-30">
       <div className="flex items-center flex-1 max-w-2xl">
         <div className="relative w-full group">
           <Search className="absolute left-0 top-1/2 transform -translate-y-1/2 text-gray-300 group-focus-within:text-black transition-colors" size={20} />
@@ -30,7 +30,7 @@ export default function Header() {
             <p className="text-[10px] font-bold text-gray-300 uppercase">ADMINISTRATOR LEVEL</p>
           </div>
           <div className="relative group cursor-pointer">
-            <div className="h-12 w-12 rounded-2xl bg-gray-50 flex items-center justify-center text-black border border-gray-100 group-hover:bg-black group-hover:text-white transition-all duration-300 overflow-hidden shadow-sm">
+            <div className="h-12 w-12 rounded-2xl bg-gray-50 flex items-center justify-center text-black border border-gray-100 group-hover:bg-black group-hover:text-white transition-all duration-300 overflow-hidden">
               <User size={24} />
             </div>
           </div>

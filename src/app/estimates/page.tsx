@@ -53,7 +53,7 @@ export default function EstimatesPage() {
         <div className="flex gap-4">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-8 py-3 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all shadow-xl shadow-black/20 active:scale-95 flex items-center gap-2"
+            className="px-8 py-3 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 flex items-center gap-2"
           >
             <Plus size={16} />
             신규 견적서 작성
@@ -75,7 +75,7 @@ export default function EstimatesPage() {
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)]">
+        <div className="bg-white p-8 rounded-[32px] border border-gray-100">
           <div className="flex items-center justify-between mb-6">
             <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">총 가치 평가</span>
             <FileText size={20} className="text-gray-300" />
@@ -84,21 +84,21 @@ export default function EstimatesPage() {
             {Number(stats.totalAmount).toLocaleString()} <span className="text-[10px] text-gray-400">KRW</span>
           </p>
         </div>
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)]">
+        <div className="bg-white p-8 rounded-[32px] border border-gray-100">
           <div className="flex items-center justify-between mb-6">
             <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">승인 대기</span>
             <Clock size={20} className="text-gray-300" />
           </div>
           <p className="text-3xl font-black text-gray-900 tracking-tighter">{stats.pending} <span className="text-[10px] text-gray-400">건</span></p>
         </div>
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)]">
+        <div className="bg-white p-8 rounded-[32px] border border-gray-100">
           <div className="flex items-center justify-between mb-6">
             <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">최종 승인</span>
             <CheckCircle size={20} className="text-gray-300" />
           </div>
           <p className="text-3xl font-black text-gray-900 tracking-tighter">{stats.approved} <span className="text-[10px] text-gray-400">건</span></p>
         </div>
-        <div className="bg-black p-8 rounded-[32px] shadow-2xl shadow-black/10">
+        <div className="bg-black p-8 rounded-[32px]">
           <div className="flex items-center justify-between mb-6">
             <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">전체 발행 수</span>
           </div>
@@ -116,24 +116,24 @@ export default function EstimatesPage() {
           <input
             type="text"
             placeholder="견적서 번호, 고객명 또는 프로젝트명 검색..."
-            className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold shadow-sm transition-all"
+            className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
           />
         </div>
         <div className="flex gap-4">
-          <select className="px-6 py-4 bg-white border border-gray-100 rounded-2xl text-[11px] font-black uppercase tracking-widest outline-none cursor-pointer hover:border-black transition-all shadow-sm">
+          <select className="px-6 py-4 bg-white border border-gray-100 rounded-2xl text-[11px] font-black uppercase tracking-widest outline-none cursor-pointer hover:border-black transition-all">
             <option>전체 상태</option>
             <option>대기 중</option>
             <option>발송 완료</option>
             <option>승인됨</option>
             <option>거절됨</option>
           </select>
-          <button className="flex items-center gap-2 px-6 py-4 bg-white border border-gray-100 rounded-2xl text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all shadow-sm">
+          <button className="flex items-center gap-2 px-6 py-4 bg-white border border-gray-100 rounded-2xl text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all">
             <Filter size={16} /> 필터링
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-[40px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.03)] overflow-hidden mb-20">
+      <div className="bg-white rounded-[40px] border border-gray-100 overflow-hidden mb-20">
         <div className="overflow-x-auto min-h-[500px]">
           <table className="w-full text-left">
             <thead>
@@ -147,43 +147,54 @@ export default function EstimatesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {estimates.map((estimate) => (
-                <tr
-                  key={estimate.id}
-                  onClick={() => handleRowClick(estimate)}
-                  className="hover:bg-gray-50/50 transition-all cursor-pointer group"
-                >
-                  <td className="px-10 py-8 font-mono font-bold text-gray-400 group-hover:text-black transition-colors">{estimate.estimateNum || estimate.id.substring(0, 8).toUpperCase()}</td>
-                  <td className="px-10 py-8">
-                    <div className="font-black text-xl text-gray-900 mb-0.5 group-hover:translate-x-1 transition-transform">{estimate.title}</div>
-                    <div className="text-gray-400 text-[10px] font-bold uppercase tracking-tight">
-                      {estimate.customer?.name || estimate.customerName || '고객 정보 없음'}
+              {estimates.length > 0 ? (
+                estimates.map((estimate) => (
+                  <tr
+                    key={estimate.id}
+                    onClick={() => handleRowClick(estimate)}
+                    className="hover:bg-gray-50/50 transition-all cursor-pointer group"
+                  >
+                    <td className="px-10 py-8 font-mono font-bold text-gray-400 group-hover:text-black transition-colors">{estimate.estimateNum || estimate.id.substring(0, 8).toUpperCase()}</td>
+                    <td className="px-10 py-8">
+                      <div className="font-black text-xl text-gray-900 mb-0.5 group-hover:translate-x-1 transition-transform">{estimate.title}</div>
+                      <div className="text-gray-400 text-[10px] font-bold uppercase tracking-tight">
+                        {estimate.customer?.name || estimate.customerName || '고객 정보 없음'}
+                      </div>
+                    </td>
+                    <td className="px-10 py-8 text-right font-black text-gray-900 text-2xl tracking-tighter">
+                      {Number(estimate.amount).toLocaleString()} <span className="text-sm text-gray-300">₩</span>
+                    </td>
+                    <td className="px-10 py-8 text-center">
+                      <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border
+                        ${estimate.status === 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' :
+                          estimate.status === 'sent' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                            estimate.status === 'approved' ? 'bg-black text-white border-black' :
+                              'bg-red-50 text-red-600 border-red-100'}`}>
+                        {estimate.status === 'pending' ? '대기 중' :
+                          estimate.status === 'sent' ? '발송됨' :
+                            estimate.status === 'approved' ? '승인됨' : '거절됨'}
+                      </span>
+                    </td>
+                    <td className="px-10 py-8 text-center text-gray-400 font-mono text-xs font-bold">
+                      {estimate.issueDate ? new Date(estimate.issueDate).toLocaleDateString('ko-KR') : '-'}
+                    </td>
+                    <td className="px-10 py-8 text-center">
+                      <button className="p-3 text-gray-300 hover:text-black rounded-2xl hover:bg-gray-100 transition-all">
+                        <MoreHorizontal size={20} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="px-10 py-32 text-center">
+                    <div className="flex flex-col items-center gap-4 opacity-10">
+                      <FileText size={64} />
+                      <p className="text-sm font-black uppercase tracking-[0.3em]">등록된 견적서가 없습니다.</p>
                     </div>
                   </td>
-                  <td className="px-10 py-8 text-right font-black text-gray-900 text-2xl tracking-tighter">
-                    {Number(estimate.amount).toLocaleString()} <span className="text-sm text-gray-300">₩</span>
-                  </td>
-                  <td className="px-10 py-8 text-center">
-                    <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border
-                      ${estimate.status === 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' :
-                        estimate.status === 'sent' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                          estimate.status === 'approved' ? 'bg-black text-white border-black shadow-lg shadow-black/10' :
-                            'bg-red-50 text-red-600 border-red-100'}`}>
-                      {estimate.status === 'pending' ? '대기 중' :
-                        estimate.status === 'sent' ? '발송됨' :
-                          estimate.status === 'approved' ? '승인됨' : '거절됨'}
-                    </span>
-                  </td>
-                  <td className="px-10 py-8 text-center text-gray-400 font-mono text-xs font-bold">
-                    {estimate.issueDate ? new Date(estimate.issueDate).toLocaleDateString('ko-KR') : '-'}
-                  </td>
-                  <td className="px-10 py-8 text-center">
-                    <button className="p-3 text-gray-300 hover:text-black rounded-2xl hover:bg-gray-100 transition-all">
-                      <MoreHorizontal size={20} />
-                    </button>
-                  </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

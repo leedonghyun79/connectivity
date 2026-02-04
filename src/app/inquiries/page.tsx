@@ -39,7 +39,7 @@ export default function InquiriesPage() {
           </p>
         </div>
         <div className="flex gap-4">
-          <button className="px-8 py-3 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all shadow-xl shadow-black/20 active:scale-95 flex items-center gap-2">
+          <button className="px-8 py-3 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 flex items-center gap-2">
             시스템 설정
           </button>
         </div>
@@ -47,7 +47,7 @@ export default function InquiriesPage() {
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] group hover:bg-black hover:text-white transition-all duration-500">
+        <div className="bg-white p-8 rounded-[32px] border border-gray-100 group hover:bg-black hover:text-white transition-all duration-500">
           <div className="flex justify-between items-start mb-6">
             <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest group-hover:text-gray-500">답변 대기 중</p>
             <div className="p-2 bg-gray-50 rounded-xl group-hover:bg-white/10 group-hover:text-white transition-colors">
@@ -57,7 +57,7 @@ export default function InquiriesPage() {
           <p className="text-4xl font-black tracking-tighter">{stats.pending}<span className="text-[10px] font-bold text-gray-300 ml-2 uppercase group-hover:text-gray-500 tracking-widest">건</span></p>
         </div>
 
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] group hover:bg-black hover:text-white transition-all duration-500">
+        <div className="bg-white p-8 rounded-[32px] border border-gray-100 group hover:bg-black hover:text-white transition-all duration-500">
           <div className="flex justify-between items-start mb-6">
             <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest group-hover:text-gray-500">해결된 아카이브</p>
             <div className="p-2 bg-gray-50 rounded-xl group-hover:bg-white/10 group-hover:text-white transition-colors">
@@ -67,7 +67,7 @@ export default function InquiriesPage() {
           <p className="text-4xl font-black tracking-tighter">{stats.answered}<span className="text-[10px] font-bold text-gray-300 ml-2 uppercase group-hover:text-gray-500 tracking-widest">전체 해결</span></p>
         </div>
 
-        <div className="bg-black p-8 rounded-[32px] shadow-2xl shadow-black/10 flex flex-col justify-between">
+        <div className="bg-black p-8 rounded-[32px] flex flex-col justify-between">
           <div className="flex justify-between items-start">
             <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">전체 통합 수량</p>
             <MessageCircle size={20} className="text-gray-600" />
@@ -82,7 +82,7 @@ export default function InquiriesPage() {
       {/* 검색 및 필터 바 */}
       <div className="flex flex-col sm:flex-row gap-6 items-center justify-between">
         <div className="flex gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar">
-          <button className="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-black text-white shadow-lg shadow-black/10">전체 로그</button>
+          <button className="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-black text-white">전체 로그</button>
           <button className="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-white border border-gray-100 text-gray-300 hover:text-black transition-all">답변 대기</button>
           <button className="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-white border border-gray-100 text-gray-300 hover:text-black transition-all">해결 완료</button>
         </div>
@@ -91,13 +91,13 @@ export default function InquiriesPage() {
           <input
             type="text"
             placeholder="고객 이름 또는 제목으로 검색..."
-            className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold shadow-sm transition-all"
+            className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
           />
         </div>
       </div>
 
       {/* 문의 목록 테이블 */}
-      <div className="bg-white border border-gray-100 rounded-[40px] shadow-[0_40px_100px_rgba(0,0,0,0.03)] overflow-hidden">
+      <div className="bg-white border border-gray-100 rounded-[40px] overflow-hidden">
         <div className="min-h-[600px] overflow-x-auto">
           <table className="w-full text-left">
             <thead>
@@ -111,35 +111,46 @@ export default function InquiriesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {inquiries.map((inquiry, index) => (
-                <tr key={inquiry.id} className="hover:bg-gray-50/50 transition-all cursor-pointer group">
-                  <td className="px-10 py-8 text-center text-xs font-mono font-bold text-gray-300 group-hover:text-black transition-colors">{index + 1}</td>
-                  <td className="px-10 py-8 text-center">
-                    <span className="inline-block px-3 py-1 rounded-lg bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-widest border border-gray-100">
-                      {inquiry.type || '일반'}
-                    </span>
-                  </td>
-                  <td className="px-10 py-8">
-                    <div className="font-black text-gray-900 group-hover:translate-x-1 transition-transform mb-1">{inquiry.title}</div>
-                    <div className="text-gray-400 text-[10px] font-bold uppercase tracking-tight truncate max-w-sm">{inquiry.content}</div>
-                  </td>
-                  <td className="px-10 py-8 text-center text-xs font-black text-black uppercase tracking-tight">{inquiry.authorName}</td>
-                  <td className="px-10 py-8 text-center text-gray-400 font-mono text-[10px] font-bold uppercase tracking-widest">
-                    {new Date(inquiry.createdAt).toLocaleDateString('ko-KR')}
-                  </td>
-                  <td className="px-10 py-8 text-center">
-                    {inquiry.status === 'pending' ? (
-                      <span className="inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-orange-100 bg-orange-50 text-orange-600">
-                        답변 대기
+              {inquiries.length > 0 ? (
+                inquiries.map((inquiry, index) => (
+                  <tr key={inquiry.id} className="hover:bg-gray-50/50 transition-all cursor-pointer group">
+                    <td className="px-10 py-8 text-center text-xs font-mono font-bold text-gray-300 group-hover:text-black transition-colors">{index + 1}</td>
+                    <td className="px-10 py-8 text-center">
+                      <span className="inline-block px-3 py-1 rounded-lg bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-widest border border-gray-100">
+                        {inquiry.type || '일반'}
                       </span>
-                    ) : (
-                      <span className="inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-black bg-black text-white shadow-lg shadow-black/10">
-                        해결 완료
-                      </span>
-                    )}
+                    </td>
+                    <td className="px-10 py-8">
+                      <div className="font-black text-gray-900 group-hover:translate-x-1 transition-transform mb-1">{inquiry.title}</div>
+                      <div className="text-gray-400 text-[10px] font-bold uppercase tracking-tight truncate max-w-sm">{inquiry.content}</div>
+                    </td>
+                    <td className="px-10 py-8 text-center text-xs font-black text-black uppercase tracking-tight">{inquiry.authorName}</td>
+                    <td className="px-10 py-8 text-center text-gray-400 font-mono text-[10px] font-bold uppercase tracking-widest">
+                      {new Date(inquiry.createdAt).toLocaleDateString('ko-KR')}
+                    </td>
+                    <td className="px-10 py-8 text-center">
+                      {inquiry.status === 'pending' ? (
+                        <span className="inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-orange-100 bg-orange-50 text-orange-600">
+                          답변 대기
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-black bg-black text-white">
+                          해결 완료
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="px-10 py-32 text-center">
+                    <div className="flex flex-col items-center gap-4 opacity-10">
+                      <MessageSquare size={64} />
+                      <p className="text-sm font-black uppercase tracking-[0.3em]">등록된 문의 내역이 없습니다.</p>
+                    </div>
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
@@ -151,7 +162,7 @@ export default function InquiriesPage() {
           </span>
           <div className="flex gap-2">
             <button className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-black uppercase hover:bg-gray-50 transition-all">이전</button>
-            <button className="px-5 py-2 bg-black text-white rounded-xl text-[10px] font-black uppercase shadow-lg shadow-black/10">1</button>
+            <button className="px-5 py-2 bg-black text-white rounded-xl text-[10px] font-black uppercase">1</button>
             <button className="px-5 py-2 bg-white border border-gray-100 text-gray-300 rounded-xl text-[10px] font-black uppercase hover:bg-black hover:text-white transition-all">2</button>
             <button className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-black uppercase hover:bg-gray-50 transition-all">다음</button>
           </div>

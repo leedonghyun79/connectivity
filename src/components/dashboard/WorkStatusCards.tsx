@@ -44,7 +44,7 @@ export default function WorkStatusCards() {
 
 function StatCard({ label, value, unit, icon: Icon, highlight, black }: any) {
   return (
-    <div className={`p-8 rounded-[32px] border transition-all duration-500 shadow-[0_20px_50px_rgba(0,0,0,0.02)] relative overflow-hidden group
+    <div className={`p-8 rounded-[32px] border transition-all duration-500 relative overflow-hidden group
             ${black ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-100'}
             ${highlight ? 'border-l-4 border-l-black' : ''}`}>
 

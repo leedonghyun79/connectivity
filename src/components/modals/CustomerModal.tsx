@@ -202,9 +202,9 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                     className="w-full px-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold appearance-none cursor-pointer"
                   >
-                    <option value="pending">대기 중 (Waiting)</option>
-                    <option value="processing">활성 상태 (Active)</option>
-                    <option value="closed">종료됨 (Completed)</option>
+                    <option value="pending">대기 (Waiting)</option>
+                    <option value="processing">진행 (Active)</option>
+                    <option value="closed">완료 (Completed)</option>
                   </select>
                 </div>
               )}

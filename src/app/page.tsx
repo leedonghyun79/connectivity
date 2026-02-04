@@ -43,7 +43,7 @@ export default function Dashboard() {
       </div>
 
       {/* 시스템 알림 (미니멀) */}
-      <div className="p-6 bg-black rounded-3xl flex justify-between items-center shadow-2xl shadow-black/10">
+      <div className="p-6 bg-black rounded-3xl flex justify-between items-center">
         <div className="flex items-center gap-4">
           <div className="p-2 bg-white/10 rounded-xl">
             <AlertCircle size={20} className="text-white" />
