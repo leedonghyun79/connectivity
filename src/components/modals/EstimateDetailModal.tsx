@@ -211,7 +211,7 @@ export default function EstimateDetailModal({ isOpen, onClose, estimate }: Estim
       >
 
         {/* 상단 컨트롤 바 */}
-        <div className="px-8 py-4 border-b border-gray-100 flex items-center justify-between bg-white text-sm">
+        <div className="px-8 py-[30px] border-b border-gray-100 flex items-center justify-between bg-white text-sm">
           <div className="flex items-center gap-6">
             <button
               onClick={handlePrint}

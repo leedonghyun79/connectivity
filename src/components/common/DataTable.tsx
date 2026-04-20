@@ -34,7 +34,7 @@ export default function DataTable<T extends { id: string }>({
               {columns.map((col, index) => (
                 <th
                   key={index}
-                  className={`px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 ${col.className || ''}`}
+                  className={`px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 font-poppins ${col.className || ''}`}
                 >
                   {col.header}
                 </th>

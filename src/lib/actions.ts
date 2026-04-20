@@ -66,6 +66,45 @@ export async function getCustomers() {
   }
 }
 
+// 고객 단일 조회 (상세 페이지용 - 연관 데이터 포함)
+export async function getCustomerById(id: string) {
+  try {
+    const customer = await prisma.customer.findUnique({
+      where: { id },
+      include: {
+        projects: { orderBy: { createdAt: 'desc' } },
+        estimates: {
+          orderBy: { createdAt: 'desc' },
+          include: { items: true },
+        },
+        transactions: { orderBy: { date: 'desc' } },
+        inquiries: { orderBy: { createdAt: 'desc' } },
+      },
+    });
+    if (!customer) return null;
+    return {
+      ...customer,
+      estimates: customer.estimates.map(est => ({
+        ...est,
+        amount: est.amount?.toString() || '0',
+        items: est.items.map(item => ({
+          ...item,
+          unitPrice: item.unitPrice.toString(),
+          supplyValue: item.supplyValue.toString(),
+          vat: item.vat.toString(),
+        })),
+      })),
+      transactions: customer.transactions.map(tx => ({
+        ...tx,
+        amount: tx.amount.toString(),
+      })),
+    };
+  } catch (error) {
+    console.error('Failed to fetch customer by id:', error);
+    return null;
+  }
+}
+
 /**
  * 견적서 관련 액션
  */
@@ -274,11 +313,39 @@ export async function getInquiries() {
   try {
     const inquiries = await prisma.inquiry.findMany({
       orderBy: { createdAt: 'desc' },
+      include: { customer: true },
     });
     return inquiries;
   } catch (error) {
     console.error('Failed to fetch inquiries:', error);
     return [];
+  }
+}
+
+// 문의 상태 업데이트 (답변 처리)
+export async function updateInquiryStatus(id: string, status: 'pending' | 'answered' | 'closed') {
+  try {
+    const inquiry = await prisma.inquiry.update({
+      where: { id },
+      data: { status },
+    });
+    revalidatePath('/inquiries');
+    return { success: true, data: inquiry };
+  } catch (error) {
+    console.error('Failed to update inquiry status:', error);
+    return { success: false, error: '문의 상태 업데이트에 실패했습니다.' };
+  }
+}
+
+// 문의 삭제
+export async function deleteInquiry(id: string) {
+  try {
+    await prisma.inquiry.delete({ where: { id } });
+    revalidatePath('/inquiries');
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to delete inquiry:', error);
+    return { success: false, error: '문의 삭제에 실패했습니다.' };
   }
 }
 
@@ -418,3 +485,50 @@ export async function syncAllStats() {
     return { success: false };
   }
 }
+
+// 대시보드용 최근 문의 목록 (최신 5건)
+export async function getRecentInquiries() {
+  try {
+    const inquiries = await prisma.inquiry.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+      include: { customer: true },
+    });
+    return inquiries;
+  } catch (error) {
+    console.error('Failed to fetch recent inquiries:', error);
+    return [];
+  }
+}
+
+// 대시보드용 월별 매출 집계 (최근 6개월)
+export async function getMonthlySalesStats() {
+  try {
+    const transactions = await prisma.transaction.findMany({
+      where: { status: 'completed' },
+      orderBy: { date: 'asc' },
+    });
+
+    // 월별 집계
+    const monthlyMap: Record<string, number> = {};
+    transactions.forEach(tx => {
+      const key = `${new Date(tx.date).getFullYear()}-${String(new Date(tx.date).getMonth() + 1).padStart(2, '0')}`;
+      monthlyMap[key] = (monthlyMap[key] || 0) + Number(tx.amount);
+    });
+
+    // 최근 6개월 슬라이스
+    const sorted = Object.entries(monthlyMap)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-6)
+      .map(([key, amount]) => ({
+        name: `${key.split('-')[1]}월`,
+        amount,
+      }));
+
+    return sorted;
+  } catch (error) {
+    console.error('Failed to fetch monthly sales stats:', error);
+    return [];
+  }
+}
+

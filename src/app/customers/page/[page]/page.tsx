@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, Filter, MoreHorizontal, Download, Eye, Trash2, XCircle, Edit2, Users, ArrowUpRight, FileText } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Search, Filter, MoreHorizontal, Download, Eye, Trash2, Edit2, Users, ArrowUpRight, FileText } from 'lucide-react';
 import PageLoader from '@/components/common/PageLoader';
 import { getCustomers, deleteCustomer } from '@/lib/actions';
 import { toast } from 'sonner';
@@ -9,6 +10,7 @@ import CustomerModal from '@/components/modals/CustomerModal';
 import DataTable, { Column } from '@/components/common/DataTable';
 
 export default function CustomersPage({ params }: { params: { page: string } }) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [customers, setCustomers] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -227,16 +229,12 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
       </div>
 
       {/* 테이블 */}
-      {/* 테이블 */}
       <DataTable
         data={filteredCustomers}
         noDataIcon={<Search size={48} />}
         noDataMessage="일치하는 고객 정보가 없습니다."
         onRowClick={(customer) => {
-          // 행 클릭 시 동작이 필요하다면 여기에 추가 (현재는 별도 동작 없음, 관리 버튼만 작동)
-          // 기존 코드에서도 tr에 cursor-pointer는 있지만 onClick 핸들러는 없었음 (편집 버튼 등만 존재)
-          // 확인해보니 tr에는 onClick이 없고, hover 효과만 있었음. 
-          // 하지만 EstimatesPage는 handleRowClick이 있으므로, 여기서는 그냥 undefined로 두거나 빈 함수
+          router.push(`/customers/${customer.id}`);
         }}
         columns={[
           {

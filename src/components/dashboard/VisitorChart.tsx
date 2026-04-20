@@ -28,7 +28,7 @@ export default function VisitorChart() {
       <div className="flex justify-between items-start mb-8">
         <div>
           <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">트래픽 분석</div>
-          <h3 className="text-2xl font-black text-black uppercase tracking-tighter">방문자 추이</h3>
+          <h3 className="text-2xl font-black text-black uppercase tracking-tighter">방문자 통계</h3>
         </div>
         <button className="p-3 bg-gray-50 rounded-2xl text-gray-300 group-hover:text-black group-hover:bg-black group-hover:text-white transition-all">
           <ArrowUpRight size={20} />

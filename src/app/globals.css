@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ──────────────────────────────────────────
+   폰트 변수
+   - Poppins      : 제목, 테이블 헤더, 레이블, 포인트 텍스트
+   - Pretendard   : 설명, 테이블 body, 본문
+────────────────────────────────────────── */
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -16,15 +21,97 @@
   }
 }
 
+/* ── 기본 body ── */
 body {
   color: rgb(var(--foreground-rgb));
   background: white;
   word-break: keep-all;
   overflow-wrap: break-word;
+
+  /* 기본 폰트: Pretendard (본문·설명·테이블 body) */
+  font-family: "Pretendard Variable", "Pretendard", sans-serif;
 }
 
+/* ──────────────────────────────────────────
+   제목 · 헤더 · 레이블: Poppins 적용
+   - h1~h6
+   - font-black / font-extrabold 요소
+   - uppercase + tracking-widest 조합 (레이블 패턴)
+────────────────────────────────────────── */
+/* ──────────────────────────────────────────
+   Poppins 적용 범위: 제목 · 테이블 헤더만
+────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6,
+thead th {
+  font-family: var(--font-poppins), "Poppins", sans-serif;
+}
+
+/* 명시적 Poppins 클래스 — !important로 항상 우선 적용 */
+.font-poppins {
+  font-family: var(--font-poppins), "Poppins", sans-serif !important;
+}
+
+/* font-black / font-extrabold → 두께 700만 설정 (폰트 패밀리는 부모 상속) */
+.font-black,
+.font-extrabold {
+  font-weight: 700 !important;
+}
+
+/* ──────────────────────────────────────────
+   테이블 body 항목 → Pretendard 강제
+   (font-black이 Poppins를 덮어쓰지 못하도록)
+────────────────────────────────────────── */
+tbody td,
+tbody td * {
+  font-family: "Pretendard Variable", "Pretendard", sans-serif !important;
+}
+
+/* ──────────────────────────────────────────
+   폰트 크기: 10px → 13px 전역 보정
+   Tailwind arbitrary value 클래스 오버라이드
+────────────────────────────────────────── */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+
+  /* 10px 레이블 → 13px */
+  .text-\[10px\] {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+
+  /* 11px 레이블 → 13px */
+  .text-\[11px\] {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+
+  /* 9px 최소 레이블 → 12px */
+  .text-\[9px\] {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+  }
+
+  /* 폰트 유틸리티 */
+  .font-pretendard {
+    font-family: "Pretendard Variable", "Pretendard", sans-serif;
+  }
+}
+
+/* ──────────────────────────────────────────
+   테이블 컬럼 헤더 (th) → Poppins
+   테이블 행 내용 (td) → Pretendard (기본 상속)
+────────────────────────────────────────── */
+table thead th {
+  font-family: var(--font-poppins), "Poppins", sans-serif;
+}
+
+/* 스크롤바 숨김 유틸리티 */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
