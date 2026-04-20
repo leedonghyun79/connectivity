@@ -68,6 +68,8 @@ export default function ConfirmModal({
   return createPortal(
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300">
       <div 
+        role="dialog"
+        aria-modal="true"
         className="bg-white w-full max-w-md rounded-[32px] overflow-hidden shadow-2xl border border-gray-100 animate-in zoom-in-95 duration-300"
         onClick={(e) => e.stopPropagation()}
       >

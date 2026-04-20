@@ -121,6 +121,8 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
       onClick={onClose}
     >
       <div
+        role="dialog"
+        aria-modal="true"
         className="bg-white rounded-[40px] shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all scale-100 border border-gray-100 flex flex-col md:flex-row"
         onClick={(e) => e.stopPropagation()}
       >
