@@ -248,6 +248,22 @@ export async function deleteEstimate(id: string) {
   }
 }
 
+// 견적서 상태 업데이트 (승인/거절 등)
+export async function updateEstimateStatus(id: string, status: 'pending' | 'sent' | 'approved' | 'rejected') {
+  try {
+    const estimate = await prisma.estimate.update({
+      where: { id },
+      data: { status },
+    });
+    revalidatePath('/estimates');
+    revalidatePath('/'); // 대시보드 통계 갱신을 위해 추가
+    return { success: true, data: estimate };
+  } catch (error) {
+    console.error('Failed to update estimate status:', error);
+    return { success: false, error: '견적서 상태 업데이트에 실패했습니다.' };
+  }
+}
+
 // 견적서 이메일 발송 (Resend 연동)
 export async function sendEstimateEmail(estimateId: string, email: string, pdfBase64?: string) {
   try {
@@ -532,3 +548,67 @@ export async function getMonthlySalesStats() {
   }
 }
 
+// 대시보드용 최근 활동 통합 피드
+export async function getRecentActivityFeed() {
+  try {
+    const [inquiries, estimates, customers] = await Promise.all([
+      prisma.inquiry.findMany({ take: 5, orderBy: { createdAt: 'desc' }, include: { customer: true } }),
+      prisma.estimate.findMany({ take: 5, orderBy: { createdAt: 'desc' }, include: { customer: true } }),
+      prisma.customer.findMany({ take: 5, orderBy: { createdAt: 'desc' } }),
+    ]);
+
+    const feed = [
+      ...inquiries.map(item => ({
+        id: `inquiry-${item.id}`,
+        type: 'INQUIRY',
+        title: `문의 접수: ${item.title}`,
+        client: item.authorName || item.customer?.name || '익명 고객',
+        createdAt: item.createdAt,
+      })),
+      ...estimates.map(item => ({
+        id: `estimate-${item.id}`,
+        type: 'ESTIMATE',
+        title: `견적서 발행: ${item.title}`,
+        client: item.customer?.name || item.customerName || '알 수 없음',
+        createdAt: item.createdAt,
+      })),
+      ...customers.map(item => ({
+        id: `customer-${item.id}`,
+        type: 'CLIENT',
+        title: `신규 고객 등록: ${item.name}`,
+        client: item.company || '개인',
+        createdAt: item.createdAt,
+      })),
+    ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 6);
+
+    return feed;
+  } catch (error) {
+    console.error('Failed to fetch activity feed:', error);
+    return [];
+  }
+}
+
+// 오늘 기준 통계 요약 (DailySummary용)
+export async function getTodayStats() {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const [newCustomers, closedProjects, newInquiries, newTransactions] = await Promise.all([
+      prisma.customer.count({ where: { createdAt: { gte: today } } }),
+      prisma.project.count({ where: { status: 'COMPLETED', updatedAt: { gte: today } } }),
+      prisma.inquiry.count({ where: { createdAt: { gte: today } } }),
+      prisma.transaction.count({ where: { date: { gte: today }, status: 'completed' } }),
+    ]);
+
+    return {
+      newCustomers,
+      closedProjects,
+      newInquiries,
+      newTransactions,
+    };
+  } catch (error) {
+    console.error('Failed to fetch today stats:', error);
+    return { newCustomers: 0, closedProjects: 0, newInquiries: 0, newTransactions: 0 };
+  }
+}

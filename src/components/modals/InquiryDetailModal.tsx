@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, CheckCircle2, AlertCircle, Trash2, MessageSquare } from 'lucide-react';
+import ConfirmModal from '../common/ConfirmModal';
 import { updateInquiryStatus, deleteInquiry } from '@/lib/actions';
 import { toast } from 'sonner';
 
@@ -18,9 +20,23 @@ export default function InquiryDetailModal({
   inquiry,
   onSuccess,
 }: InquiryDetailModalProps) {
+  const [mounted, setMounted] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  if (!isOpen || !inquiry) return null;
+  useEffect(() => {
+    setMounted(true);
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  if (!mounted || !isOpen || !inquiry) return null;
 
   const handleMarkAnswered = async () => {
     setIsUpdating(true);
@@ -49,7 +65,11 @@ export default function InquiryDetailModal({
   };
 
   const handleDelete = async () => {
-    if (!confirm(`'${inquiry.title}' 문의를 삭제하시겠습니까?`)) return;
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    setIsConfirmOpen(false);
     setIsUpdating(true);
     const res = await deleteInquiry(inquiry.id);
     if (res.success) {
@@ -62,8 +82,8 @@ export default function InquiryDetailModal({
     setIsUpdating(false);
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* 오버레이 */}
       <div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200"
@@ -173,6 +193,17 @@ export default function InquiryDetailModal({
           </div>
         </div>
       </div>
-    </div>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="문의 삭제"
+        message={`'${inquiry.title}' 문의를 삭제하시겠습니까?`}
+        confirmText="삭제하기"
+        type="danger"
+      />
+    </div>,
+    document.body
   );
 }

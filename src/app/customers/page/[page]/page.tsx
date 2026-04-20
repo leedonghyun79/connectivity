@@ -8,6 +8,7 @@ import { getCustomers, deleteCustomer } from '@/lib/actions';
 import { toast } from 'sonner';
 import CustomerModal from '@/components/modals/CustomerModal';
 import DataTable, { Column } from '@/components/common/DataTable';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 export default function CustomersPage({ params }: { params: { page: string } }) {
   const router = useRouter();
@@ -20,6 +21,8 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
   const [statusFilter, setStatusFilter] = useState('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [deletingCustomerData, setDeletingCustomerData] = useState<{ id: string, name: string } | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
 
   const fetchData = async () => {
@@ -62,16 +65,23 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
     fetchData();
   }, []);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (confirm(`'${name}' 고객 정보를 삭제하시겠습니까?`)) {
-      const res = await deleteCustomer(id);
-      if (res.success) {
-        toast.success('삭제되었습니다.');
-        fetchData();
-      } else {
-        toast.error(res.error || '삭제 중 오류가 발생했습니다.');
-      }
+  const handleDelete = (id: string, name: string) => {
+    setDeletingCustomerData({ id, name });
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingCustomerData) return;
+
+    const res = await deleteCustomer(deletingCustomerData.id);
+    if (res.success) {
+      toast.success('삭제되었습니다.');
+      fetchData();
+    } else {
+      toast.error(res.error || '삭제 중 오류가 발생했습니다.');
     }
+    setDeletingCustomerData(null);
+    setIsDeleteConfirmOpen(false);
   };
 
   const handleEdit = (customer: any) => {
@@ -131,6 +141,16 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
         onSuccess={fetchData}
         customer={editingCustomer}
         isReadOnly={isReadOnly}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="고객 정보 삭제"
+        message={`'${deletingCustomerData?.name}' 고객 정보를 삭제하시겠습니까? 삭제된 데이터는 복구할 수 없습니다.`}
+        confirmText="삭제하기"
+        type="danger"
       />
 
       {/* 통계 요약 */}

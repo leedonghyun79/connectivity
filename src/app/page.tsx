@@ -45,21 +45,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 시스템 알림 */}
-      <div className="p-6 bg-black rounded-3xl flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <div className="p-2 bg-white/10 rounded-xl">
-            <AlertCircle size={20} className="text-white" />
-          </div>
-          <div>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">지능형 알림</p>
-            <p className="text-sm font-bold text-white">복구된 시스템이 정상 작동 중입니다. 모든 인프라 링크가 활성화되었습니다.</p>
-          </div>
-        </div>
-        <button className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1">
-          상세 보기 <ArrowUpRight size={12} />
-        </button>
-      </div>
 
       <WorkStatusCards />
 

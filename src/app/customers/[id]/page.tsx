@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getCustomerById, deleteCustomer } from '@/lib/actions';
 import PageLoader from '@/components/common/PageLoader';
@@ -12,6 +12,7 @@ import {
   Mail, Building2, MapPin, CheckCircle, Clock, AlertCircle
 } from 'lucide-react';
 import Link from 'next/link';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 const statusLabel: Record<string, string> = {
   pending: '대기', processing: '진행 중', closed: '완료',
@@ -39,9 +40,10 @@ export default function CustomerDetailPage() {
   const [customer, setCustomer] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'projects' | 'estimates' | 'transactions' | 'inquiries'>('projects');
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     const data = await getCustomerById(id);
     if (!data) {
@@ -51,12 +53,15 @@ export default function CustomerDetailPage() {
     }
     setCustomer(data);
     setIsLoading(false);
+  }, [id, router]);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  const handleDelete = () => {
+    setIsDeleteConfirmOpen(true);
   };
 
-  useEffect(() => { fetchData(); }, [id]);
-
-  const handleDelete = async () => {
-    if (!confirm(`'${customer?.name}' 고객 정보를 삭제하시겠습니까?\n연관된 프로젝트, 견적서, 거래 내역이 모두 삭제됩니다.`)) return;
+  const confirmDelete = async () => {
     const res = await deleteCustomer(id);
     if (res.success) {
       toast.success('고객이 삭제되었습니다.');
@@ -85,6 +90,16 @@ export default function CustomerDetailPage() {
         onSuccess={fetchData}
         customer={customer}
         isReadOnly={false}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="고객 정보 삭제"
+        message={`'${customer?.name}' 고객 정보를 삭제하시겠습니까?\n연관된 프로젝트, 견적서, 거래 내역이 모두 함께 영구 삭제됩니다.`}
+        confirmText="삭제하기"
+        type="danger"
       />
 
       {/* 헤더 */}

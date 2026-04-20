@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Loader2, User, Mail, Building2, Phone, Briefcase, ChevronDown, Check } from 'lucide-react';
 import { createCustomer, updateCustomer } from '@/lib/actions';
 import { toast } from 'sonner';
@@ -14,6 +15,7 @@ interface CustomerModalProps {
 }
 
 export default function CustomerModal({ isOpen, onClose, onSuccess, customer, isReadOnly = false }: CustomerModalProps) {
+  const [mounted, setMounted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -40,6 +42,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
   }, []);
 
   useEffect(() => {
+    setMounted(true);
     if (customer && isOpen) {
       setFormData({
         name: customer.name || '',
@@ -51,10 +54,21 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
     } else if (!customer && isOpen) {
       setFormData({ name: '', email: '', company: '', phone: '', status: 'pending' });
     }
+    
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
     setErrors({ email: '', phone: '' });
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [customer, isOpen]);
 
-  if (!isOpen) return null;
+  if (!mounted || !isOpen) return null;
 
   const validate = () => {
     let isValid = true;
@@ -101,9 +115,9 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
     }
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300"
       onClick={onClose}
     >
       <div
@@ -286,6 +300,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
           </form>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

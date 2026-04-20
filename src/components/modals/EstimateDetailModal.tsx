@@ -1,9 +1,11 @@
-import { useState, useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Printer, Download, Mail, CheckCircle, XCircle, Loader2, Send, Check } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { sendEstimateEmail } from '@/lib/actions';
+import { sendEstimateEmail, updateEstimateStatus } from '@/lib/actions';
 import { toast } from 'sonner';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 interface EstimateDetailModalProps {
   isOpen: boolean;
@@ -11,23 +13,48 @@ interface EstimateDetailModalProps {
   estimate: any;
 }
 
-export default function EstimateDetailModal({ isOpen, onClose, estimate }: EstimateDetailModalProps) {
-  if (!isOpen || !estimate) return null;
-
-  const totalSupplyValue = estimate.items?.reduce((acc: number, item: any) => acc + Number(item.supplyValue), 0) || 0;
-  const totalVat = estimate.items?.reduce((acc: number, item: any) => acc + Number(item.vat), 0) || 0;
-  const grandTotal = totalSupplyValue + totalVat;
-
+export default function EstimateDetailModal({ estimate, isOpen, onClose }: EstimateDetailModalProps) {
+  const [mounted, setMounted] = useState(false);
   const [customerStamp, setCustomerStamp] = useState<string | null>(null);
   const [providerStamp, setProviderStamp] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isEmailing, setIsEmailing] = useState(false);
   const [showEmailInput, setShowEmailInput] = useState(false);
-  const [targetEmail, setTargetEmail] = useState(estimate.customer?.email || '');
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean;
+    status: 'approved' | 'rejected' | null;
+    title: string;
+    message: string;
+  }>({
+    isOpen: false,
+    status: null,
+    title: '',
+    message: ''
+  });
+  const [targetEmail, setTargetEmail] = useState(estimate?.customer?.email || '');
+
+  useEffect(() => {
+    setMounted(true);
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   const customerFileRef = useRef<HTMLInputElement>(null);
   const providerFileRef = useRef<HTMLInputElement>(null);
   const printRef = useRef<HTMLDivElement>(null);
+
+  if (!mounted || !isOpen || !estimate) return null;
+
+  const totalSupplyValue = estimate.items?.reduce((acc: number, item: any) => acc + Number(item.supplyValue), 0) || 0;
+  const totalVat = estimate.items?.reduce((acc: number, item: any) => acc + Number(item.vat), 0) || 0;
+  const grandTotal = totalSupplyValue + totalVat;
 
   const handlePrint = () => {
     const printContent = printRef.current;
@@ -188,6 +215,31 @@ export default function EstimateDetailModal({ isOpen, onClose, estimate }: Estim
     }
   };
 
+  const handleStatusUpdate = (status: 'approved' | 'rejected') => {
+    setConfirmState({
+      isOpen: true,
+      status,
+      title: status === 'approved' ? '견적서 승인' : '견적서 거절',
+      message: `정말로 이 견적서를 ${status === 'approved' ? '승인' : '거절'} 하시겠습니까? 이 작업은 취소할 수 없습니다.`
+    });
+  };
+
+  const handleConfirmUpdate = async () => {
+    const { status } = confirmState;
+    if (!status) return;
+
+    setIsUpdating(true);
+    const result = await updateEstimateStatus(estimate.id, status);
+    setIsUpdating(false);
+
+    if (result.success) {
+      toast.success(`견적서가 성공적으로 ${status === 'approved' ? '승인' : '거절'} 처리되었습니다.`);
+      onClose();
+    } else {
+      toast.error(result.error || '상태 업데이트에 실패했습니다.');
+    }
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'customer' | 'provider') => {
     const file = e.target.files?.[0];
     if (file) {
@@ -200,13 +252,13 @@ export default function EstimateDetailModal({ isOpen, onClose, estimate }: Estim
     }
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300"
       onClick={onClose}
     >
       <div
-        className="bg-[#fcfcfc] rounded-3xl shadow-2xl w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col border border-gray-200"
+        className="bg-[#fcfcfc] rounded-3xl shadow-2xl w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 animate-in zoom-in-95 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
 
@@ -263,11 +315,21 @@ export default function EstimateDetailModal({ isOpen, onClose, estimate }: Estim
             )}
           </div>
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-xl font-bold hover:bg-green-100 transition-all">
-              <CheckCircle size={16} /> 승인 처리
+            <button 
+              onClick={() => handleStatusUpdate('approved')}
+              disabled={isUpdating}
+              className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-xl font-bold hover:bg-green-100 transition-all disabled:opacity-50"
+            >
+              {isUpdating ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle size={16} />} 
+              승인 처리
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-xl font-bold hover:bg-red-100 transition-all">
-              <XCircle size={16} /> 거절 처리
+            <button 
+              onClick={() => handleStatusUpdate('rejected')}
+              disabled={isUpdating}
+              className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-xl font-bold hover:bg-red-100 transition-all disabled:opacity-50"
+            >
+              {isUpdating ? <Loader2 size={16} className="animate-spin" /> : <XCircle size={16} />} 
+              거절 처리
             </button>
             <div className="w-px h-6 bg-gray-200 mx-2"></div>
             <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-all text-gray-400">
@@ -495,6 +557,17 @@ export default function EstimateDetailModal({ isOpen, onClose, estimate }: Estim
           </div>
         </div>
       </div>
-    </div>
+
+      <ConfirmModal
+        isOpen={confirmState.isOpen}
+        onClose={() => setConfirmState(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={handleConfirmUpdate}
+        title={confirmState.title}
+        message={confirmState.message}
+        type={confirmState.status === 'approved' ? 'success' : 'danger'}
+        confirmText={confirmState.status === 'approved' ? '승인하기' : '거절하기'}
+      />
+    </div>,
+    document.body
   );
 }
