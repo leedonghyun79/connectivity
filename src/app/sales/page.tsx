@@ -6,6 +6,7 @@ import {
 } from 'recharts';
 import { DollarSign, TrendingUp, CreditCard, Download, Activity, Calendar, ArrowUpRight, Filter, PieChart as PieIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import PageLoader from '@/components/common/PageLoader';
 import { getTransactions, getSalesStats } from '@/lib/actions';
 
@@ -47,11 +48,13 @@ export default function SalesPage() {
           <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">매출 통계 분석</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <TrendingUp size={14} className="text-black" />
-            실시간 재무 지표 및 매출 흐름을 모니터링합니다. <span className="text-black uppercase">2024 회계연도</span>
+            실시간 재무 지표 및 매출 흐름을 모니터링합니다. <span className="text-black uppercase">2026 회계연도 </span>
           </p>
         </div>
         <div className="flex gap-4">
-          <button className="px-6 py-3 bg-white border border-gray-100 rounded-2xl text-[11px] font-black text-black uppercase tracking-widest hover:bg-black hover:text-white transition-all flex items-center gap-2 active:scale-95">
+          <button 
+            onClick={() => toast.info('감사 리포트 추출 기능은 현재 개발 중입니다.')}
+            className="px-6 py-3 bg-white border border-gray-100 rounded-2xl text-[11px] font-black text-black uppercase tracking-widest hover:bg-black hover:text-white transition-all flex items-center gap-2 active:scale-95">
             <Download size={16} />
             감사 리포트 추출
           </button>
@@ -97,27 +100,34 @@ export default function SalesPage() {
           <div className="flex justify-between items-start mb-8">
             <div>
               <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">기간별 성장</div>
-              <h3 className="text-2xl font-black text-black uppercase tracking-tighter">회계 성장 추이</h3>
+              <h3 className="text-2xl font-black text-black uppercase tracking-tighter">월별 매출 흐름</h3>
             </div>
             <button className="p-3 bg-gray-50 rounded-2xl text-gray-300 group-hover:text-black group-hover:bg-black group-hover:text-white transition-all">
               <ArrowUpRight size={20} />
             </button>
           </div>
-          <div className="flex-1 min-h-0 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={stats.monthlySales}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f8fafc" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#cbd5e1', fontSize: 10, fontWeight: 700 }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#cbd5e1', fontSize: 10, fontWeight: 700 }} />
-                <RechartsTooltip
-                  cursor={{ fill: '#f8fafc' }}
-                  contentStyle={{ backgroundColor: '#000', borderRadius: '16px', border: 'none', color: '#fff', padding: '12px' }}
-                  itemStyle={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase' }}
-                  labelStyle={{ display: 'none' }}
-                />
-                <Bar dataKey="amount" fill="#000000" radius={[12, 12, 0, 0]} barSize={40} />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center">
+            {!stats.monthlySales || stats.monthlySales.every((m: any) => m.amount === 0) ? (
+              <div className="flex flex-col items-center gap-2 opacity-20">
+                <Activity size={40} />
+                <span className="text-[10px] font-black uppercase tracking-widest">수집된 성장 데이터가 없습니다</span>
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={stats.monthlySales}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f8fafc" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#cbd5e1', fontSize: 10, fontWeight: 700 }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#cbd5e1', fontSize: 10, fontWeight: 700 }} />
+                  <RechartsTooltip
+                    cursor={{ fill: '#f8fafc' }}
+                    contentStyle={{ backgroundColor: '#000', borderRadius: '16px', border: 'none', color: '#fff', padding: '12px' }}
+                    itemStyle={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase' }}
+                    labelStyle={{ display: 'none' }}
+                  />
+                  <Bar dataKey="amount" fill="#000000" radius={[12, 12, 0, 0]} barSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
 
@@ -170,9 +180,11 @@ export default function SalesPage() {
         <div className="px-10 py-8 border-b border-gray-50 flex justify-between items-end">
           <div>
             <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">거래 히스토리</div>
-            <h3 className="text-2xl font-black text-black uppercase tracking-tighter">종합 거래 원장</h3>
+            <h3 className="text-2xl font-black text-black uppercase tracking-tighter">전체 거래 내역</h3>
           </div>
-          <button className="flex items-center gap-2 px-6 py-3 bg-gray-50 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all">
+          <button 
+            onClick={() => toast.info('결과 필터링 기능은 현재 개발 중입니다.')}
+            className="flex items-center gap-2 px-6 py-3 bg-gray-50 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all">
             <Filter size={16} /> 결과 필터링
           </button>
         </div>
@@ -188,28 +200,39 @@ export default function SalesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {transactions.map((tx) => (
-                <tr key={tx.id} className="hover:bg-gray-50/50 transition-all group">
-                  <td className="px-10 py-8 font-mono font-bold text-gray-300 group-hover:text-black transition-colors">
-                    #{tx.id.substring(0, 8).toUpperCase()}
-                  </td>
-                  <td className="px-10 py-8">
-                    <div className="font-black text-gray-900 uppercase tracking-tight">{tx.customerName || tx.customer?.name}</div>
-                  </td>
-                  <td className="px-10 py-8 text-right font-black text-black text-lg">
-                    {Number(tx.amount).toLocaleString()} <span className="text-xs text-gray-300">₩</span>
-                  </td>
-                  <td className="px-10 py-8 text-center">
-                    <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border
-                      ${tx.status === 'completed' ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-400 border-gray-200'}`}>
-                      {tx.status === 'completed' ? '정산 완료' : '대기 중'}
-                    </span>
-                  </td>
-                  <td className="px-10 py-8 text-center text-gray-400 font-mono text-xs font-bold">
-                    {new Date(tx.date).toLocaleDateString('ko-KR')}
+              {transactions && transactions.length > 0 ? (
+                transactions.map((tx) => (
+                  <tr key={tx.id} className="hover:bg-gray-50/50 transition-all group">
+                    <td className="px-10 py-8 font-mono font-bold text-gray-300 group-hover:text-black transition-colors">
+                      #{tx.id.substring(0, 8).toUpperCase()}
+                    </td>
+                    <td className="px-10 py-8">
+                      <div className="font-black text-gray-900 uppercase tracking-tight">{tx.customerName || tx.customer?.name}</div>
+                    </td>
+                    <td className="px-10 py-8 text-right font-black text-black text-lg">
+                      {Number(tx.amount).toLocaleString()} <span className="text-xs text-gray-300">₩</span>
+                    </td>
+                    <td className="px-10 py-8 text-center">
+                      <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border
+                        ${tx.status === 'completed' ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-400 border-gray-200'}`}>
+                        {tx.status === 'completed' ? '정산 완료' : '대기 중'}
+                      </span>
+                    </td>
+                    <td className="px-10 py-8 text-center text-gray-400 font-mono text-xs font-bold">
+                      {new Date(tx.date).toLocaleDateString('ko-KR')}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="py-32 text-center">
+                    <div className="flex flex-col items-center gap-4 opacity-10">
+                      <CreditCard size={40} />
+                      <span className="text-[10px] font-black uppercase tracking-[0.3em]">수집된 거래 데이터가 없습니다</span>
+                    </div>
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

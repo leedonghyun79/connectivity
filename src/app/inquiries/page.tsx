@@ -72,11 +72,11 @@ export default function InquiriesPage() {
       {/* 헤더 섹션 */}
       <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
-          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">커뮤니케이션 채널</div>
+          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">고객 커뮤니케이션</div>
           <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">문의 게시판</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <MessageSquare size={14} className="text-black" />
-            고객의 목소리를 분석하고 관리합니다. <span className="text-black uppercase">활성 지원 데스크</span>
+            고객님들의 소중한 문의사항을 확인하고 관리합니다. <span className="text-black uppercase">지원 센터</span>
           </p>
         </div>
       </div>
@@ -97,19 +97,19 @@ export default function InquiriesPage() {
 
         <div className="bg-white p-8 rounded-[32px] border border-gray-100 group hover:bg-black hover:text-white transition-all duration-500">
           <div className="flex justify-between items-start mb-6">
-            <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest group-hover:text-gray-500">해결된 아카이브</p>
+            <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest group-hover:text-gray-500">해결 완료</p>
             <div className="p-2 bg-gray-50 rounded-xl group-hover:bg-white/10 transition-colors">
               <CheckCircle2 size={20} className="text-gray-300 group-hover:text-white" />
             </div>
           </div>
           <p className="text-4xl font-black tracking-tighter">
-            {stats.answered}<span className="text-[10px] font-bold text-gray-300 ml-2 uppercase group-hover:text-gray-500 tracking-widest">전체 해결</span>
+            {stats.answered}<span className="text-[10px] font-bold text-gray-300 ml-2 uppercase group-hover:text-gray-500 tracking-widest">건 완료</span>
           </p>
         </div>
 
         <div className="bg-black p-8 rounded-[32px] flex flex-col justify-between">
           <div className="flex justify-between items-start">
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">전체 통합 수량</p>
+            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">총 문의 건수</p>
             <MessageCircle size={20} className="text-gray-600" />
           </div>
           <div className="flex items-end justify-between">
@@ -124,7 +124,7 @@ export default function InquiriesPage() {
         {/* 필터 탭 */}
         <div className="flex gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar">
           {([
-            { id: 'all', label: '전체 로그' },
+            { id: 'all', label: '전체 보기' },
             { id: 'pending', label: '답변 대기' },
             { id: 'answered', label: '해결 완료' },
           ] as { id: FilterTab; label: string }[]).map(tab => (
@@ -161,11 +161,11 @@ export default function InquiriesPage() {
           <table className="w-full text-left">
             <thead>
               <tr className="bg-gray-50/30">
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-24">CID</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-24">번호</th>
                 <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 w-32 text-center">유형</th>
                 <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">문의 제목 및 내용</th>
                 <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-40">문의자</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-40">타임스탬프</th>
+                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-40">작성일</th>
                 <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-40">상태</th>
               </tr>
             </thead>
@@ -225,7 +225,7 @@ export default function InquiriesPage() {
         {/* 푸터 */}
         <div className="px-10 py-8 border-t border-gray-50 bg-gray-50/30 flex items-center justify-between">
           <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-            지원 로그 아카이브: <span className="text-black">{filteredInquiries.length} 개의 스레드</span> 탐지됨
+            총 <span className="text-black">{filteredInquiries.length}개</span>의 문의 내역이 있습니다.
           </span>
         </div>
       </div>

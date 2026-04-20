@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/layout/Sidebar";
-import Header from "@/components/layout/Header";
 import QueryProvider from "./queryProvider";
+import AuthProvider from "@/providers/AuthProvider";
+import AppLayout from "@/components/layout/AppLayout";
 import { Toaster } from "sonner";
 
 // Prisma는 Node.js 런타임에서만 동작하므로 전역으로 강제합니다.
@@ -38,20 +38,14 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <QueryProvider>
-          <div className="flex h-screen bg-slate-50 overflow-hidden text-slate-900">
-            <Sidebar />
-            <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-              <Header />
-              <main className="flex-1 overflow-auto bg-slate-50/50 p-6 overscroll-none">
-                <div className="max-w-7xl mx-auto">
-                  {children}
-                </div>
-              </main>
-            </div>
-          </div>
-          <Toaster position="top-right" richColors />
-        </QueryProvider>
+        <AuthProvider>
+          <QueryProvider>
+            <AppLayout>
+              {children}
+            </AppLayout>
+            <Toaster position="top-right" richColors />
+          </QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );

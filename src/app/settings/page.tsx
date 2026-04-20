@@ -29,7 +29,7 @@ export default function SettingsPage() {
     setIsSaving(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 800));
-      toast.success("시스템 설정이 성공적으로 업데이트되었습니다.");
+      toast.info("환경 설정 저장 기능은 현재 통신 연결(개발) 중입니다.");
     } catch {
       toast.error("설정 업데이트에 실패했습니다.");
     } finally {

@@ -1,6 +1,7 @@
 'use client';
 
 import { Bell, Search, User, Menu, Globe } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function Header() {
   return (
@@ -12,6 +13,11 @@ export default function Header() {
             type="text"
             placeholder="전체 검색: 프로젝트, 고객사, 또는 송장..."
             className="w-full pl-10 pr-4 py-3 bg-transparent text-sm font-medium focus:outline-none transition-all placeholder:text-gray-300 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                toast.info('통합 검색 엔진은 현재 개발 중입니다.');
+              }
+            }}
           />
           <div className="absolute bottom-0 left-0 w-0 h-px bg-black group-focus-within:w-full transition-all duration-500"></div>
         </div>
@@ -19,7 +25,9 @@ export default function Header() {
 
       <div className="flex items-center gap-8 ml-8">
 
-        <button className="p-2 text-gray-300 hover:text-black relative transition-all group">
+        <button 
+          onClick={() => toast.info('실시간 알림 센터는 현재 개발 중입니다.')}
+          className="p-2 text-gray-300 hover:text-black relative transition-all group">
           <Bell size={22} />
           <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-black rounded-full ring-4 ring-white"></span>
         </button>
@@ -29,7 +37,10 @@ export default function Header() {
             <p className="text-[11px] font-black text-black uppercase tracking-wider leading-tight">마스터 관리자</p>
             <p className="text-[10px] font-bold text-gray-300 uppercase">ADMINISTRATOR LEVEL</p>
           </div>
-          <div className="relative group cursor-pointer">
+          <div 
+            onClick={() => toast.info('계정 프로필 설정은 현재 개발 중입니다.')}
+            className="relative group cursor-pointer"
+          >
             <div className="h-12 w-12 rounded-2xl bg-gray-50 flex items-center justify-center text-black border border-gray-100 group-hover:bg-black group-hover:text-white transition-all duration-300 overflow-hidden">
               <User size={24} />
             </div>
