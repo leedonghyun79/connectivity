@@ -10,7 +10,7 @@ export default function AnalyticsTable() {
     total: number; pending: number; processing: number; closed: number;
   } | null>(null);
   const [estimateStats, setEstimateStats] = useState<{
-    totalAmount: string; pending: number; approved: number;
+    totalAmount: string | number; pending: number; approved: number;
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 

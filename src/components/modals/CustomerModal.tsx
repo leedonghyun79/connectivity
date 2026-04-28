@@ -16,13 +16,16 @@ interface CustomerModalProps {
 
 export default function CustomerModal({ isOpen, onClose, onSuccess, customer, isReadOnly = false }: CustomerModalProps) {
   const [mounted, setMounted] = useState(false);
+  
+  // key={isModalOpen} 덕분에 모달이 열릴 때마다 이 초기화 로직이 실행됩니다.
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    company: '',
-    phone: '',
-    status: 'pending',
+    name: customer?.name || '',
+    email: customer?.email || '',
+    company: customer?.company || '',
+    phone: customer?.phone || '',
+    status: customer?.status || 'pending',
   });
+
   const [errors, setErrors] = useState({
     email: '',
     phone: '',
@@ -32,6 +35,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
   const statusRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setMounted(true);
     const handleClickOutside = (event: MouseEvent) => {
       if (statusRef.current && !statusRef.current.contains(event.target as Node)) {
         setIsStatusOpen(false);
@@ -41,32 +45,17 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // isOpen이 변경될 때 바디 스크롤 제어만 담당
   useEffect(() => {
-    setMounted(true);
-    if (customer && isOpen) {
-      setFormData({
-        name: customer.name || '',
-        email: customer.email || '',
-        company: customer.company || '',
-        phone: customer.phone || '',
-        status: customer.status || 'pending',
-      });
-    } else if (!customer && isOpen) {
-      setFormData({ name: '', email: '', company: '', phone: '', status: 'pending' });
-    }
-    
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
-    
-    setErrors({ email: '', phone: '' });
-    
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [customer, isOpen]);
+  }, [isOpen]);
 
   if (!mounted || !isOpen) return null;
 
@@ -170,7 +159,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className={`w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold placeholder:text-gray-200 ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                    className={`w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-black placeholder:text-gray-200 ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                     placeholder="고객 성함을 입력하세요"
                   />
                 </div>
@@ -187,7 +176,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                       setFormData({ ...formData, email: e.target.value });
                       if (errors.email) setErrors({ ...errors, email: '' });
                     }}
-                    className={`w-full pl-12 pr-6 py-4 bg-white border rounded-2xl outline-none transition-all font-bold placeholder:text-gray-200 ${errors.email ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-gray-100 focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                    className={`w-full pl-12 pr-6 py-4 bg-white border rounded-2xl outline-none transition-all font-bold text-black placeholder:text-gray-200 ${errors.email ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-gray-100 focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                     placeholder="example@vault.com"
                     readOnly={isReadOnly}
                   />
@@ -204,7 +193,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                       type="text"
                       value={formData.company}
                       onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      className={`w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold placeholder:text-gray-200 ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                      className={`w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-black placeholder:text-gray-200 ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                       placeholder="회사명을 입력하세요"
                       readOnly={isReadOnly}
                     />
@@ -222,7 +211,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                         setFormData({ ...formData, phone: val });
                         if (errors.phone) setErrors({ ...errors, phone: '' });
                       }}
-                      className={`w-full pl-12 pr-6 py-4 bg-white border rounded-2xl outline-none transition-all font-bold placeholder:text-gray-200 ${errors.phone ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-gray-100 focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                      className={`w-full pl-12 pr-6 py-4 bg-white border rounded-2xl outline-none transition-all font-bold text-black placeholder:text-gray-200 ${errors.phone ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-gray-100 focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                       placeholder="숫자만 입력"
                       readOnly={isReadOnly}
                     />
@@ -241,7 +230,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                       onClick={() => !isReadOnly && setIsStatusOpen(!isStatusOpen)}
                       className={`w-full px-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-left flex items-center justify-between ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : 'group-hover:border-gray-200'}`}
                     >
-                      <span>
+                      <span className="text-black">
                         {formData.status === 'pending' ? '대기 (Waiting)' :
                           formData.status === 'processing' ? '진행 (Active)' : '완료 (Completed)'}
                       </span>

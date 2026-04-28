@@ -8,7 +8,8 @@ import {
   MessageSquare,
   Settings,
   ChevronRight,
-  LogOut
+  LogOut,
+  Activity
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -16,6 +17,7 @@ import { useState, useEffect } from 'react';
 
 const menuItems = [
   { name: '대시보드', path: '/', icon: LayoutDashboard, label: '통계 요약' },
+  { name: '업무일지', path: '/logs', icon: Activity, label: '활동 및 브리핑' },
   { name: '고객 관리', path: '/customers/page/1', icon: Users, label: '고객 데이터베이스' },
   { name: '견적서 관리', path: '/estimates', icon: FileText, label: '견적 및 발행' },
   { name: '매출 분석', path: '/sales', icon: Banknote, label: '재무 지표' },

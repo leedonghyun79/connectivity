@@ -1,5 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -10,43 +12,75 @@ export const authOptions: NextAuthOptions = {
         password: { label: "비밀번호", type: "password" }
       },
       async authorize(credentials) {
-        // 실제 운영 환경에서는 DB 조회와 bcrypt.compare 등의 암호화 로직이 들어가야 합니다.
-        // 현재는 하드코딩된 어드민 계정으로만 접근을 허용합니다 (초기 개발용).
-        if (
-          credentials?.username === "admin" && 
-          credentials?.password === "admin123!"
-        ) {
-          return {
-            id: "1",
-            name: "최고 관리자",
-            email: "admin@connectivity.com",
-            role: "admin",
-          };
+        if (!credentials?.username || !credentials?.password) {
+          return null;
         }
-        return null;
+
+        const user = await prisma.user.findUnique({
+          where: { username: credentials.username }
+        });
+
+        if (!user) {
+          return null;
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+
+        if (!isPasswordValid) {
+          return null;
+        }
+
+        await prisma.systemLog.create({
+          data: {
+            action: "LOGIN",
+            message: `${user.name}님이 시스템에 접속했습니다.`,
+            user: user.username
+          }
+        });
+
+        return {
+          id: user.id,
+          name: user.name,
+          username: user.username,
+          role: user.role,
+        };
       }
     })
   ],
   pages: {
-    signIn: '/login', // 커스텀 로그인 페이지 경로
+    signIn: '/login',
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30일
+    maxAge: 30 * 24 * 60 * 60,
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.role = (user as any).role;
+        token.username = (user as any).username;
       }
+      
+      // 클라이언트에서 update() 호출 시 세션 정보 반영
+      if (trigger === "update" && session) {
+        if (session.user?.name) token.name = session.user.name;
+        if (session.user?.username) token.username = session.user.username;
+        if (session.user?.role) token.role = session.user.role;
+      }
+      
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         (session.user as any).role = token.role;
+        (session.user as any).username = token.username;
       }
       return session;
     }
   },
   secret: process.env.NEXTAUTH_SECRET || "connectivity_super_secret_dev_key",
 };
+

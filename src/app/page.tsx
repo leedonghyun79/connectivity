@@ -4,7 +4,6 @@ import { useQuery } from '@tanstack/react-query';
 import WorkStatusCards from "@/components/dashboard/WorkStatusCards";
 import VisitorChart from "@/components/dashboard/VisitorChart";
 import TrafficSource from "@/components/dashboard/TrafficSource";
-import PerformanceMetrics from "@/components/dashboard/PerformanceMetrics";
 import DailySummary from "@/components/dashboard/DailySummary";
 import RecentWorkList from "@/components/dashboard/RecentWorkList";
 import AnalyticsTable from "@/components/dashboard/AnalyticsTable";
@@ -49,9 +48,8 @@ export default function Dashboard() {
       <WorkStatusCards />
 
       {/* 메인 분석 섹션 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="w-full">
         <VisitorChart />
-        <PerformanceMetrics />
       </div>
 
       {/* 매출 차트 + 최근 문의 */}

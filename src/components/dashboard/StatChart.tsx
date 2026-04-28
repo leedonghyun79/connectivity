@@ -23,22 +23,22 @@ export default function StatChart() {
   const total = data.reduce((sum, d) => sum + d.amount, 0);
 
   return (
-    <div className="bg-white p-8 rounded-[32px] border border-gray-100 flex flex-col gap-6 h-full">
+    <div className="bg-white p-10 rounded-[40px] border border-gray-100 flex flex-col gap-6 h-full group">
       {/* 헤더 */}
       <div className="flex justify-between items-start">
         <div>
           <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">
             월별 수익 흐름
           </div>
-          <h3 className="text-xl font-black text-black tracking-tighter uppercase">
+          <h3 className="text-2xl font-black text-black tracking-tighter uppercase">
             매출 통계
           </h3>
         </div>
         <Link
           href="/sales"
-          className="p-2 bg-gray-50 rounded-xl text-gray-300 hover:bg-black hover:text-white transition-all"
+          className="p-3 bg-gray-50 rounded-2xl text-gray-200 group-hover:bg-black group-hover:text-white transition-all duration-300"
         >
-          <ArrowUpRight size={16} />
+          <ArrowUpRight size={20} />
         </Link>
       </div>
 

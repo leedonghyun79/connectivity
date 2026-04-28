@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { Loader2, Lock, User, ArrowRight } from 'lucide-react';
+import { Loader2, Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 
 const loginSchema = z.object({
@@ -15,6 +15,7 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [errors, setErrors] = useState<{ username?: string; password?: string }>({});
 
@@ -101,13 +102,20 @@ export default function LoginPage() {
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="비밀번호 입력"
                 value={formData.password}
                 onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                className={`w-full pl-12 pr-4 py-4 bg-gray-50 border rounded-2xl focus:ring-4 focus:ring-black/5 outline-none font-bold text-sm transition-all text-gray-900 placeholder:text-gray-400
+                className={`w-full pl-12 pr-12 py-4 bg-gray-50 border rounded-2xl focus:ring-4 focus:ring-black/5 outline-none font-bold text-sm transition-all text-gray-900 placeholder:text-gray-400
                   ${errors.password ? 'border-red-300 focus:border-red-500' : 'border-transparent focus:border-gray-200'}`}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
             {errors.password && <p className="text-xs text-red-500 font-bold ml-1 mt-1">{errors.password}</p>}
           </div>

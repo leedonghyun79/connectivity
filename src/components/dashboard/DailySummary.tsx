@@ -3,13 +3,22 @@
 import { useState, useEffect } from 'react';
 import { getTodayStats } from '@/lib/actions';
 import { Users, CheckCircle2, MessageSquare, TrendingUp, Calendar } from 'lucide-react';
+import Link from 'next/link';
 
 export default function DailySummary() {
   const [stats, setStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const today = new Date().toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' });
-  const weekday = new Date().toLocaleDateString('ko-KR', { weekday: 'long' }).toUpperCase();
+  const now = new Date();
+  const today = now.toLocaleDateString('ko-KR', { 
+    month: '2-digit', 
+    day: '2-digit',
+    timeZone: 'Asia/Seoul'
+  });
+  const weekday = now.toLocaleDateString('ko-KR', { 
+    weekday: 'long',
+    timeZone: 'Asia/Seoul'
+  }).toUpperCase();
 
   useEffect(() => {
     getTodayStats().then(data => {
@@ -63,9 +72,12 @@ export default function DailySummary() {
         ))}
       </div>
 
-      <button className="w-full mt-10 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-2xl hover:bg-black hover:text-white hover:border-black transition-all">
-        전체 로그 확인
-      </button>
+      <Link 
+        href="/logs"
+        className="w-full mt-10 py-4 text-center text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-2xl hover:bg-black hover:text-white hover:border-black transition-all"
+      >
+        전체 브리핑 확인
+      </Link>
     </div>
   );
 }

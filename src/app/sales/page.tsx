@@ -5,39 +5,70 @@ import {
   PieChart, Pie, Cell, Legend
 } from 'recharts';
 import { DollarSign, TrendingUp, CreditCard, Download, Activity, Calendar, ArrowUpRight, Filter, PieChart as PieIcon } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import PageLoader from '@/components/common/PageLoader';
 import { getTransactions, getSalesStats } from '@/lib/actions';
+import TransactionModal from '@/components/modals/TransactionModal';
+import { Plus } from 'lucide-react';
 
 export default function SalesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
+  const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'pending'>('all');
+  const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
+
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    const [txData, statData] = await Promise.all([
+      getTransactions(),
+      getSalesStats()
+    ]);
+    setTransactions(txData);
+    setStats(statData);
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
-    async function fetchData() {
-      setIsLoading(true);
-      const [txData, statData] = await Promise.all([
-        getTransactions(),
-        getSalesStats()
-      ]);
-      setTransactions(txData);
-      setStats(statData);
-      setIsLoading(false);
-    }
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   if (isLoading || !stats) return <PageLoader />;
 
-  const COLORS = ['#000000', '#333333', '#666666', '#999999'];
-  const serviceShareData = [
-    { name: '웹 개발', value: 45 },
-    { name: '앱 개발', value: 25 },
-    { name: '브랜딩', value: 15 },
-    { name: '유지보수', value: 15 },
-  ];
+  const COLORS = ['#000000', '#333333', '#666666', '#999999', '#CCCCCC', '#E5E5E5'];
+  
+  // CSV 다운로드 기능
+  const downloadCSV = () => {
+    if (transactions.length === 0) {
+      toast.error('내보낼 데이터가 없습니다.');
+      return;
+    }
+    
+    const headers = ['날짜', '고객사', '서비스', '금액', '상태'];
+    const rows = transactions.map(tx => [
+      new Date(tx.date).toLocaleDateString('ko-KR'),
+      tx.customer?.name || '알 수 없음',
+      tx.serviceType || '-',
+      tx.amount,
+      tx.status === 'completed' ? '정산완료' : '입금대기'
+    ]);
+    
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(r => r.join(','))
+    ].join('\n');
+    
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `매출분석_리포트_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('리포트 다운로드가 시작되었습니다.');
+  };
 
   return (
     <div className="space-y-10 py-10">
@@ -53,10 +84,10 @@ export default function SalesPage() {
         </div>
         <div className="flex gap-4">
           <button 
-            onClick={() => toast.info('감사 리포트 추출 기능은 현재 개발 중입니다.')}
+            onClick={downloadCSV}
             className="px-6 py-3 bg-white border border-gray-100 rounded-2xl text-[11px] font-black text-black uppercase tracking-widest hover:bg-black hover:text-white transition-all flex items-center gap-2 active:scale-95">
             <Download size={16} />
-            감사 리포트 추출
+            리포트 추출
           </button>
         </div>
       </div>
@@ -146,16 +177,16 @@ export default function SalesPage() {
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={serviceShareData}
+                  data={stats.serviceDistribution}
                   cx="50%"
-                  cy="45%"
-                  innerRadius={80}
-                  outerRadius={100}
-                  paddingAngle={8}
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={5}
                   dataKey="value"
                   stroke="none"
                 >
-                  {serviceShareData.map((entry, index) => (
+                  {stats.serviceDistribution.map((entry: any, index: number) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -182,11 +213,27 @@ export default function SalesPage() {
             <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">거래 히스토리</div>
             <h3 className="text-2xl font-black text-black uppercase tracking-tighter">전체 거래 내역</h3>
           </div>
-          <button 
-            onClick={() => toast.info('결과 필터링 기능은 현재 개발 중입니다.')}
-            className="flex items-center gap-2 px-6 py-3 bg-gray-50 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-black transition-all">
-            <Filter size={16} /> 결과 필터링
-          </button>
+          <div className="flex gap-4">
+            <button 
+              onClick={() => setIsTransactionModalOpen(true)}
+              className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all active:scale-95">
+              <Plus size={16} /> 거래 등록
+            </button>
+            <button 
+              onClick={() => {
+                const next: Record<string, 'all' | 'completed' | 'pending'> = {
+                  all: 'completed',
+                  completed: 'pending',
+                  pending: 'all'
+                };
+                setFilterStatus(next[filterStatus]);
+              }}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all
+                ${filterStatus === 'all' ? 'bg-gray-50 text-gray-400' : 'bg-black text-white'}`}>
+              <Filter size={16} /> 
+              {filterStatus === 'all' ? '결과 필터링' : filterStatus === 'completed' ? '정산 완료만' : '대기 중만'}
+            </button>
+          </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
@@ -201,7 +248,9 @@ export default function SalesPage() {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {transactions && transactions.length > 0 ? (
-                transactions.map((tx) => (
+                transactions
+                  .filter(tx => filterStatus === 'all' || tx.status === filterStatus)
+                  .map((tx) => (
                   <tr key={tx.id} className="hover:bg-gray-50/50 transition-all group">
                     <td className="px-10 py-8 font-mono font-bold text-gray-300 group-hover:text-black transition-colors">
                       #{tx.id.substring(0, 8).toUpperCase()}
@@ -237,6 +286,12 @@ export default function SalesPage() {
           </table>
         </div>
       </div>
+
+      <TransactionModal
+        isOpen={isTransactionModalOpen}
+        onClose={() => setIsTransactionModalOpen(false)}
+        onSuccess={fetchData}
+      />
     </div>
   );
 }

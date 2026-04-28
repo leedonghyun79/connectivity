@@ -13,7 +13,7 @@ import ConfirmModal from '@/components/common/ConfirmModal';
 export default function EstimatesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [estimates, setEstimates] = useState<any[]>([]);
-  const [stats, setStats] = useState({ totalAmount: '0', pending: 0, approved: 0 });
+  const [stats, setStats] = useState({ totalAmount: 0, pending: 0, approved: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEstimate, setSelectedEstimate] = useState<any>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);

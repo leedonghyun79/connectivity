@@ -40,7 +40,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
   const [formData, setFormData] = useState({
     title: '',
     customerId: '',
-    issueDate: new Date().toISOString().split('T')[0],
+    issueDate: new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date()),
     ...defaultBizInfo
   });
 
@@ -58,7 +58,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
         setFormData({
           title: editData.title,
           customerId: editData.customerId,
-          issueDate: new Date(editData.issueDate).toISOString().split('T')[0],
+          issueDate: new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date(editData.issueDate)),
           bizNumber: editData.bizNumber || defaultBizInfo.bizNumber,
           bizName: editData.bizName || defaultBizInfo.bizName,
           bizCEO: editData.bizCEO || defaultBizInfo.bizCEO,
@@ -83,7 +83,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
         setFormData({
           title: '',
           customerId: '',
-          issueDate: new Date().toISOString().split('T')[0],
+          issueDate: new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date()),
           ...defaultBizInfo
         });
         setItems([{ id: '1', itemName: '', spec: '', quantity: 1, unitPrice: 0, supplyValue: 0, vat: 0 }]);
@@ -418,7 +418,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                   <span className="text-sm font-bold">서명 :</span>
                   <div className="w-32 h-10 bg-gray-50 rounded-lg border-b-2 border-gray-200 flex items-center justify-center italic text-gray-300 text-sm">(인)</div>
                 </div>
-                <div className="text-gray-400 font-mono text-sm">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                <div className="text-gray-400 font-mono text-sm">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Seoul' })}</div>
               </div>
             </div>
           </form>

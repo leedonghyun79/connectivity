@@ -30,13 +30,13 @@ export default function PerformanceMetrics() {
     <div className="bg-white p-10 rounded-[40px] border border-gray-100 h-[480px] flex flex-col group">
       <div className="flex justify-between items-start mb-8">
         <div>
-          <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">인프라 KPI</div>
+          <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">시스템 운영 현황</div>
           <h3 className="text-2xl font-black text-black uppercase tracking-tighter">운영 성과 매트릭스</h3>
         </div>
         <button
           onClick={handleSync}
           disabled={isSyncing}
-          className={`p-3 rounded-2xl transition-all flex items-center gap-2 group/btn ${isSyncing ? 'bg-black text-white' : 'bg-gray-50 text-gray-300 hover:bg-black hover:text-white'}`}
+          className={`p-3 rounded-2xl transition-all flex items-center gap-2 group/btn ${isSyncing ? 'bg-black text-white' : 'bg-gray-50 text-gray-200 group-hover:bg-black group-hover:text-white'}`}
           title="원격 DB 동기화"
         >
           <RefreshCcw size={20} className={isSyncing ? 'animate-spin' : 'group-hover/btn:rotate-180 transition-transform duration-500'} />

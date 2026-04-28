@@ -17,22 +17,22 @@ export default function RecentInquiryList() {
   }, []);
 
   return (
-    <div className="bg-white p-8 rounded-[32px] border border-gray-100 flex flex-col gap-6">
+    <div className="bg-white p-10 rounded-[40px] border border-gray-100 flex flex-col gap-6 group">
       {/* 헤더 */}
       <div className="flex justify-between items-start">
         <div>
           <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">
             지원 인박스
           </div>
-          <h3 className="text-xl font-black text-black tracking-tighter uppercase">
+          <h3 className="text-2xl font-black text-black tracking-tighter uppercase">
             최근 문의
           </h3>
         </div>
         <Link
           href="/inquiries"
-          className="p-2 bg-gray-50 rounded-xl text-gray-300 hover:bg-black hover:text-white transition-all"
+          className="p-3 bg-gray-50 rounded-2xl text-gray-200 group-hover:bg-black group-hover:text-white transition-all duration-300"
         >
-          <ArrowUpRight size={16} />
+          <ArrowUpRight size={20} />
         </Link>
       </div>
 
@@ -80,7 +80,7 @@ export default function RecentInquiryList() {
                   {inquiry.title}
                 </div>
                 <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">
-                  {inquiry.authorName || inquiry.customer?.name || '익명'} · {new Date(inquiry.createdAt).toLocaleDateString('ko-KR')}
+                  {inquiry.authorName || inquiry.customer?.name || '익명'} · {new Date(inquiry.createdAt).toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' })}
                 </div>
               </div>
 

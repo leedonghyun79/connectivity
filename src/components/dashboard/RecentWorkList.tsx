@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { getRecentActivityFeed } from '@/lib/actions';
 import { FileText, ArrowRight, Eye, Briefcase, Clock } from 'lucide-react';
+import Link from 'next/link';
 
 export default function RecentWorkList() {
   const [activities, setActivities] = useState<any[]>([]);
@@ -77,9 +78,12 @@ export default function RecentWorkList() {
         )}
       </div>
 
-      <button className="w-full mt-10 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-2xl hover:bg-black hover:text-white hover:border-black transition-all flex items-center justify-center gap-2">
-        상세 활동 내역 보기 <ArrowRight size={14} />
-      </button>
+      <Link 
+        href="/logs"
+        className="w-full mt-10 py-4 text-center text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-2xl hover:bg-black hover:text-white hover:border-black transition-all flex items-center justify-center gap-2"
+      >
+        전체 활동 내역 확인 <ArrowRight size={14} />
+      </Link>
     </div>
   );
 }
