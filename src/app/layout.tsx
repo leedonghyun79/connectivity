@@ -23,9 +23,10 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
-      { url: "/favicon.png", type: "image/png" },
+      { url: "/favicon30.png", type: "image/png", sizes: "30x30" },
+      { url: "/favicon196.png", type: "image/png", sizes: "196x196" },
     ],
-    apple: { url: "/favicon.png", type: "image/png" },
+    apple: { url: "/favicon196.png", type: "image/png" },
   },
 };
 
@@ -43,6 +44,8 @@ export default function RootLayout({
           as="style"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
+        <link rel="shortcut icon" type="image/png" href="/favicon30.png" sizes="30x30" />
+        <link rel="icon" type="image/png" href="/favicon196.png" sizes="196x196" />
       </head>
       <body>
         <AuthProvider>
