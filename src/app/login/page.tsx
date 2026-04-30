@@ -130,16 +130,12 @@ export default function LoginPage() {
             ) : (
               <>
                 <Lock size={16} />
-                로그인 및 인증 시작
+                로그인
                 <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </>
             )}
           </button>
         </form>
-
-        <div className="mt-8 text-center text-xs font-bold text-gray-300">
-          테스트 계정 : admin / admin123!
-        </div>
       </div>
     </div>
   );
