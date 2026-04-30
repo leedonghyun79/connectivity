@@ -8,11 +8,12 @@ import EstimateModal from '@/components/modals/EstimateModal';
 import EstimateDetailModal from '@/components/modals/EstimateDetailModal';
 import { toast } from 'sonner';
 import DataTable from '@/components/common/DataTable';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 export default function EstimatesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [estimates, setEstimates] = useState<any[]>([]);
-  const [stats, setStats] = useState({ totalAmount: '0', pending: 0, approved: 0 });
+  const [stats, setStats] = useState({ totalAmount: 0, pending: 0, approved: 0 });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEstimate, setSelectedEstimate] = useState<any>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -21,6 +22,8 @@ export default function EstimatesPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
 
   // 메뉴 및 필터 외부 클릭 감지
@@ -69,18 +72,25 @@ export default function EstimatesPage() {
     setIsDetailOpen(true);
   };
 
-  const handleDelete = async (e: React.MouseEvent, id: string) => {
+  const handleDelete = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    if (!confirm('정말로 이 견적서를 삭제하시겠습니까?')) return;
-
+    setDeletingId(id);
+    setIsDeleteConfirmOpen(true);
     setActiveMenuId(null);
-    const result = await deleteEstimate(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingId) return;
+    
+    const result = await deleteEstimate(deletingId);
     if (result.success) {
       toast.success('견적서가 삭제되었습니다.');
       fetchData();
     } else {
       toast.error(result.error);
     }
+    setDeletingId(null);
+    setIsDeleteConfirmOpen(false);
   };
 
   const handleEdit = (e: React.MouseEvent, estimate: any) => {
@@ -135,6 +145,16 @@ export default function EstimatesPage() {
         isOpen={isDetailOpen}
         onClose={() => setIsDetailOpen(false)}
         estimate={selectedEstimate}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="견적서 삭제"
+        message="정말로 이 견적서를 삭제하시겠습니까? 삭제된 견적서는 복구할 수 없습니다."
+        confirmText="삭제하기"
+        type="danger"
       />
 
       {/* 요약 카드 */}

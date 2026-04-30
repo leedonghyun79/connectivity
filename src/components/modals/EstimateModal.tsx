@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Search, Loader2, Plus, Trash2, Printer } from 'lucide-react';
 import { createEstimate, updateEstimate, getCustomers } from '@/lib/actions';
 import { toast } from 'sonner';
@@ -23,22 +24,23 @@ interface EstimateModalProps {
 }
 
 export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: EstimateModalProps) {
+  const [mounted, setMounted] = useState(false);
   const [customers, setCustomers] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const defaultBizInfo = {
+  const defaultBizInfo = useMemo(() => ({
     bizNumber: '123-45-67890',
     bizName: '커넥티비티(Connectivity)',
     bizCEO: '홍길동',
     bizAddress: '서울시 강남구 테헤란로 123',
     bizPhone: '02-1234-5678',
     bizEmail: 'contact@connectivity.com',
-  };
+  }), []);
 
   const [formData, setFormData] = useState({
     title: '',
     customerId: '',
-    issueDate: new Date().toISOString().split('T')[0],
+    issueDate: new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date()),
     ...defaultBizInfo
   });
 
@@ -47,14 +49,16 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
   ]);
 
   useEffect(() => {
+    setMounted(true);
     if (isOpen) {
+      document.body.style.overflow = 'hidden';
       getCustomers().then(setCustomers);
 
       if (editData) {
         setFormData({
           title: editData.title,
           customerId: editData.customerId,
-          issueDate: new Date(editData.issueDate).toISOString().split('T')[0],
+          issueDate: new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date(editData.issueDate)),
           bizNumber: editData.bizNumber || defaultBizInfo.bizNumber,
           bizName: editData.bizName || defaultBizInfo.bizName,
           bizCEO: editData.bizCEO || defaultBizInfo.bizCEO,
@@ -79,13 +83,13 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
         setFormData({
           title: '',
           customerId: '',
-          issueDate: new Date().toISOString().split('T')[0],
+          issueDate: new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date()),
           ...defaultBizInfo
         });
         setItems([{ id: '1', itemName: '', spec: '', quantity: 1, unitPrice: 0, supplyValue: 0, vat: 0 }]);
       }
     }
-  }, [isOpen, editData]);
+  }, [isOpen, editData, defaultBizInfo]);
 
   const calculateItemValues = (quantity: number, unitPrice: number) => {
     const supplyValue = quantity * unitPrice;
@@ -163,11 +167,11 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
     }
   };
 
-  if (!isOpen) return null;
+  if (!mounted || !isOpen) return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300"
       onClick={onClose}
     >
       <div
@@ -414,7 +418,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                   <span className="text-sm font-bold">서명 :</span>
                   <div className="w-32 h-10 bg-gray-50 rounded-lg border-b-2 border-gray-200 flex items-center justify-center italic text-gray-300 text-sm">(인)</div>
                 </div>
-                <div className="text-gray-400 font-mono text-sm">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                <div className="text-gray-400 font-mono text-sm">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Seoul' })}</div>
               </div>
             </div>
           </form>
@@ -450,6 +454,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
           </div>
         </div>
       </div>
-    </div >
+    </div>,
+    document.body
   );
 }

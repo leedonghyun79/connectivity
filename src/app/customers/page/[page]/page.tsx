@@ -1,14 +1,17 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, Filter, MoreHorizontal, Download, Eye, Trash2, XCircle, Edit2, Users, ArrowUpRight, FileText } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Search, Filter, MoreHorizontal, Download, Eye, Trash2, Edit2, Users, ArrowUpRight, FileText } from 'lucide-react';
 import PageLoader from '@/components/common/PageLoader';
 import { getCustomers, deleteCustomer } from '@/lib/actions';
 import { toast } from 'sonner';
 import CustomerModal from '@/components/modals/CustomerModal';
 import DataTable, { Column } from '@/components/common/DataTable';
+import ConfirmModal from '@/components/common/ConfirmModal';
 
 export default function CustomersPage({ params }: { params: { page: string } }) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [customers, setCustomers] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,6 +21,8 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
   const [statusFilter, setStatusFilter] = useState('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [deletingCustomerData, setDeletingCustomerData] = useState<{ id: string, name: string } | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
 
   const fetchData = async () => {
@@ -60,16 +65,23 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
     fetchData();
   }, []);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (confirm(`'${name}' 고객 정보를 삭제하시겠습니까?`)) {
-      const res = await deleteCustomer(id);
-      if (res.success) {
-        toast.success('삭제되었습니다.');
-        fetchData();
-      } else {
-        toast.error(res.error || '삭제 중 오류가 발생했습니다.');
-      }
+  const handleDelete = (id: string, name: string) => {
+    setDeletingCustomerData({ id, name });
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingCustomerData) return;
+
+    const res = await deleteCustomer(deletingCustomerData.id);
+    if (res.success) {
+      toast.success('삭제되었습니다.');
+      fetchData();
+    } else {
+      toast.error(res.error || '삭제 중 오류가 발생했습니다.');
     }
+    setDeletingCustomerData(null);
+    setIsDeleteConfirmOpen(false);
   };
 
   const handleEdit = (customer: any) => {
@@ -95,7 +107,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
       <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
           <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">고객 데이터베이스 관리</div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">고객 디렉토리</h1>
+          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">고객 관리</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <Users size={14} />
             현재 총 <span className="text-black">{filteredCustomers.length}</span>명의 핵심 고객이 데이터베이스에 등록되어 있습니다.
@@ -129,6 +141,16 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
         onSuccess={fetchData}
         customer={editingCustomer}
         isReadOnly={isReadOnly}
+      />
+
+      <ConfirmModal
+        isOpen={isDeleteConfirmOpen}
+        onClose={() => setIsDeleteConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="고객 정보 삭제"
+        message={`'${deletingCustomerData?.name}' 고객 정보를 삭제하시겠습니까? 삭제된 데이터는 복구할 수 없습니다.`}
+        confirmText="삭제하기"
+        type="danger"
       />
 
       {/* 통계 요약 */}
@@ -227,16 +249,12 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
       </div>
 
       {/* 테이블 */}
-      {/* 테이블 */}
       <DataTable
         data={filteredCustomers}
         noDataIcon={<Search size={48} />}
         noDataMessage="일치하는 고객 정보가 없습니다."
         onRowClick={(customer) => {
-          // 행 클릭 시 동작이 필요하다면 여기에 추가 (현재는 별도 동작 없음, 관리 버튼만 작동)
-          // 기존 코드에서도 tr에 cursor-pointer는 있지만 onClick 핸들러는 없었음 (편집 버튼 등만 존재)
-          // 확인해보니 tr에는 onClick이 없고, hover 효과만 있었음. 
-          // 하지만 EstimatesPage는 handleRowClick이 있으므로, 여기서는 그냥 undefined로 두거나 빈 함수
+          router.push(`/customers/${customer.id}`);
         }}
         columns={[
           {

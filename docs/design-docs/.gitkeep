@@ -1,0 +1,7 @@
+설계 결정 문서(ADR - Architecture Decision Records) 저장 폴더.
+
+파일명 형식: `ADR-{번호}-{제목}.md`
+
+예시:
+- `ADR-001-server-actions.md`
+- `ADR-002-sqlite-vs-postgres.md`

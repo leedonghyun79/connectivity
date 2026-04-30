@@ -1,17 +1,36 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { getTodayStats } from '@/lib/actions';
 import { Users, CheckCircle2, MessageSquare, TrendingUp, Calendar } from 'lucide-react';
+import Link from 'next/link';
 
 export default function DailySummary() {
-  const today = new Date().toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' });
-  const weekday = new Date().toLocaleDateString('ko-KR', { weekday: 'long' }).toUpperCase();
+  const [stats, setStats] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const stats = [
-    { label: '신규 가입자', count: 12, icon: Users, color: 'text-black', bg: 'bg-gray-50' },
-    { label: '완료된 작업', count: 5, icon: CheckCircle2, color: 'text-black', bg: 'bg-gray-50' },
-    { label: '시스템 문의', count: 8, icon: MessageSquare, color: 'text-black', bg: 'bg-gray-50' },
-    { label: '매출 발생건', count: 3, icon: TrendingUp, color: 'text-black', bg: 'bg-gray-50' },
-  ];
+  const now = new Date();
+  const today = now.toLocaleDateString('ko-KR', { 
+    month: '2-digit', 
+    day: '2-digit',
+    timeZone: 'Asia/Seoul'
+  });
+  const weekday = now.toLocaleDateString('ko-KR', { 
+    weekday: 'long',
+    timeZone: 'Asia/Seoul'
+  }).toUpperCase();
+
+  useEffect(() => {
+    getTodayStats().then(data => {
+      setStats([
+        { label: '신규 가입자', count: data.newCustomers, icon: Users, color: 'text-black', bg: 'bg-gray-50' },
+        { label: '완료된 작업', count: data.closedProjects, icon: CheckCircle2, color: 'text-black', bg: 'bg-gray-50' },
+        { label: '시스템 문의', count: data.newInquiries, icon: MessageSquare, color: 'text-black', bg: 'bg-gray-50' },
+        { label: '매출 발생건', count: data.newTransactions, icon: TrendingUp, color: 'text-black', bg: 'bg-gray-50' },
+      ]);
+      setIsLoading(false);
+    });
+  }, []);
 
   return (
     <div className="bg-white p-10 rounded-[32px] border border-gray-100 h-full flex flex-col">
@@ -27,7 +46,17 @@ export default function DailySummary() {
       </div>
 
       <div className="space-y-4 flex-1">
-        {stats.map((stat, index) => (
+        {isLoading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="flex items-center justify-between p-4 animate-pulse">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gray-50 rounded-2xl" />
+                <div className="h-3 bg-gray-50 rounded w-20" />
+              </div>
+              <div className="h-6 bg-gray-50 rounded w-8" />
+            </div>
+          ))
+        ) : stats?.map((stat: any, index: number) => (
           <div key={index} className="flex items-center justify-between p-4 hover:bg-gray-50/50 rounded-2xl transition-all border border-transparent hover:border-gray-50 group">
             <div className="flex items-center gap-4">
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${stat.bg} ${stat.color} group-hover:bg-black group-hover:text-white`}>
@@ -43,9 +72,12 @@ export default function DailySummary() {
         ))}
       </div>
 
-      <button className="w-full mt-10 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-2xl hover:bg-black hover:text-white hover:border-black transition-all">
-        전체 로그 확인
-      </button>
+      <Link 
+        href="/logs"
+        className="w-full mt-10 py-4 text-center text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-2xl hover:bg-black hover:text-white hover:border-black transition-all"
+      >
+        전체 브리핑 확인
+      </Link>
     </div>
   );
 }

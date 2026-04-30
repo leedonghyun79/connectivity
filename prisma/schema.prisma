@@ -60,6 +60,8 @@ model Inquiry {
   authorName String?
   type       String? // 기술지원, 일반문의, 결제/환불
   status     String    @default("pending") // pending, answered, closed
+  answer     String?   // 답변 내용
+  answeredAt DateTime? // 답변 일시
   customerId String?
   customer   Customer? @relation(fields: [customerId], references: [id])
   createdAt  DateTime  @default(now())
@@ -126,4 +128,38 @@ model DailyStat {
   revenue     Decimal  @default(0)     // DB (Transaction) 데이터
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  name      String
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SystemLog {
+  id        String   @id @default(cuid())
+  action    String   // 예: "LOGIN", "SETTING_UPDATE", "PASSWORD_CHANGE"
+  message   String   // 상세 내용
+  user      String?  // 수행 유저
+  createdAt DateTime @default(now())
+}
+
+model SystemConfig {
+  id                Int      @id @default(1)
+  language          String   @default("ko")
+  timezone          String   @default("Asia/Seoul")
+  dateFormat        String   @default("YYYY.MM.DD")
+  currency          String   @default("KRW")
+  
+  // 알림 설정
+  notifyInquiry     Boolean  @default(true)
+  notifyEstimate    Boolean  @default(true)
+  notifyTransaction Boolean  @default(false)
+  dailyReport       Boolean  @default(false)
+  systemNotice      Boolean  @default(true)
+  
+  updatedAt         DateTime @updatedAt
 }

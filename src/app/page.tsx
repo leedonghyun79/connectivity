@@ -4,9 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import WorkStatusCards from "@/components/dashboard/WorkStatusCards";
 import VisitorChart from "@/components/dashboard/VisitorChart";
 import TrafficSource from "@/components/dashboard/TrafficSource";
-import PerformanceMetrics from "@/components/dashboard/PerformanceMetrics";
 import DailySummary from "@/components/dashboard/DailySummary";
 import RecentWorkList from "@/components/dashboard/RecentWorkList";
+import AnalyticsTable from "@/components/dashboard/AnalyticsTable";
+import RecentInquiryList from "@/components/dashboard/RecentInquiryList";
+import StatChart from "@/components/dashboard/StatChart";
 import { AlertCircle, ArrowUpRight, LayoutDashboard, Zap } from "lucide-react";
 import PageLoader from "@/components/common/PageLoader";
 
@@ -34,7 +36,7 @@ export default function Dashboard() {
           </div>
           <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">운영 대시보드</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
-            < Zap size={14} className="text-black" />
+            <Zap size={14} className="text-black" />
             환영합니다, 관리자님. 시스템이 <span className="text-black uppercase">최적 상태</span>로 운영 중입니다.
           </p>
         </div>
@@ -42,28 +44,18 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 시스템 알림 (미니멀) */}
-      <div className="p-6 bg-black rounded-3xl flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <div className="p-2 bg-white/10 rounded-xl">
-            <AlertCircle size={20} className="text-white" />
-          </div>
-          <div>
-            <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">지능형 알림</p>
-            <p className="text-sm font-bold text-white">복구된 시스템이 정상 작동 중입니다. 모든 인프라 링크가 활성화되었습니다.</p>
-          </div>
-        </div>
-        <button className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-white transition-colors flex items-center gap-1">
-          상세 보기 <ArrowUpRight size={12} />
-        </button>
-      </div>
 
       <WorkStatusCards />
 
       {/* 메인 분석 섹션 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="w-full">
         <VisitorChart />
-        <PerformanceMetrics />
+      </div>
+
+      {/* 매출 차트 + 최근 문의 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <StatChart />
+        <RecentInquiryList />
       </div>
 
       {/* 하단 섹션 */}
@@ -74,6 +66,9 @@ export default function Dashboard() {
           <RecentWorkList />
         </div>
       </div>
+
+      {/* 운영 현황 테이블 */}
+      <AnalyticsTable />
     </div>
   );
 }

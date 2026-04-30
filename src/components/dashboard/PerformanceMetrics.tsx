@@ -30,13 +30,13 @@ export default function PerformanceMetrics() {
     <div className="bg-white p-10 rounded-[40px] border border-gray-100 h-[480px] flex flex-col group">
       <div className="flex justify-between items-start mb-8">
         <div>
-          <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">인프라 KPI</div>
+          <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">시스템 운영 현황</div>
           <h3 className="text-2xl font-black text-black uppercase tracking-tighter">운영 성과 매트릭스</h3>
         </div>
         <button
           onClick={handleSync}
           disabled={isSyncing}
-          className={`p-3 rounded-2xl transition-all flex items-center gap-2 group/btn ${isSyncing ? 'bg-black text-white' : 'bg-gray-50 text-gray-300 hover:bg-black hover:text-white'}`}
+          className={`p-3 rounded-2xl transition-all flex items-center gap-2 group/btn ${isSyncing ? 'bg-black text-white' : 'bg-gray-50 text-gray-200 group-hover:bg-black group-hover:text-white'}`}
           title="원격 DB 동기화"
         >
           <RefreshCcw size={20} className={isSyncing ? 'animate-spin' : 'group-hover/btn:rotate-180 transition-transform duration-500'} />
@@ -48,9 +48,9 @@ export default function PerformanceMetrics() {
         <table className="w-full text-left">
           <thead className="sticky top-0 bg-white border-b border-gray-100 z-10">
             <tr>
-              <th className="pb-4 uppercase tracking-widest text-[9px] font-black text-gray-400">날짜 로그</th>
-              <th className="pb-4 text-center uppercase tracking-widest text-[9px] font-black text-gray-400">PV</th>
-              <th className="pb-4 text-center uppercase tracking-widest text-[9px] font-black text-gray-400">UV</th>
+              <th className="pb-4 uppercase tracking-widest text-[9px] font-black text-gray-400">날짜</th>
+              <th className="pb-4 text-center uppercase tracking-widest text-[9px] font-black text-gray-400">페이지 뷰</th>
+              <th className="pb-4 text-center uppercase tracking-widest text-[9px] font-black text-gray-400">순 방문자수</th>
               <th className="pb-4 text-center uppercase tracking-widest text-[9px] font-black text-gray-400">가입</th>
               <th className="pb-4 text-center uppercase tracking-widest text-[9px] font-black text-gray-400">문의</th>
               <th className="pb-4 text-right uppercase tracking-widest text-[9px] font-black text-gray-400">매출액 (KRW)</th>
@@ -79,7 +79,7 @@ export default function PerformanceMetrics() {
                 <td colSpan={6} className="py-20 text-center">
                   <div className="flex flex-col items-center gap-2 opacity-20">
                     <Database size={40} />
-                    <span className="text-[10px] font-black uppercase tracking-widest">로그 데이터가 탐지되지 않았습니다</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest">수집된 통계 데이터가 없습니다</span>
                   </div>
                 </td>
               </tr>
