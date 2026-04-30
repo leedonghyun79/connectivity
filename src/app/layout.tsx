@@ -20,6 +20,13 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Connectivity CRM",
   description: "Customer Relationship Management",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    apple: { url: "/favicon.png", type: "image/png" },
+  },
 };
 
 export default function RootLayout({
