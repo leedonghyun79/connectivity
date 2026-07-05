@@ -2,17 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { 
-  getStatsByDate, 
-  getLogsByDate 
+import {
+  getStatsByDate,
+  getLogsByDate
 } from '@/lib/actions';
-import { 
-  Calendar as CalendarIcon, 
-  Users, 
-  CheckCircle2, 
-  MessageSquare, 
-  TrendingUp, 
-  ChevronLeft, 
+import {
+  Calendar as CalendarIcon,
+  Users,
+  CheckCircle2,
+  MessageSquare,
+  TrendingUp,
+  ChevronLeft,
   ChevronRight,
   ArrowLeft,
   Clock,
@@ -26,7 +26,7 @@ import { Suspense } from 'react';
 function LogsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  
+
   // 날짜 설정 (쿼리 파라미터가 있으면 사용, 없으면 오늘)
   // 한국 시간(KST) 기준으로 오늘 날짜 구하기 (YYYY-MM-DD)
   const getKSTToday = () => {
@@ -68,10 +68,10 @@ function LogsContent() {
 
   const formatFullDate = (dateStr: string) => {
     const d = new Date(`${dateStr}T00:00:00+09:00`);
-    return d.toLocaleDateString('ko-KR', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric', 
+    return d.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
       weekday: 'long',
       timeZone: 'Asia/Seoul'
     });
@@ -91,10 +91,6 @@ function LogsContent() {
       {/* 상단 네비게이션 및 헤더 */}
       <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
-          <Link href="/" className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3 flex items-center gap-2 hover:text-black transition-colors">
-            <ArrowLeft size={12} />
-            대시보드로 돌아가기
-          </Link>
           <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">전체 브리핑 로그</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <CalendarIcon size={14} className="text-black" />
@@ -104,16 +100,16 @@ function LogsContent() {
 
         {/* 날짜 컨트롤러 */}
         <div className="flex items-center bg-gray-50 p-2 rounded-[24px] border border-gray-100 shadow-sm">
-          <button 
+          <button
             onClick={() => moveDate(-1)}
             className="p-3 hover:bg-white hover:shadow-md rounded-2xl transition-all"
           >
             <ChevronLeft size={20} />
           </button>
-          
+
           <div className="px-6 flex flex-col items-center">
-            <input 
-              type="date" 
+            <input
+              type="date"
               value={selectedDate}
               onChange={(e) => handleDateChange(e.target.value)}
               className="bg-transparent border-none font-black text-sm text-center focus:ring-0 cursor-pointer"
@@ -121,7 +117,7 @@ function LogsContent() {
             <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">날짜 직접 선택</span>
           </div>
 
-          <button 
+          <button
             onClick={() => moveDate(1)}
             className="p-3 hover:bg-white hover:shadow-md rounded-2xl transition-all"
           >
@@ -172,14 +168,14 @@ function LogsContent() {
               </div>
             </div>
             <div className="text-right">
-               <span className="text-2xl font-black text-black tracking-tighter">{logs.length}</span>
-               <span className="text-[10px] font-black text-gray-300 uppercase ml-2">Total Events</span>
+              <span className="text-2xl font-black text-black tracking-tighter">{logs.length}</span>
+              <span className="text-[10px] font-black text-gray-300 uppercase ml-2">Total Events</span>
             </div>
           </div>
 
           <div className="space-y-2">
             {isLoading ? (
-               Array.from({ length: 5 }).map((_, i) => (
+              Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="h-16 bg-gray-50 rounded-2xl animate-pulse mb-3" />
               ))
             ) : logs.length === 0 ? (
@@ -209,7 +205,7 @@ function LogsContent() {
                         </td>
                         <td className="px-6 py-6">
                           <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border
-                            ${log.action === 'LOGIN' ? 'bg-black text-white border-black' : 
+                            ${log.action === 'LOGIN' ? 'bg-black text-white border-black' :
                               'bg-white text-black border-gray-200'}`}>
                             {log.action}
                           </span>
