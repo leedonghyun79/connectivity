@@ -91,10 +91,11 @@ function LogsContent() {
       {/* 상단 네비게이션 및 헤더 */}
       <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">전체 브리핑 로그</h1>
+          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">운영 모니터링 시스템</div>
+          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">활동 로그</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <CalendarIcon size={14} className="text-black" />
-            {formatFullDate(selectedDate)}의 상세 운영 기록입니다.
+            {formatFullDate(selectedDate)}의 활동 로그 기록입니다.
           </p>
         </div>
 
