@@ -9,7 +9,8 @@ import {
   Settings,
   ChevronRight,
   LogOut,
-  Activity
+  Activity,
+  Newspaper
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -21,6 +22,7 @@ const menuItems = [
   { name: '견적서 관리', path: '/estimates', icon: FileText, label: '견적 및 발행' },
   { name: '매출 분석', path: '/sales', icon: Banknote, label: '재무 지표' },
   { name: '문의 게시판', path: '/inquiries', icon: MessageSquare, label: '고객 지원' },
+  { name: '칼럼 관리', path: '/columns', icon: Newspaper, label: '공개 사이트 발행' },
   { name: '활동로그', path: '/logs', icon: Activity, label: '활동 및 브리핑' },
   { name: '환경 설정', path: '/settings', icon: Settings, label: '시스템 설정' },
 ];

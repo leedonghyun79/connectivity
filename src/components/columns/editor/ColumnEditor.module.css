@@ -1,0 +1,44 @@
+/* ProseMirror 본문 — Tailwind로는 contenteditable 자식을 다루기 어려워 CSS 모듈 유지 */
+.prose {
+  min-height: 400px;
+  padding: 24px;
+  outline: none;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #334155;
+  word-break: keep-all;
+}
+
+.prose :global(p.is-editor-empty:first-child::before) {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: #9aa0a6;
+  pointer-events: none;
+}
+
+.prose h2 { font-size: 24px; font-weight: 700; color: #1a1a2e; margin: 40px 0 16px; line-height: 1.4; }
+.prose h3 { font-size: 19px; font-weight: 700; color: #1a1a2e; margin: 32px 0 12px; line-height: 1.4; }
+.prose p { margin: 0 0 20px; }
+.prose ul, .prose ol { margin: 0 0 20px; padding-left: 24px; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li { margin-bottom: 6px; }
+.prose blockquote {
+  margin: 0 0 20px;
+  padding: 8px 20px;
+  border-left: 3px solid #6b6be0;
+  color: #666;
+  background: #f5f5fb;
+  border-radius: 0 8px 8px 0;
+}
+.prose hr { border: none; border-top: 1px solid #e2e8f0; margin: 32px 0; }
+.prose code:not(.hljs) {
+  background: #f1f1f6;
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.prose a { color: #2d2dc9; text-decoration: underline; }
+.prose :global(.ProseMirror-selectednode) { outline: none; }

@@ -164,3 +164,26 @@ model SystemConfig {
   
   updatedAt         DateTime @updatedAt
 }
+
+// 픽셀커넥트 공개 사이트에 발행하는 칼럼(블로그) 글
+model Column {
+  id           String    @id @default(cuid())
+  title        String
+  category     String    // 홈페이지 기획 | 전환율 최적화 | 유지보수 | 디자인 트렌드 | 마케팅
+  contentHtml  String                              // Tiptap getHTML()
+  contentJson  Json?                               // 재편집 안정성용 (Tiptap getJSON)
+  thumbnail    String?                             // 대표 이미지 URL (/api/images/[id])
+  status       String    @default("draft")         // draft | published
+  publishedAt  DateTime?
+  lastSyncedAt DateTime?                           // pixelconnect push 성공 시각
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+// 칼럼 본문/대표 이미지 저장 (MVP: DB 저장. 추후 R2로 교체)
+model ColumnImage {
+  id        String   @id @default(cuid())
+  mimeType  String
+  data      Bytes
+  createdAt DateTime @default(now())
+}
