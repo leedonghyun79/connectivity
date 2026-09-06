@@ -59,6 +59,8 @@ model Inquiry {
   title      String
   content    String
   authorName String?
+  authorEmail String?  // 신규: 상담 폼 이메일
+  authorPhone String?  // 신규: 상담 폼 연락처
   type       String? // 기술지원, 일반문의, 결제/환불
   status     String    @default("pending") // pending, answered, closed
   answer     String?   // 답변 내용
