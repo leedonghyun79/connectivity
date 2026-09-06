@@ -149,6 +149,25 @@ export default function InquiryDetailModal({
                 {new Date(inquiry.createdAt).toLocaleDateString('ko-KR')}
               </div>
             </div>
+            {inquiry.authorEmail && (
+              <div className="p-5 bg-gray-50 rounded-2xl">
+                <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">이메일</div>
+                <a
+                  href={`mailto:${inquiry.authorEmail}`}
+                  className="text-sm font-black text-black underline break-all"
+                >
+                  {inquiry.authorEmail}
+                </a>
+              </div>
+            )}
+            {inquiry.authorPhone && (
+              <div className="p-5 bg-gray-50 rounded-2xl">
+                <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">연락처</div>
+                <div className="text-sm font-black text-black font-mono">
+                  {inquiry.authorPhone}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* 문의 내용 */}
