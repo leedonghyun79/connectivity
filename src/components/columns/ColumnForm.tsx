@@ -87,7 +87,9 @@ export default function ColumnForm({ mode, id }: Props) {
     title,
     category,
     contentHtml: html,
-    contentJson: jsonRef.current,
+    // Tiptap(ProseMirror)가 노드 attrs를 Object.create(null)로 만들어서
+    // 그대로 넘기면 서버 액션 직렬화가 "null prototype" 에러를 낸다. plain 객체로 복제.
+    contentJson: JSON.parse(JSON.stringify(jsonRef.current)),
     thumbnail: thumbnail || null,
   });
 
