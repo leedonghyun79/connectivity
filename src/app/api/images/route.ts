@@ -32,10 +32,8 @@ export async function POST(req: NextRequest) {
     const { url } = await imageStore.save(buffer, file.type);
     return NextResponse.json({ url });
   } catch (err) {
+    // 원인 상세는 서버 로그로만. 클라이언트엔 일반 메시지.
     console.error('[api/images] save failed:', err);
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : '이미지 저장에 실패했습니다.' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: '이미지 업로드에 실패했습니다.' }, { status: 500 });
   }
 }

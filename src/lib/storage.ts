@@ -97,8 +97,10 @@ export const r2ImageStore: ImageStore = {
       },
     });
     if (!res.ok) {
+      // 상세(버킷·키·요청 ID 포함 가능)는 서버 로그로만. 호출부엔 상태코드만.
       const detail = await res.text().catch(() => '');
-      throw new Error(`R2 업로드 실패 (${res.status})${detail ? ` ${detail.slice(0, 200)}` : ''}`);
+      console.error('[r2ImageStore] PUT 실패', res.status, detail.slice(0, 500));
+      throw new Error(`R2 업로드 실패 (${res.status})`);
     }
     return { id: key, url: `${R2.publicUrl}/${key}` };
   },
