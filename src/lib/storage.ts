@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { AwsClient } from 'aws4fetch';
 import prisma from './prisma';
 
@@ -84,7 +85,7 @@ function r2ObjectUrl(key: string) {
 export const r2ImageStore: ImageStore = {
   async save(data, mimeType) {
     const ext = EXT[mimeType] || 'bin';
-    const key = `columns/${crypto.randomUUID()}.${ext}`;
+    const key = `columns/${randomUUID()}.${ext}`;
     const res = await r2Client().fetch(r2ObjectUrl(key), {
       method: 'PUT',
       body: new Uint8Array(data), // Buffer는 BodyInit 타입이 아니라 뷰로 변환

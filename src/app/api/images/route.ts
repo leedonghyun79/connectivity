@@ -28,6 +28,14 @@ export async function POST(req: NextRequest) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const { url } = await imageStore.save(buffer, file.type);
-  return NextResponse.json({ url });
+  try {
+    const { url } = await imageStore.save(buffer, file.type);
+    return NextResponse.json({ url });
+  } catch (err) {
+    console.error('[api/images] save failed:', err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : '이미지 저장에 실패했습니다.' },
+      { status: 500 },
+    );
+  }
 }
