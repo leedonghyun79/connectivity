@@ -15,7 +15,6 @@ type Column = {
   status: string;
   publishedAt: string | Date | null;
   updatedAt: string | Date;
-  lastSyncedAt: string | Date | null;
 };
 
 function fmt(d: string | Date | null) {
@@ -108,9 +107,6 @@ export default function ColumnsPage() {
                       <Link href={`/columns/${r.id}/edit`} className="font-semibold text-black hover:underline">
                         {r.title || '(제목 없음)'}
                       </Link>
-                      {published && !r.lastSyncedAt && (
-                        <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-700">동기화 필요</span>
-                      )}
                     </td>
                     <td className="px-4 py-4 text-gray-500">{r.category}</td>
                     <td className="px-4 py-4">

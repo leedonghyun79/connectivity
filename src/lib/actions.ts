@@ -2,7 +2,6 @@
 
 import prisma from './prisma';
 import { revalidatePath } from 'next/cache';
-import { pushColumn, removeColumn, firstImageSrc, type ColumnSyncPayload } from './column-sync';
 
 /**
  * 고객 관련 액션
@@ -1014,7 +1013,9 @@ export async function syncAllStats() {
 }
 
 /**
- * 칼럼(블로그) 관련 액션 — pixelconnect 공개 사이트로 발행
+ * 칼럼(블로그) 관련 액션.
+ * connectivity가 유일한 DB(source of truth). pixelconnect 공개 사이트는
+ * /api/public/columns 를 fetch 해서 표시만 한다 (push 없음).
  */
 const COLUMN_CATEGORIES = ['홈페이지 기획', '전환율 최적화', '유지보수', '디자인 트렌드', '마케팅'];
 
@@ -1024,20 +1025,6 @@ interface ColumnInput {
   contentHtml: string;
   contentJson?: any;
   thumbnail?: string | null;
-}
-
-function syncPayload(col: {
-  id: string; title: string; category: string; contentHtml: string;
-  thumbnail: string | null; publishedAt: Date | null;
-}): ColumnSyncPayload {
-  return {
-    id: col.id,
-    title: col.title,
-    category: col.category,
-    contentHtml: col.contentHtml,
-    thumbnail: col.thumbnail || firstImageSrc(col.contentHtml),
-    publishedAt: (col.publishedAt ?? new Date()).toISOString(),
-  };
 }
 
 export async function getColumns() {
@@ -1094,17 +1081,6 @@ export async function updateColumn(id: string, data: ColumnInput) {
         thumbnail: data.thumbnail || null,
       },
     });
-
-    // 이미 발행된 글이면 pixelconnect에 자동 재동기화
-    if (col.status === 'published') {
-      try {
-        await pushColumn(syncPayload(col));
-        await prisma.column.update({ where: { id }, data: { lastSyncedAt: new Date() } });
-      } catch (e: any) {
-        revalidatePath('/columns');
-        return { success: true, data: col, warning: `저장됐지만 동기화 실패: ${e.message}` };
-      }
-    }
     revalidatePath('/columns');
     return { success: true, data: col };
   } catch (error) {
@@ -1117,11 +1093,9 @@ export async function publishColumn(id: string) {
   try {
     const existing = await prisma.column.findUnique({ where: { id } });
     if (!existing) return { success: false, error: '칼럼을 찾을 수 없습니다.' };
-    const publishedAt = existing.publishedAt ?? new Date();
-    await pushColumn(syncPayload({ ...existing, publishedAt }));
     const col = await prisma.column.update({
       where: { id },
-      data: { status: 'published', publishedAt, lastSyncedAt: new Date() },
+      data: { status: 'published', publishedAt: existing.publishedAt ?? new Date() },
     });
     revalidatePath('/columns');
     return { success: true, data: col };
@@ -1133,10 +1107,9 @@ export async function publishColumn(id: string) {
 
 export async function unpublishColumn(id: string) {
   try {
-    await removeColumn(id);
     const col = await prisma.column.update({
       where: { id },
-      data: { status: 'draft', lastSyncedAt: null },
+      data: { status: 'draft' },
     });
     revalidatePath('/columns');
     return { success: true, data: col };
@@ -1146,27 +1119,8 @@ export async function unpublishColumn(id: string) {
   }
 }
 
-export async function resyncColumn(id: string) {
-  try {
-    const existing = await prisma.column.findUnique({ where: { id } });
-    if (!existing) return { success: false, error: '칼럼을 찾을 수 없습니다.' };
-    if (existing.status !== 'published') return { success: false, error: '발행된 칼럼만 동기화할 수 있습니다.' };
-    await pushColumn(syncPayload(existing));
-    await prisma.column.update({ where: { id }, data: { lastSyncedAt: new Date() } });
-    revalidatePath('/columns');
-    return { success: true };
-  } catch (error: any) {
-    console.error('Failed to resync column:', error);
-    return { success: false, error: error.message || '재동기화에 실패했습니다.' };
-  }
-}
-
 export async function deleteColumn(id: string) {
   try {
-    const existing = await prisma.column.findUnique({ where: { id } });
-    if (existing?.status === 'published') {
-      await removeColumn(id).catch((e) => console.error('sync delete failed:', e));
-    }
     await prisma.column.delete({ where: { id } });
     revalidatePath('/columns');
     return { success: true };

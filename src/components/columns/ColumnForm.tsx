@@ -4,12 +4,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { ArrowLeft, ImagePlus, Loader2, Send, Save, Undo2, RefreshCw } from 'lucide-react';
+import { ArrowLeft, ImagePlus, Loader2, Send, Save, Undo2 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { JSONContent } from '@tiptap/core';
 import {
   getColumn, createColumn, updateColumn,
-  publishColumn, unpublishColumn, resyncColumn,
+  publishColumn, unpublishColumn,
 } from '@/lib/actions';
 import { uploadImage } from './editor/uploadImage';
 
@@ -34,7 +34,6 @@ export default function ColumnForm({ mode, id }: Props) {
   const [loading, setLoading] = useState(mode === 'edit');
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<'draft' | 'published'>('draft');
-  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
@@ -59,7 +58,6 @@ export default function ColumnForm({ mode, id }: Props) {
       setHtml(col.contentHtml);
       jsonRef.current = (col.contentJson as JSONContent) ?? {};
       setStatus(col.status as 'draft' | 'published');
-      setLastSyncedAt(col.lastSyncedAt ? new Date(col.lastSyncedAt).toISOString() : null);
       setLoading(false);
     });
   }, [mode, id, router]);
@@ -113,10 +111,7 @@ export default function ColumnForm({ mode, id }: Props) {
       } else {
         const res = await updateColumn(id!, payload());
         if (!res.success) throw new Error(res.error);
-        const warning = (res as { warning?: string }).warning;
-        if (warning) toast.warning(warning);
-        else toast.success('저장했습니다.');
-        if (res.data) setLastSyncedAt(res.data.lastSyncedAt ? new Date(res.data.lastSyncedAt).toISOString() : null);
+        toast.success('저장했습니다.');
       }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : '저장에 실패했습니다.');
@@ -157,24 +152,9 @@ export default function ColumnForm({ mode, id }: Props) {
       const res = await unpublishColumn(id!);
       if (!res.success) throw new Error(res.error);
       setStatus('draft');
-      setLastSyncedAt(null);
       toast.success('발행을 취소했습니다.');
     } catch (e) {
       toast.error(e instanceof Error ? e.message : '발행 취소에 실패했습니다.');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleResync = async () => {
-    setSaving(true);
-    try {
-      const res = await resyncColumn(id!);
-      if (!res.success) throw new Error(res.error);
-      setLastSyncedAt(new Date().toISOString());
-      toast.success('다시 동기화했습니다.');
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : '재동기화에 실패했습니다.');
     } finally {
       setSaving(false);
     }
@@ -199,18 +179,10 @@ export default function ColumnForm({ mode, id }: Props) {
         </Link>
         <div className="flex items-center gap-2">
           {mode === 'edit' && status === 'published' && (
-            <>
-              {!lastSyncedAt && (
-                <button onClick={handleResync} disabled={saving}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-3.5 py-2 text-sm font-semibold text-amber-700 disabled:opacity-50">
-                  <RefreshCw size={15} /> 재동기화
-                </button>
-              )}
-              <button onClick={handleUnpublish} disabled={saving}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3.5 py-2 text-sm font-semibold text-gray-600 disabled:opacity-50">
-                <Undo2 size={15} /> 발행 취소
-              </button>
-            </>
+            <button onClick={handleUnpublish} disabled={saving}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3.5 py-2 text-sm font-semibold text-gray-600 disabled:opacity-50">
+              <Undo2 size={15} /> 발행 취소
+            </button>
           )}
           <button onClick={handleSave} disabled={saving}
             className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3.5 py-2 text-sm font-semibold text-gray-700 disabled:opacity-50">
