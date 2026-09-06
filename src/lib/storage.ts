@@ -86,13 +86,19 @@ export const r2ImageStore: ImageStore = {
   async save(data, mimeType) {
     const ext = EXT[mimeType] || 'bin';
     const key = `columns/${randomUUID()}.${ext}`;
+    const body = new Uint8Array(data); // Buffer는 BodyInit 타입이 아니라 뷰로 변환
     const res = await r2Client().fetch(r2ObjectUrl(key), {
       method: 'PUT',
-      body: new Uint8Array(data), // Buffer는 BodyInit 타입이 아니라 뷰로 변환
-      headers: { 'content-type': mimeType },
+      body,
+      // R2(S3)는 PUT에 Content-Length 필수. undici가 자동으로 안 붙여 411 나므로 명시.
+      headers: {
+        'content-type': mimeType,
+        'content-length': String(body.byteLength),
+      },
     });
     if (!res.ok) {
-      throw new Error(`R2 업로드 실패 (${res.status})`);
+      const detail = await res.text().catch(() => '');
+      throw new Error(`R2 업로드 실패 (${res.status})${detail ? ` ${detail.slice(0, 200)}` : ''}`);
     }
     return { id: key, url: `${R2.publicUrl}/${key}` };
   },
