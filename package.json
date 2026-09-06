@@ -27,6 +27,7 @@
     "@tiptap/react": "^3.31.3",
     "@tiptap/starter-kit": "^3.31.3",
     "@uiw/react-codemirror": "^4.25.11",
+    "aws4fetch": "^1.0.20",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.0",
     "html2canvas": "^1.4.1",

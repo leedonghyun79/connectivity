@@ -1,9 +1,14 @@
+import { AwsClient } from 'aws4fetch';
 import prisma from './prisma';
 
 /**
  * 이미지 저장 추상화.
- * 지금은 DB(ColumnImage) 구현체. 추후 R2 구현체로 교체 예정 —
- * 아래 인터페이스만 만족하면 호출부는 그대로 둔다.
+ * - R2 설정(R2_BUCKET 등)이 있으면 Cloudflare R2 (S3 호환 API, aws4fetch 서명)
+ * - 없으면 DB(ColumnImage) — 로컬 개발 / 폴백
+ * 호출부(에디터, /api/images)는 `imageStore` 심볼만 사용한다.
+ *
+ * 참고: 과거 DB에 저장된 이미지는 /api/images/[id] 가 계속 dbImageStore 로 서빙한다
+ * (신규 업로드만 R2). 그래서 dbImageStore.get 도 export 유지.
  */
 export interface ImageStore {
   save(data: Buffer, mimeType: string): Promise<{ id: string; url: string }>;
@@ -11,8 +16,9 @@ export interface ImageStore {
   delete(id: string): Promise<void>;
 }
 
-// 본문 HTML에 절대 URL로 박히므로, 배포 도메인을 환경변수로 받는다.
-function publicBase(): string {
+// ---------- DB 구현 (레거시 / 폴백) ----------
+
+function dbPublicBase(): string {
   return (
     process.env.CONNECTIVITY_PUBLIC_URL ||
     process.env.NEXTAUTH_URL ||
@@ -26,7 +32,7 @@ export const dbImageStore: ImageStore = {
       data: { data, mimeType },
       select: { id: true },
     });
-    return { id: row.id, url: `${publicBase()}/api/images/${row.id}` };
+    return { id: row.id, url: `${dbPublicBase()}/api/images/${row.id}` };
   },
 
   async get(id) {
@@ -40,5 +46,69 @@ export const dbImageStore: ImageStore = {
   },
 };
 
-// 호출부는 이 심볼만 사용한다.
-export const imageStore: ImageStore = dbImageStore;
+// ---------- R2 구현 (S3 호환) ----------
+
+const R2 = {
+  accountId: process.env.R2_ACCOUNT_ID || '',
+  accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
+  secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
+  bucket: process.env.R2_BUCKET || '',
+  // 이미지가 서빙될 공개 도메인 (커스텀 도메인 권장). 예: https://img.pixelconnect.co.kr
+  publicUrl: (process.env.R2_PUBLIC_URL || '').replace(/\/$/, ''),
+};
+
+const r2Enabled =
+  !!R2.bucket && !!R2.accessKeyId && !!R2.secretAccessKey && !!R2.accountId && !!R2.publicUrl;
+
+const EXT: Record<string, string> = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/webp': 'webp',
+  'image/gif': 'gif',
+  'image/avif': 'avif',
+};
+
+function r2Client() {
+  return new AwsClient({
+    accessKeyId: R2.accessKeyId,
+    secretAccessKey: R2.secretAccessKey,
+    service: 's3',
+    region: 'auto',
+  });
+}
+
+function r2ObjectUrl(key: string) {
+  return `https://${R2.accountId}.r2.cloudflarestorage.com/${R2.bucket}/${key}`;
+}
+
+export const r2ImageStore: ImageStore = {
+  async save(data, mimeType) {
+    const ext = EXT[mimeType] || 'bin';
+    const key = `columns/${crypto.randomUUID()}.${ext}`;
+    const res = await r2Client().fetch(r2ObjectUrl(key), {
+      method: 'PUT',
+      body: new Uint8Array(data), // Buffer는 BodyInit 타입이 아니라 뷰로 변환
+      headers: { 'content-type': mimeType },
+    });
+    if (!res.ok) {
+      throw new Error(`R2 업로드 실패 (${res.status})`);
+    }
+    return { id: key, url: `${R2.publicUrl}/${key}` };
+  },
+
+  // R2 이미지는 공개 도메인에서 직접 서빙되므로 이 경로로 안 온다.
+  async get() {
+    return null;
+  },
+
+  async delete(id) {
+    // id = object key
+    await r2Client()
+      .fetch(r2ObjectUrl(id), { method: 'DELETE' })
+      .catch(() => {});
+  },
+};
+
+// ---------- 선택 ----------
+
+export const imageStore: ImageStore = r2Enabled ? r2ImageStore : dbImageStore;
