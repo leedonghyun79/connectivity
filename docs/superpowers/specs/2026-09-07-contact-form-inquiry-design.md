@@ -5,7 +5,7 @@
 
 ## 배경 / 목표
 
-pixelconnect 공개 사이트의 상담 문의 폼(`/contact` 의 `ContactForm.tsx`, 홈의 `Contact.tsx`)은
+pixelconnect 공개 사이트의 상담 문의 폼(`/contact` 페이지의 `src/app/contact/ContactForm.tsx`)은
 현재 `onSubmit={e => e.preventDefault()}` 만 있어 **아무것도 저장되지 않는다.**
 
 이 폼 제출을 connectivity의 기존 `Inquiry` 모델로 저장하고, 봇/스팸을 Cloudflare Turnstile +
@@ -99,8 +99,11 @@ maintain: '유지보수·운영', etc: '기타'
   - `render` 콜백으로 토큰을 부모에 전달, `expired`/`error` 시 토큰 초기화
   - sitekey = `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
 
-### `ContactForm.tsx` + `Contact.tsx` 수정
-두 파일 모두 동일 필드 구조. 각각:
+### `src/app/contact/ContactForm.tsx` 수정 (한 곳만)
+
+> `src/components/Contact.tsx` 는 어디에도 import 되지 않는 죽은 코드라 이번 범위에서 제외.
+> `FinalCTA.tsx` 는 `/contact` 로 가는 링크라 변경 없음.
+
 - `useState` 로 name/email/phone/service/message + `company`(허니팟) + `turnstileToken` + `status`('idle'|'sending'|'ok'|'error') + `errorMsg`
 - 허니팟: 화면에 안 보이는 `<input name="company" tabIndex={-1} autoComplete="off">` (CSS로 `position:absolute; left:-9999px`)
 - `<TurnstileWidget onVerify={setTurnstileToken} />` 를 제출 버튼 위에 배치
@@ -153,7 +156,6 @@ pixelconnect에 CSP 헤더가 있으면 `challenges.cloudflare.com` 을 `script-
 - `src/lib/inquiry.ts` (신규)
 - `src/components/TurnstileWidget.tsx` (신규)
 - `src/app/contact/ContactForm.tsx` (배선)
-- `src/components/Contact.tsx` (배선)
 - env: `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `NEXT_PUBLIC_CONNECTIVITY_API_URL`
 
 **사용자 수동 작업**
