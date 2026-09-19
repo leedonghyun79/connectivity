@@ -22,6 +22,7 @@ export async function GET() {
       thumbnail: true,
       contentHtml: true,
       publishedAt: true,
+      updatedAt: true,
     },
   });
 
@@ -31,6 +32,7 @@ export async function GET() {
     category: r.category,
     thumbnail: r.thumbnail || firstImageSrc(r.contentHtml),
     publishedAt: (r.publishedAt ?? new Date()).toISOString(),
+    updatedAt: r.updatedAt.toISOString(),
   }));
 
   return NextResponse.json(data);

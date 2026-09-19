@@ -38,5 +38,6 @@ export async function GET(
     thumbnail,
     contentHtml,
     publishedAt: (row.publishedAt ?? new Date()).toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
   });
 }
