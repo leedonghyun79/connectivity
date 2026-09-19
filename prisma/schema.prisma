@@ -152,11 +152,9 @@ model SystemLog {
 
 model SystemConfig {
   id                Int      @id @default(1)
-  language          String   @default("ko")
   timezone          String   @default("Asia/Seoul")
   dateFormat        String   @default("YYYY.MM.DD")
-  currency          String   @default("KRW")
-  
+
   // 알림 설정
   notifyInquiry     Boolean  @default(true)
   notifyEstimate    Boolean  @default(true)

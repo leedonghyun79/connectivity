@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
 import Header from '@/components/layout/Header';
+import { SystemConfigProvider } from '@/lib/SystemConfigContext';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -13,16 +14,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden text-slate-900 border-x">
-      <Sidebar />
-      <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-        <Header />
-        <main className="flex-1 overflow-auto bg-slate-50/50 p-6 overscroll-none">
-          <div className="max-w-7xl mx-auto">
-            {children}
-          </div>
-        </main>
+    <SystemConfigProvider>
+      <div className="flex h-screen bg-slate-50 overflow-hidden text-slate-900 border-x">
+        <Sidebar />
+        <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+          <Header />
+          <main className="flex-1 overflow-auto bg-slate-50/50 p-6 overscroll-none">
+            <div className="max-w-7xl mx-auto">
+              {children}
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </SystemConfigProvider>
   );
 }

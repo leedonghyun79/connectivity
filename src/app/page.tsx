@@ -9,7 +9,7 @@ import RecentWorkList from "@/components/dashboard/RecentWorkList";
 import AnalyticsTable from "@/components/dashboard/AnalyticsTable";
 import RecentInquiryList from "@/components/dashboard/RecentInquiryList";
 import StatChart from "@/components/dashboard/StatChart";
-import { AlertCircle, ArrowUpRight, LayoutDashboard, Zap } from "lucide-react";
+import { AlertCircle, ArrowUpRight, Zap } from "lucide-react";
 import PageLoader from "@/components/common/PageLoader";
 
 const fetchDashboardData = async () => {
@@ -30,14 +30,10 @@ export default function Dashboard() {
       {/* 프리미엄 헤더 섹션 */}
       <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
-          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3 flex items-center gap-2">
-            <LayoutDashboard size={12} />
-            시스템 제어 센터
-          </div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">운영 대시보드</h1>
+          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">대시보드</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <Zap size={14} className="text-black" />
-            환영합니다, 관리자님. 시스템이 <span className="text-black uppercase">최적 상태</span>로 운영 중입니다.
+            오늘의 현황을 한눈에 확인하세요.
           </p>
         </div>
         <div className="flex gap-4">

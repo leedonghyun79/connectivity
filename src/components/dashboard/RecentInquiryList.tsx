@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { getRecentInquiries } from '@/lib/actions';
 import { MessageSquare, AlertCircle, CheckCircle2, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
+import { useFormatDate } from '@/lib/SystemConfigContext';
 
 export default function RecentInquiryList() {
+  const fmt = useFormatDate();
   const [inquiries, setInquiries] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -80,7 +82,7 @@ export default function RecentInquiryList() {
                   {inquiry.title}
                 </div>
                 <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">
-                  {inquiry.authorName || inquiry.customer?.name || '익명'} · {new Date(inquiry.createdAt).toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' })}
+                  {inquiry.authorName || inquiry.customer?.name || '익명'} · {fmt(inquiry.createdAt)}
                 </div>
               </div>
 

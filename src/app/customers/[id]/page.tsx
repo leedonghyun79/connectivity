@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { useFormatDate } from '@/lib/SystemConfigContext';
 
 const statusLabel: Record<string, string> = {
   pending: '대기', processing: '진행 중', closed: '완료',
@@ -42,6 +43,7 @@ export default function CustomerDetailPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'projects' | 'estimates' | 'transactions' | 'inquiries'>('projects');
+  const fmt = useFormatDate();
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -117,10 +119,6 @@ export default function CustomerDetailPage() {
               <ArrowLeft size={12} className="group-hover/back:-translate-x-1 transition-transform" />
               목록으로 복귀
             </Link>
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-2 h-2 bg-black rounded-full" />
-              <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">고객 상세 프로파일</div>
-            </div>
             <h1 className="text-6xl font-black text-gray-900 tracking-tighter uppercase leading-none">{customer.name}</h1>
             <div className="flex flex-wrap items-center gap-4 mt-6">
               {customer.company && (
@@ -200,7 +198,7 @@ export default function CustomerDetailPage() {
               <div className="text-right">
                 <div className="text-[9px] font-black text-gray-500 uppercase tracking-widest">최근 거래</div>
                 <div className="text-[11px] font-bold text-gray-400">
-                  {customer.transactions?.[0] ? new Date(customer.transactions[0].date).toLocaleDateString() : '-'}
+                  {customer.transactions?.[0] ? fmt(customer.transactions[0].date) : '-'}
                 </div>
               </div>
             </div>
@@ -215,7 +213,7 @@ export default function CustomerDetailPage() {
             <div>
               <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">최초 등록일</label>
               <div className="text-2xl font-black text-black font-mono tracking-tighter">
-                {new Date(customer.createdAt).toLocaleDateString('ko-KR')}
+                {fmt(customer.createdAt)}
               </div>
             </div>
             <div className="flex items-center gap-4 pt-4">
@@ -289,8 +287,8 @@ export default function CustomerDetailPage() {
                         <div className="flex items-center gap-2 mt-2">
                           <Clock size={12} className="text-gray-300" />
                           <span className="text-[10px] font-black text-gray-400 font-mono">
-                            {project.startDate ? new Date(project.startDate).toLocaleDateString('ko-KR') : 'N/A'}
-                            {project.endDate && ` — ${new Date(project.endDate).toLocaleDateString('ko-KR')}`}
+                            {project.startDate ? fmt(project.startDate) : 'N/A'}
+                            {project.endDate && ` — ${fmt(project.endDate)}`}
                           </span>
                         </div>
                       </div>
@@ -326,7 +324,7 @@ export default function CustomerDetailPage() {
                           </span>
                           <span className="text-[10px] text-gray-300">|</span>
                           <span className="text-[10px] font-bold text-gray-400">
-                            {est.issueDate && new Date(est.issueDate).toLocaleDateString('ko-KR')} 발행
+                            {est.issueDate && fmt(est.issueDate)} 발행
                           </span>
                         </div>
                       </div>
@@ -369,7 +367,7 @@ export default function CustomerDetailPage() {
                         <div className="text-sm font-black text-gray-400 font-mono tracking-widest mb-1">TX_{tx.id.substring(0, 8).toUpperCase()}</div>
                         <div className="text-lg font-black text-gray-900">{tx.serviceType || '일반 서비스 정산'}</div>
                         <div className="text-[10px] font-bold text-gray-400 mt-1">
-                          {new Date(tx.date).toLocaleDateString('ko-KR')} · {new Date(tx.date).toLocaleTimeString('ko-KR')}
+                          {fmt(tx.date, true)}
                         </div>
                       </div>
                     </div>
@@ -407,7 +405,7 @@ export default function CustomerDetailPage() {
                       </div>
                       <div className="text-[11px] text-gray-400 font-bold line-clamp-1">{inq.content}</div>
                       <div className="text-[10px] font-black text-gray-300 mt-2 uppercase tracking-widest">
-                        Received at {new Date(inq.createdAt).toLocaleString('ko-KR')}
+                        Received at {fmt(inq.createdAt, true)}
                       </div>
                     </div>
                     <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border flex-shrink-0 transition-all ${

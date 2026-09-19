@@ -11,8 +11,10 @@ import PageLoader from '@/components/common/PageLoader';
 import { getTransactions, getSalesStats } from '@/lib/actions';
 import TransactionModal from '@/components/modals/TransactionModal';
 import { Plus } from 'lucide-react';
+import { useFormatDate } from '@/lib/SystemConfigContext';
 
 export default function SalesPage() {
+  const fmt = useFormatDate();
   const [isLoading, setIsLoading] = useState(true);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
@@ -47,7 +49,7 @@ export default function SalesPage() {
     
     const headers = ['날짜', '고객사', '서비스', '금액', '상태'];
     const rows = transactions.map(tx => [
-      new Date(tx.date).toLocaleDateString('ko-KR'),
+      fmt(tx.date),
       tx.customer?.name || '알 수 없음',
       tx.serviceType || '-',
       tx.amount,
@@ -75,7 +77,6 @@ export default function SalesPage() {
       {/* 헤더 섹션 */}
       <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
-          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">금융 재무 분석</div>
           <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">매출 통계 분석</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <TrendingUp size={14} className="text-black" />
@@ -268,7 +269,7 @@ export default function SalesPage() {
                       </span>
                     </td>
                     <td className="px-10 py-8 text-center text-gray-400 font-mono text-xs font-bold">
-                      {new Date(tx.date).toLocaleDateString('ko-KR')}
+                      {fmt(tx.date)}
                     </td>
                   </tr>
                 ))

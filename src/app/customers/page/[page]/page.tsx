@@ -106,7 +106,6 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
       {/* 헤더 섹션 */}
       <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
-          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">고객 데이터베이스 관리</div>
           <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">고객 관리</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <Users size={14} />

@@ -7,6 +7,7 @@ import { Plus, Pencil, Trash2, Send, Undo2, Loader2, Briefcase } from 'lucide-re
 import { toast } from 'sonner';
 import { getPortfolios, deletePortfolio, publishPortfolio, unpublishPortfolio } from '@/lib/portfolio-actions';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { useFormatDate } from '@/lib/SystemConfigContext';
 
 type Portfolio = {
   id: string;
@@ -17,13 +18,9 @@ type Portfolio = {
   updatedAt: string | Date;
 };
 
-function fmt(d: string | Date | null) {
-  if (!d) return '-';
-  return new Date(d).toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
-}
-
 export default function PortfoliosPage() {
   const router = useRouter();
+  const fmt = useFormatDate();
   const [rows, setRows] = useState<Portfolio[]>([]);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);

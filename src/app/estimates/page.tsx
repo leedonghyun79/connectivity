@@ -9,8 +9,10 @@ import EstimateDetailModal from '@/components/modals/EstimateDetailModal';
 import { toast } from 'sonner';
 import DataTable from '@/components/common/DataTable';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import { useFormatDate } from '@/lib/SystemConfigContext';
 
 export default function EstimatesPage() {
+  const fmt = useFormatDate();
   const [isLoading, setIsLoading] = useState(true);
   const [estimates, setEstimates] = useState<any[]>([]);
   const [stats, setStats] = useState({ totalAmount: 0, pending: 0, approved: 0 });
@@ -113,7 +115,6 @@ export default function EstimatesPage() {
       {/* 헤더 섹션 */}
       <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
-          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">문서 관리 시스템</div>
           <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">견적서 관리</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <FileText size={14} />
@@ -316,7 +317,7 @@ export default function EstimatesPage() {
           {
             header: '발행일',
             className: 'px-10 py-8 text-center text-gray-400 font-mono text-xs font-bold',
-            cell: (estimate) => estimate.issueDate ? new Date(estimate.issueDate).toLocaleDateString('ko-KR') : '-'
+            cell: (estimate) => estimate.issueDate ? fmt(estimate.issueDate) : '-'
           },
           {
             header: '',

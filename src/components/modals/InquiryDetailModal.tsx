@@ -4,6 +4,7 @@ import { X, CheckCircle2, AlertCircle, Trash2, MessageSquare, Send } from 'lucid
 import ConfirmModal from '../common/ConfirmModal';
 import { updateInquiryStatus, deleteInquiry, answerInquiry } from '@/lib/actions';
 import { toast } from 'sonner';
+import { useFormatDate } from '@/lib/SystemConfigContext';
 
 interface InquiryDetailModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export default function InquiryDetailModal({
   inquiry,
   onSuccess,
 }: InquiryDetailModalProps) {
+  const fmt = useFormatDate();
   const [mounted, setMounted] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -146,7 +148,7 @@ export default function InquiryDetailModal({
             <div className="p-5 bg-gray-50 rounded-2xl">
               <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">접수 일시</div>
               <div className="text-sm font-black text-black font-mono">
-                {new Date(inquiry.createdAt).toLocaleDateString('ko-KR')}
+                {fmt(inquiry.createdAt)}
               </div>
             </div>
             {inquiry.authorEmail && (
@@ -190,7 +192,7 @@ export default function InquiryDetailModal({
               </div>
               {inquiry.answeredAt && (
                 <div className="text-[9px] font-bold text-gray-400 uppercase tracking-tight">
-                  마지막 답변: {new Date(inquiry.answeredAt).toLocaleString('ko-KR')}
+                  마지막 답변: {fmt(inquiry.answeredAt, true)}
                 </div>
               )}
             </div>

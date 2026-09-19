@@ -14,13 +14,14 @@ import {
   getSystemConfig,
   updateSystemConfig
 } from "@/lib/actions";
+import { useSystemConfig } from "@/lib/SystemConfigContext";
 
 type TabId = 'profile' | 'notifications' | 'locale' | 'storage';
 
 const tabs: { id: TabId; label: string; icon: any }[] = [
   { id: 'profile', label: '프로필 설정', icon: User },
-  { id: 'notifications', label: '알림 엔진 설정', icon: Bell },
-  { id: 'locale', label: '지역 및 언어 설정', icon: Globe },
+  { id: 'notifications', label: '알림 설정', icon: Bell },
+  { id: 'locale', label: '지역 설정', icon: Globe },
   { id: 'storage', label: '스토리지 및 로그', icon: Database },
 ];
 
@@ -52,7 +53,6 @@ export default function SettingsPage() {
       {/* 헤더 섹션 */}
       <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
-          <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">시스템 프레임워크</div>
           <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">환경 설정</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <Settings size={14} className="text-black" />
@@ -328,7 +328,7 @@ function NotificationsTab({ initialConfig, onSave }: { initialConfig: any; onSav
     setIsSaving(true);
     const result = await updateSystemConfig(config);
     if (result.success) {
-      toast.success("알림 엔진 설정이 업데이트되었습니다.");
+      toast.success("알림 설정이 업데이트되었습니다.");
       onSave();
     } else {
       toast.error(result.error);
@@ -337,7 +337,7 @@ function NotificationsTab({ initialConfig, onSave }: { initialConfig: any; onSav
   };
 
   return (
-    <SettingSection title="알림 엔진 설정">
+    <SettingSection title="알림 설정">
       <div className="space-y-2">
         <ToggleRow 
           label="신규 문의 알림" 
@@ -388,6 +388,7 @@ function NotificationsTab({ initialConfig, onSave }: { initialConfig: any; onSav
 function LocaleTab({ initialConfig, onSave }: { initialConfig: any; onSave: () => void }) {
   const [config, setConfig] = useState(initialConfig);
   const [isSaving, setIsSaving] = useState(false);
+  const { refresh: refreshGlobalConfig } = useSystemConfig();
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -398,8 +399,9 @@ function LocaleTab({ initialConfig, onSave }: { initialConfig: any; onSave: () =
     setIsSaving(true);
     const result = await updateSystemConfig(config);
     if (result.success) {
-      toast.success("지역 및 언어 설정이 업데이트되었습니다.");
+      toast.success("지역 설정이 업데이트되었습니다.");
       onSave();
+      refreshGlobalConfig();
     } else {
       toast.error(result.error);
     }
@@ -407,24 +409,11 @@ function LocaleTab({ initialConfig, onSave }: { initialConfig: any; onSave: () =
   };
 
   return (
-    <SettingSection title="지역 및 언어 설정">
+    <SettingSection title="지역 설정">
       <div className="space-y-6">
         <div>
-          <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2 px-1">시스템 언어</label>
-          <select 
-            name="language"
-            value={config.language}
-            onChange={handleChange}
-            className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all appearance-none"
-          >
-            <option value="ko">한국어 (Korean)</option>
-            <option value="en">English</option>
-            <option value="ja">日本語</option>
-          </select>
-        </div>
-        <div>
           <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2 px-1">타임존</label>
-          <select 
+          <select
             name="timezone"
             value={config.timezone}
             onChange={handleChange}
@@ -432,12 +421,11 @@ function LocaleTab({ initialConfig, onSave }: { initialConfig: any; onSave: () =
           >
             <option value="Asia/Seoul">Asia/Seoul (UTC+9)</option>
             <option value="UTC">UTC (UTC+0)</option>
-            <option value="America/New_York">America/New_York (UTC-5)</option>
           </select>
         </div>
         <div>
           <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2 px-1">날짜 형식</label>
-          <select 
+          <select
             name="dateFormat"
             value={config.dateFormat}
             onChange={handleChange}
@@ -446,19 +434,6 @@ function LocaleTab({ initialConfig, onSave }: { initialConfig: any; onSave: () =
             <option value="YYYY.MM.DD">YYYY.MM.DD (2026.04.20)</option>
             <option value="DD/MM/YYYY">DD/MM/YYYY (20/04/2026)</option>
             <option value="MM/DD/YYYY">MM/DD/YYYY (04/20/2026)</option>
-          </select>
-        </div>
-        <div>
-          <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2 px-1">통화 단위</label>
-          <select 
-            name="currency"
-            value={config.currency}
-            onChange={handleChange}
-            className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all appearance-none"
-          >
-            <option value="KRW">KRW (₩ 대한민국 원)</option>
-            <option value="USD">USD ($ 미국 달러)</option>
-            <option value="JPY">JPY (¥ 일본 엔)</option>
           </select>
         </div>
 

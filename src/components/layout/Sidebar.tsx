@@ -88,10 +88,7 @@ export default function Sidebar() {
                   >
                     <div className="flex items-center">
                       <Icon size={18} className={`mr-3 ${childActive ? 'text-black' : 'text-gray-300 group-hover:text-black transition-colors'}`} />
-                      <div className="flex flex-col items-start">
-                        <span className="text-[11px] font-black uppercase tracking-widest leading-none mb-1">{item.name}</span>
-                        <span className="text-[10px] font-medium leading-none text-gray-300">{item.label}</span>
-                      </div>
+                      <span className="text-[11px] font-black uppercase tracking-widest leading-none">{item.name}</span>
                     </div>
                     {open ? <ChevronDown size={14} className="text-gray-400" /> : <ChevronRight size={14} className="text-gray-300" />}
                   </button>
@@ -132,10 +129,7 @@ export default function Sidebar() {
               >
                 <div className="flex items-center">
                   <Icon size={18} className={`mr-3 ${isActive ? 'text-white' : 'text-gray-300 group-hover:text-black transition-colors'}`} />
-                  <div className="flex flex-col">
-                    <span className="text-[11px] font-black uppercase tracking-widest leading-none mb-1">{item.name}</span>
-                    <span className={`text-[10px] font-medium leading-none ${isActive ? 'text-gray-400' : 'text-gray-300'}`}>{item.label}</span>
-                  </div>
+                  <span className="text-[11px] font-black uppercase tracking-widest leading-none">{item.name}</span>
                 </div>
                 {isActive && <ChevronRight size={14} className="text-gray-500" />}
               </Link>
