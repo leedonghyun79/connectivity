@@ -29,7 +29,7 @@ export default function Header() {
           <Search className="absolute left-0 top-1/2 transform -translate-y-1/2 text-gray-300 group-focus-within:text-black transition-colors" size={20} />
           <input
             type="text"
-            placeholder="전체 검색: 프로젝트, 고객사, 또는 송장..."
+            placeholder="전체 검색: 프로젝트, 고객사..."
             className="w-full pl-10 pr-4 py-3 bg-transparent text-sm font-medium focus:outline-none transition-all placeholder:text-gray-300 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
