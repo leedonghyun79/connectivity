@@ -50,4 +50,8 @@ app-example
 /blob-report/
 /playwright/.cache/
 
+# local editor/workspace files
+*.code-workspace
+.claude/settings.json
+
 
