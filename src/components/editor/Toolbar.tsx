@@ -36,8 +36,12 @@ export default function Toolbar({ editor, mode, onToggleSource }: Props) {
       orderedList: e.isActive('orderedList'),
       blockquote: e.isActive('blockquote'),
       link: e.isActive('link'),
+      h1: e.isActive('heading', { level: 1 }),
       h2: e.isActive('heading', { level: 2 }),
       h3: e.isActive('heading', { level: 3 }),
+      h4: e.isActive('heading', { level: 4 }),
+      h5: e.isActive('heading', { level: 5 }),
+      h6: e.isActive('heading', { level: 6 }),
       alignLeft: e.isActive({ textAlign: 'left' }),
       alignCenter: e.isActive({ textAlign: 'center' }),
       alignRight: e.isActive({ textAlign: 'right' }),
@@ -52,8 +56,10 @@ export default function Toolbar({ editor, mode, onToggleSource }: Props) {
 
   const setBlock = (value: string) => {
     if (value === 'p') chain().setParagraph().run();
-    else if (value === 'h2') chain().toggleHeading({ level: 2 }).run();
-    else if (value === 'h3') chain().toggleHeading({ level: 3 }).run();
+    else {
+      const level = Number(value.replace('h', '')) as 1 | 2 | 3 | 4 | 5 | 6;
+      chain().toggleHeading({ level }).run();
+    }
   };
   const setSize = (value: string) => {
     if (!value) chain().unsetFontSize().run();
@@ -85,7 +91,7 @@ export default function Toolbar({ editor, mode, onToggleSource }: Props) {
     }
   };
 
-  const blockValue = state.h2 ? 'h2' : state.h3 ? 'h3' : 'p';
+  const blockValue = state.h1 ? 'h1' : state.h2 ? 'h2' : state.h3 ? 'h3' : state.h4 ? 'h4' : state.h5 ? 'h5' : state.h6 ? 'h6' : 'p';
   const btn = (active: boolean) =>
     `inline-flex h-[30px] w-[30px] items-center justify-center rounded-md border border-transparent transition ${
       active ? 'border-[#2d2dc9]/25 bg-[#2d2dc9]/10 text-[#2d2dc9]' : 'text-gray-800 hover:bg-gray-100'
@@ -103,9 +109,13 @@ export default function Toolbar({ editor, mode, onToggleSource }: Props) {
         }`}
       >
         <select className={selectCls} value={blockValue} onChange={(e) => setBlock(e.target.value)} title="문단 형식">
+          <option value="h1">제목 1</option>
+          <option value="h2">제목 2</option>
+          <option value="h3">제목 3</option>
+          <option value="h4">제목 4</option>
+          <option value="h5">제목 5</option>
+          <option value="h6">제목 6</option>
           <option value="p">본문</option>
-          <option value="h2">제목 1</option>
-          <option value="h3">제목 2</option>
         </select>
         <select className={selectCls} value={state.fontSize} onChange={(e) => setSize(e.target.value)} title="글자 크기">
           <option value="">크기</option>

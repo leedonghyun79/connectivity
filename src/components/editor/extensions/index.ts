@@ -18,7 +18,7 @@ interface BuildExtensionsOptions {
 export function buildExtensions({ placeholder }: BuildExtensionsOptions = {}) {
   return [
     StarterKit.configure({
-      heading: { levels: [2, 3] }, // H1은 글 제목과 충돌하므로 제외
+      heading: { levels: [1, 2, 3, 4, 5, 6] },
       codeBlock: false, // lowlight 하이라이팅 버전으로 대체
       link: {
         openOnClick: false,

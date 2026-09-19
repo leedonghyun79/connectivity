@@ -17,8 +17,12 @@
   pointer-events: none;
 }
 
+.prose h1 { font-size: 30px; font-weight: 800; color: #1a1a2e; margin: 48px 0 20px; line-height: 1.35; }
 .prose h2 { font-size: 24px; font-weight: 700; color: #1a1a2e; margin: 40px 0 16px; line-height: 1.4; }
 .prose h3 { font-size: 19px; font-weight: 700; color: #1a1a2e; margin: 32px 0 12px; line-height: 1.4; }
+.prose h4 { font-size: 17px; font-weight: 700; color: #1a1a2e; margin: 28px 0 10px; line-height: 1.4; }
+.prose h5 { font-size: 15px; font-weight: 700; color: #1a1a2e; margin: 24px 0 8px; line-height: 1.5; }
+.prose h6 { font-size: 14px; font-weight: 700; color: #4b5563; margin: 20px 0 8px; line-height: 1.5; text-transform: uppercase; letter-spacing: 0.02em; }
 .prose p { margin: 0 0 20px; }
 .prose ul, .prose ol { margin: 0 0 20px; padding-left: 24px; }
 .prose ul { list-style: disc; }

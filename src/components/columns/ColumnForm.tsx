@@ -24,6 +24,10 @@ const ColumnEditor = dynamic(() => import('../editor/ColumnEditor'), {
 
 const CATEGORIES = ['홈페이지 기획', '전환율 최적화', '유지보수', '디자인 트렌드', '마케팅'];
 
+function snapshotOf(title: string, category: string, thumbnail: string, html: string) {
+  return JSON.stringify({ title, category, thumbnail, html });
+}
+
 interface Props {
   mode: 'create' | 'edit';
   id?: string;
@@ -43,6 +47,8 @@ export default function ColumnForm({ mode, id }: Props) {
   const [autoThumb, setAutoThumb] = useState('');
   const thumbInputRef = useRef<HTMLInputElement>(null);
   const [thumbUploading, setThumbUploading] = useState(false);
+  // 마지막으로 저장된 상태의 스냅샷. null이면(신규 작성) 항상 변경된 것으로 취급.
+  const [savedSnapshot, setSavedSnapshot] = useState<string | null>(null);
 
   useEffect(() => {
     if (mode !== 'edit' || !id) return;
@@ -58,6 +64,7 @@ export default function ColumnForm({ mode, id }: Props) {
       setHtml(col.contentHtml);
       jsonRef.current = (col.contentJson as JSONContent) ?? {};
       setStatus(col.status as 'draft' | 'published');
+      setSavedSnapshot(snapshotOf(col.title, col.category, col.thumbnail ?? '', col.contentHtml));
       setLoading(false);
     });
   }, [mode, id, router]);
@@ -113,6 +120,7 @@ export default function ColumnForm({ mode, id }: Props) {
       } else {
         const res = await updateColumn(id!, payload());
         if (!res.success) throw new Error(res.error);
+        setSavedSnapshot(snapshotOf(title, category, thumbnail, html));
         toast.success('저장했습니다.');
       }
     } catch (e) {
@@ -164,6 +172,7 @@ export default function ColumnForm({ mode, id }: Props) {
 
   const effectiveThumb = thumbnail || autoThumb;
   const usingAuto = !thumbnail && !!autoThumb;
+  const isDirty = mode === 'create' || savedSnapshot !== snapshotOf(title, category, thumbnail, html);
 
   if (loading) {
     return (
@@ -186,12 +195,12 @@ export default function ColumnForm({ mode, id }: Props) {
               <Undo2 size={15} /> 발행 취소
             </button>
           )}
-          <button onClick={handleSave} disabled={saving}
+          <button onClick={handleSave} disabled={saving || !isDirty}
             className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3.5 py-2 text-sm font-semibold text-gray-700 disabled:opacity-50">
             {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
             {mode === 'create' ? '임시저장' : '저장'}
           </button>
-          <button onClick={handlePublish} disabled={saving}
+          <button onClick={handlePublish} disabled={saving || !isDirty}
             className="inline-flex items-center gap-1.5 rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
             {saving ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
             {status === 'published' ? '저장 후 재발행' : '발행'}

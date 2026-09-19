@@ -94,7 +94,7 @@ export default function ColumnsPage() {
                 <th className="px-4 py-4">상태</th>
                 <th className="px-4 py-4">발행일</th>
                 <th className="px-4 py-4">수정일</th>
-                <th className="px-6 py-4 text-right">액션</th>
+                <th className="px-6 py-4 text-right"></th>
               </tr>
             </thead>
             <tbody>
