@@ -95,7 +95,7 @@ export default function Toolbar({ editor, mode, onToggleSource }: Props) {
   const sep = <span className="mx-1.5 h-5 w-px bg-gray-200" />;
 
   return (
-    <div className="sticky top-0 z-10 flex flex-wrap items-center gap-0.5 rounded-t-xl border border-b-0 border-gray-200 bg-[#fcfcfd] px-3 py-2.5">
+    <div className="sticky top-0 z-10 flex flex-wrap items-center gap-0.5 rounded-t-xl border border-b-0 border-gray-200 bg-[#fcfcfd]/80 backdrop-blur-md px-3 py-2.5">
       <div
         aria-hidden={sourceMode}
         className={`flex flex-wrap items-center gap-0.5 transition-opacity ${
