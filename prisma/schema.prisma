@@ -181,6 +181,25 @@ model Column {
   updatedAt    DateTime  @updatedAt
 }
 
+// 픽셀커넥트 공개 사이트에 발행하는 포트폴리오(작업물) 항목
+model Portfolio {
+  id          String    @id @default(cuid())
+  title       String                       // 프로젝트명 예: "비자르테 쇼핑몰"
+  category    String                       // 필터용 단일값 (PORTFOLIO_CATEGORIES)
+  tags        String[]                      // 카드 칩 예: ["인테리어", "쇼핑몰"]
+  result      String?                       // 카드 한줄 성과 예: "제작 후 문의 3배 증가"
+  client      String?                       // 고객사 (상세 스펙 표 Client)
+  projectType String?                       // Type (자유 입력) 예: "신규 제작", "리뉴얼"
+  websiteUrl  String?                       // "웹사이트 보기" 링크
+  thumbnail   String?                       // 대표 이미지 URL
+  contentHtml String                        // Tiptap getHTML()
+  contentJson Json?                         // 재편집 안정성용 (Tiptap getJSON)
+  status      String    @default("draft")   // draft | published
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
 // 칼럼 본문/대표 이미지 저장 (MVP: DB 저장. 추후 R2로 교체)
 model ColumnImage {
   id        String   @id @default(cuid())
