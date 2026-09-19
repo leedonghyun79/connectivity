@@ -8,12 +8,14 @@ import { ArrowLeft, ImagePlus, Loader2, Send, Save, Undo2 } from 'lucide-react';
 import { toast } from 'sonner';
 import type { JSONContent } from '@tiptap/core';
 import {
-  getColumn, createColumn, updateColumn,
-  publishColumn, unpublishColumn,
-} from '@/lib/actions';
+  getPortfolio, createPortfolio, updatePortfolio,
+  publishPortfolio, unpublishPortfolio,
+} from '@/lib/portfolio-actions';
 import { uploadImage } from '../editor/uploadImage';
 
-const ColumnEditor = dynamic(() => import('../editor/ColumnEditor'), {
+const PORTFOLIO_CATEGORIES = ['쇼핑몰', '기업 홈페이지', '병원·클리닉', '교육', '기타'];
+
+const PortfolioEditor = dynamic(() => import('../editor/ColumnEditor'), {
   ssr: false,
   loading: () => (
     <div className="mt-2 flex h-[460px] items-center justify-center rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-400">
@@ -22,14 +24,12 @@ const ColumnEditor = dynamic(() => import('../editor/ColumnEditor'), {
   ),
 });
 
-const CATEGORIES = ['홈페이지 기획', '전환율 최적화', '유지보수', '디자인 트렌드', '마케팅'];
-
 interface Props {
   mode: 'create' | 'edit';
   id?: string;
 }
 
-export default function ColumnForm({ mode, id }: Props) {
+export default function PortfolioForm({ mode, id }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(mode === 'edit');
   const [saving, setSaving] = useState(false);
@@ -37,6 +37,11 @@ export default function ColumnForm({ mode, id }: Props) {
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
+  const [tagsText, setTagsText] = useState('');
+  const [result, setResult] = useState('');
+  const [client, setClient] = useState('');
+  const [projectType, setProjectType] = useState('');
+  const [websiteUrl, setWebsiteUrl] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [html, setHtml] = useState('');
   const jsonRef = useRef<JSONContent>({});
@@ -46,18 +51,23 @@ export default function ColumnForm({ mode, id }: Props) {
 
   useEffect(() => {
     if (mode !== 'edit' || !id) return;
-    getColumn(id).then((col) => {
-      if (!col) {
-        toast.error('칼럼을 찾을 수 없습니다.');
-        router.replace('/columns');
+    getPortfolio(id).then((item) => {
+      if (!item) {
+        toast.error('작업물을 찾을 수 없습니다.');
+        router.replace('/portfolios');
         return;
       }
-      setTitle(col.title);
-      setCategory(col.category);
-      setThumbnail(col.thumbnail ?? '');
-      setHtml(col.contentHtml);
-      jsonRef.current = (col.contentJson as JSONContent) ?? {};
-      setStatus(col.status as 'draft' | 'published');
+      setTitle(item.title);
+      setCategory(item.category);
+      setTagsText((item.tags ?? []).join(', '));
+      setResult(item.result ?? '');
+      setClient(item.client ?? '');
+      setProjectType(item.projectType ?? '');
+      setWebsiteUrl(item.websiteUrl ?? '');
+      setThumbnail(item.thumbnail ?? '');
+      setHtml(item.contentHtml);
+      jsonRef.current = (item.contentJson as JSONContent) ?? {};
+      setStatus(item.status as 'draft' | 'published');
       setLoading(false);
     });
   }, [mode, id, router]);
@@ -86,32 +96,34 @@ export default function ColumnForm({ mode, id }: Props) {
   const payload = () => ({
     title,
     category,
+    tags: tagsText.split(',').map((t) => t.trim()).filter(Boolean),
+    result: result || null,
+    client: client || null,
+    projectType: projectType || null,
+    websiteUrl: websiteUrl || null,
     contentHtml: html,
-    // Tiptap(ProseMirror)가 노드 attrs를 Object.create(null)로 만들어서
-    // 그대로 넘기면 서버 액션 직렬화가 "null prototype" 에러를 낸다. plain 객체로 복제.
     contentJson: JSON.parse(JSON.stringify(jsonRef.current)),
     thumbnail: thumbnail || null,
   });
 
   const validate = () => {
     if (!title.trim()) return '제목을 입력하세요.';
-    if (!CATEGORIES.includes(category)) return '카테고리를 선택하세요.';
+    if (!PORTFOLIO_CATEGORIES.includes(category)) return '카테고리를 선택하세요.';
     return null;
   };
 
-  // 저장 (임시저장 / 수정)
   const handleSave = async () => {
     const err = validate();
     if (err) return toast.error(err);
     setSaving(true);
     try {
       if (mode === 'create') {
-        const res = await createColumn(payload());
+        const res = await createPortfolio(payload());
         if (!res.success || !res.data) throw new Error(res.error);
         toast.success('임시저장했습니다.');
-        router.push(`/columns/${res.data.id}/edit`);
+        router.push(`/portfolios/${res.data.id}/edit`);
       } else {
-        const res = await updateColumn(id!, payload());
+        const res = await updatePortfolio(id!, payload());
         if (!res.success) throw new Error(res.error);
         toast.success('저장했습니다.');
       }
@@ -122,25 +134,24 @@ export default function ColumnForm({ mode, id }: Props) {
     }
   };
 
-  // 발행
   const handlePublish = async () => {
     const err = validate();
     if (err) return toast.error(err);
     setSaving(true);
     try {
-      let columnId = id;
+      let itemId = id;
       if (mode === 'create') {
-        const res = await createColumn(payload());
+        const res = await createPortfolio(payload());
         if (!res.success || !res.data) throw new Error(res.error);
-        columnId = res.data.id;
+        itemId = res.data.id;
       } else {
-        const res = await updateColumn(id!, payload());
+        const res = await updatePortfolio(id!, payload());
         if (!res.success) throw new Error(res.error);
       }
-      const pub = await publishColumn(columnId!);
+      const pub = await publishPortfolio(itemId!);
       if (!pub.success) throw new Error(pub.error);
       toast.success('발행했습니다.');
-      router.push('/columns');
+      router.push('/portfolios');
     } catch (e) {
       toast.error(e instanceof Error ? e.message : '발행에 실패했습니다.');
     } finally {
@@ -151,7 +162,7 @@ export default function ColumnForm({ mode, id }: Props) {
   const handleUnpublish = async () => {
     setSaving(true);
     try {
-      const res = await unpublishColumn(id!);
+      const res = await unpublishPortfolio(id!);
       if (!res.success) throw new Error(res.error);
       setStatus('draft');
       toast.success('발행을 취소했습니다.');
@@ -176,8 +187,8 @@ export default function ColumnForm({ mode, id }: Props) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Link href="/columns" className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-black">
-          <ArrowLeft size={16} /> 칼럼 목록
+        <Link href="/portfolios" className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-black">
+          <ArrowLeft size={16} /> 작업물 목록
         </Link>
         <div className="flex items-center gap-2">
           {mode === 'edit' && status === 'published' && (
@@ -202,7 +213,7 @@ export default function ColumnForm({ mode, id }: Props) {
       <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
         <div className="mb-2 flex items-center gap-2">
           <h1 className="text-xl font-black tracking-tight text-black">
-            {mode === 'create' ? '새 칼럼 작성' : '칼럼 수정'}
+            {mode === 'create' ? '새 작업물 등록' : '작업물 수정'}
           </h1>
           <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
             status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
@@ -210,7 +221,7 @@ export default function ColumnForm({ mode, id }: Props) {
             {status === 'published' ? '발행됨' : '임시저장'}
           </span>
         </div>
-        <p className="mb-8 text-sm text-gray-400">픽셀커넥트 공개 사이트에 발행됩니다.</p>
+        <p className="mb-8 text-sm text-gray-400">픽셀커넥트 공개 사이트 포트폴리오에 발행됩니다.</p>
 
         <div className="space-y-6">
           <div className="flex flex-col gap-2">
@@ -218,7 +229,7 @@ export default function ColumnForm({ mode, id }: Props) {
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="칼럼 제목"
+              placeholder="프로젝트명 예: 비자르테 쇼핑몰"
               className="rounded-xl border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
             />
           </div>
@@ -231,8 +242,59 @@ export default function ColumnForm({ mode, id }: Props) {
               className="rounded-xl border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
             >
               <option value="">카테고리를 선택하세요</option>
-              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              {PORTFOLIO_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold text-gray-800">고객사 (Client)</label>
+              <input
+                value={client}
+                onChange={(e) => setClient(e.target.value)}
+                placeholder="예: (주)비자르테"
+                className="rounded-xl border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-semibold text-gray-800">작업 유형 (Type)</label>
+              <input
+                value={projectType}
+                onChange={(e) => setProjectType(e.target.value)}
+                placeholder="예: 신규 제작, 리뉴얼"
+                className="rounded-xl border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-800">태그 (쉼표로 구분)</label>
+            <input
+              value={tagsText}
+              onChange={(e) => setTagsText(e.target.value)}
+              placeholder="예: 인테리어, 쇼핑몰"
+              className="rounded-xl border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-800">한줄 성과</label>
+            <input
+              value={result}
+              onChange={(e) => setResult(e.target.value)}
+              placeholder="예: 제작 후 문의 3배 증가"
+              className="rounded-xl border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-gray-800">웹사이트 URL</label>
+            <input
+              value={websiteUrl}
+              onChange={(e) => setWebsiteUrl(e.target.value)}
+              placeholder="https://example.com"
+              className="rounded-xl border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
+            />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -274,8 +336,8 @@ export default function ColumnForm({ mode, id }: Props) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-800">본문 내용</label>
-            <ColumnEditor value={html} onChange={handleEditorChange} placeholder="여기에 칼럼 내용을 작성해주세요..." />
+            <label className="text-sm font-semibold text-gray-800">상세 설명</label>
+            <PortfolioEditor value={html} onChange={handleEditorChange} placeholder="작업물에 대한 상세 설명을 작성해주세요..." />
           </div>
         </div>
       </div>

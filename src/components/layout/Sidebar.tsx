@@ -8,9 +8,12 @@ import {
   MessageSquare,
   Settings,
   ChevronRight,
+  ChevronDown,
   LogOut,
   Activity,
-  Newspaper
+  Newspaper,
+  Briefcase,
+  Layers
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -22,7 +25,13 @@ const menuItems = [
   { name: '견적서 관리', path: '/estimates', icon: FileText, label: '견적 및 발행' },
   { name: '매출 분석', path: '/sales', icon: Banknote, label: '재무 지표' },
   { name: '문의 게시판', path: '/inquiries', icon: MessageSquare, label: '고객 지원' },
-  { name: '칼럼 관리', path: '/columns', icon: Newspaper, label: '공개 사이트 발행' },
+  {
+    name: '콘텐츠 관리', icon: Layers, label: '공개 사이트 발행',
+    children: [
+      { name: '칼럼 관리', path: '/columns', icon: Newspaper, label: '칼럼(블로그)' },
+      { name: '작업물 관리', path: '/portfolios', icon: Briefcase, label: '포트폴리오' },
+    ],
+  },
   { name: '활동로그', path: '/logs', icon: Activity, label: '활동 및 브리핑' },
   { name: '환경 설정', path: '/settings', icon: Settings, label: '시스템 설정' },
 ];
@@ -30,10 +39,20 @@ const menuItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState('대시보드');
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
 
   useEffect(() => {
-    const current = menuItems.find(item => pathname === item.path || (item.path !== '/' && pathname.startsWith(item.path)));
-    if (current) setActiveMenu(current.name);
+    for (const item of menuItems) {
+      if ('children' in item) {
+        const child = item.children.find(c => pathname === c.path || pathname.startsWith(c.path));
+        if (child) { setActiveMenu(child.name); return; }
+        continue;
+      }
+      if (pathname === item.path || (item.path !== '/' && pathname.startsWith(item.path))) {
+        setActiveMenu(item.name);
+        return;
+      }
+    }
   }, [pathname]);
 
   return (
@@ -53,6 +72,54 @@ export default function Sidebar() {
         <nav className="space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
+
+            if ('children' in item) {
+              const childActive = item.children.some(c => c.name === activeMenu);
+              const open = childActive || openGroup === item.name;
+              return (
+                <div key={item.name}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenGroup(openGroup === item.name ? null : item.name)}
+                    className={`group flex w-full items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 ${childActive
+                      ? 'bg-gray-50 text-black'
+                      : 'text-gray-400 hover:bg-gray-50 hover:text-black'
+                      }`}
+                  >
+                    <div className="flex items-center">
+                      <Icon size={18} className={`mr-3 ${childActive ? 'text-black' : 'text-gray-300 group-hover:text-black transition-colors'}`} />
+                      <div className="flex flex-col items-start">
+                        <span className="text-[11px] font-black uppercase tracking-widest leading-none mb-1">{item.name}</span>
+                        <span className="text-[10px] font-medium leading-none text-gray-300">{item.label}</span>
+                      </div>
+                    </div>
+                    {open ? <ChevronDown size={14} className="text-gray-400" /> : <ChevronRight size={14} className="text-gray-300" />}
+                  </button>
+                  {open && (
+                    <div className="mt-1 ml-6 space-y-1 border-l border-gray-100 pl-4">
+                      {item.children.map((child) => {
+                        const ChildIcon = child.icon;
+                        const isActive = activeMenu === child.name;
+                        return (
+                          <Link
+                            key={child.path}
+                            href={child.path}
+                            className={`group flex items-center px-3 py-2.5 rounded-xl transition-all duration-300 ${isActive
+                              ? 'bg-black text-white'
+                              : 'text-gray-400 hover:bg-gray-50 hover:text-black'
+                              }`}
+                          >
+                            <ChildIcon size={16} className={`mr-2.5 ${isActive ? 'text-white' : 'text-gray-300 group-hover:text-black transition-colors'}`} />
+                            <span className="text-[11px] font-bold">{child.name}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             const isActive = activeMenu === item.name;
             return (
               <Link
