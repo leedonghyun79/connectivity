@@ -61,7 +61,7 @@ export default function PortfoliosPage() {
     <div className="space-y-6 py-10">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black tracking-tight text-black">작업물 관리</h1>
+          <h1 className="text-5xl font-black tracking-tight text-black">작업물 관리</h1>
           <p className="mt-1 text-sm text-gray-400">픽셀커넥트 공개 사이트 포트폴리오에 발행하는 작업물</p>
         </div>
         <Link
