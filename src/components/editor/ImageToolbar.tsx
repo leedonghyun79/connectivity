@@ -20,7 +20,7 @@ interface Props {
 }
 
 const btn =
-  'flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:bg-white/10 hover:text-white';
+  'flex items-center gap-1.5 rounded-[8px] px-2.5 py-1.5 text-xs font-medium text-slate-200 transition hover:bg-white/10 hover:text-white';
 
 export default function ImageToolbar({ image, wrapperRef, attrs, onUpdate, onDelete }: Props) {
   const [activeMenu, setActiveMenu] = useState<'align' | 'alt' | 'link' | null>(null);
@@ -77,7 +77,7 @@ export default function ImageToolbar({ image, wrapperRef, attrs, onUpdate, onDel
       ref={toolbarRef}
       style={{ top: pos.top, left: pos.left }}
       onMouseDown={(e) => e.preventDefault()}
-      className="absolute z-[1000] flex -translate-x-1/2 items-center gap-0.5 whitespace-nowrap rounded-[10px] bg-[#1a1a2e] px-2 py-1.5 shadow-xl"
+      className="absolute z-[1000] flex -translate-x-1/2 items-center gap-0.5 whitespace-nowrap rounded-[8px] bg-[#1a1a2e] px-2 py-1.5 shadow-xl"
     >
       <input ref={fileInputRef} type="file" accept="image/*" hidden onChange={handleFileChange} />
 
@@ -98,12 +98,12 @@ export default function ImageToolbar({ image, wrapperRef, attrs, onUpdate, onDel
           <span>정렬</span>
         </button>
         {activeMenu === 'align' && (
-          <div className="absolute left-1/2 top-[calc(100%+10px)] z-[1001] min-w-[120px] -translate-x-1/2 rounded-[10px] border border-slate-200 bg-white p-1.5 shadow-xl">
+          <div className="absolute left-1/2 top-[calc(100%+10px)] z-[1001] min-w-[120px] -translate-x-1/2 rounded-[8px] border border-slate-200 bg-white p-1.5 shadow-xl">
             {([['left', AlignLeft, '왼쪽'], ['center', AlignCenter, '가운데'], ['right', AlignRight, '오른쪽']] as const).map(
               ([val, Icon, label]) => (
                 <button
                   key={val}
-                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-[13px] font-medium text-slate-900 hover:bg-slate-100"
+                  className="flex w-full items-center gap-2 rounded-[8px] px-3 py-2 text-[13px] font-medium text-slate-900 hover:bg-slate-100"
                   onClick={() => handleAlign(val)}
                 >
                   <Icon size={13} /> {label}
@@ -133,10 +133,10 @@ export default function ImageToolbar({ image, wrapperRef, attrs, onUpdate, onDel
           <span>Alt</span>
         </button>
         {activeMenu === 'alt' && (
-          <div className="absolute left-1/2 top-[calc(100%+10px)] z-[1001] min-w-[260px] -translate-x-1/2 rounded-[10px] border border-slate-200 bg-white p-3.5 shadow-xl">
+          <div className="absolute left-1/2 top-[calc(100%+10px)] z-[1001] min-w-[260px] -translate-x-1/2 rounded-[8px] border border-slate-200 bg-white p-3.5 shadow-xl">
             <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500">대체 텍스트 (Alt)</p>
             <input
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-[13px] outline-none focus:border-indigo-500"
+              className="w-full rounded-[8px] border border-slate-200 px-3 py-2 text-[13px] outline-none focus:border-indigo-500"
               value={altText}
               onChange={(e) => setAltText(e.target.value)}
               placeholder="이미지 설명"
@@ -144,8 +144,8 @@ export default function ImageToolbar({ image, wrapperRef, attrs, onUpdate, onDel
               autoFocus
             />
             <div className="mt-2.5 flex justify-end gap-2">
-              <button className="rounded-md border border-slate-200 px-3.5 py-1.5 text-xs font-semibold text-slate-500" onClick={() => setActiveMenu(null)}>취소</button>
-              <button className="rounded-md bg-[#2d2dc9] px-3.5 py-1.5 text-xs font-semibold text-white" onClick={handleAltSave}>저장</button>
+              <button className="rounded-[8px] border border-slate-200 px-3.5 py-1.5 text-xs font-semibold text-slate-500" onClick={() => setActiveMenu(null)}>취소</button>
+              <button className="rounded-[8px] bg-[#2d2dc9] px-3.5 py-1.5 text-xs font-semibold text-white" onClick={handleAltSave}>저장</button>
             </div>
           </div>
         )}
@@ -161,10 +161,10 @@ export default function ImageToolbar({ image, wrapperRef, attrs, onUpdate, onDel
           <span>링크</span>
         </button>
         {activeMenu === 'link' && (
-          <div className="absolute left-1/2 top-[calc(100%+10px)] z-[1001] min-w-[260px] -translate-x-1/2 rounded-[10px] border border-slate-200 bg-white p-3.5 shadow-xl">
+          <div className="absolute left-1/2 top-[calc(100%+10px)] z-[1001] min-w-[260px] -translate-x-1/2 rounded-[8px] border border-slate-200 bg-white p-3.5 shadow-xl">
             <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500">이미지 링크</p>
             <input
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-[13px] outline-none focus:border-indigo-500"
+              className="w-full rounded-[8px] border border-slate-200 px-3 py-2 text-[13px] outline-none focus:border-indigo-500"
               value={linkUrl}
               onChange={(e) => setLinkUrl(e.target.value)}
               placeholder="https://..."
@@ -175,8 +175,8 @@ export default function ImageToolbar({ image, wrapperRef, attrs, onUpdate, onDel
               <button className="mt-1.5 text-xs font-medium text-red-500" onClick={() => setLinkUrl('')}>링크 제거</button>
             )}
             <div className="mt-2.5 flex justify-end gap-2">
-              <button className="rounded-md border border-slate-200 px-3.5 py-1.5 text-xs font-semibold text-slate-500" onClick={() => setActiveMenu(null)}>취소</button>
-              <button className="rounded-md bg-[#2d2dc9] px-3.5 py-1.5 text-xs font-semibold text-white" onClick={handleLinkSave}>저장</button>
+              <button className="rounded-[8px] border border-slate-200 px-3.5 py-1.5 text-xs font-semibold text-slate-500" onClick={() => setActiveMenu(null)}>취소</button>
+              <button className="rounded-[8px] bg-[#2d2dc9] px-3.5 py-1.5 text-xs font-semibold text-white" onClick={handleLinkSave}>저장</button>
             </div>
           </div>
         )}

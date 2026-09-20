@@ -60,7 +60,7 @@ export default function Header() {
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="relative group focus:outline-none"
           >
-            <div className={`h-12 w-12 rounded-2xl flex items-center justify-center border transition-all duration-300 overflow-hidden ${isDropdownOpen ? 'bg-black text-white border-black' : 'bg-gray-50 text-black border-gray-100 hover:border-black'}`}>
+            <div className={`h-12 w-12 rounded-[8px] flex items-center justify-center border transition-all duration-300 overflow-hidden ${isDropdownOpen ? 'bg-black text-white border-black' : 'bg-gray-50 text-black border-gray-100 hover:border-black'}`}>
               <User size={24} />
             </div>
             <div className={`absolute -bottom-1 -right-1 w-5 h-5 bg-white border rounded-full flex items-center justify-center transition-transform duration-300 ${isDropdownOpen ? 'rotate-180 border-black' : 'border-gray-100'}`}>
@@ -70,7 +70,7 @@ export default function Header() {
 
           {/* 드롭다운 메뉴 */}
           {isDropdownOpen && (
-            <div className="absolute right-0 top-full mt-4 w-56 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 p-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+            <div className="absolute right-0 top-full mt-4 w-56 bg-white rounded-[8px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 p-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
               <div className="px-4 py-3 border-b border-gray-50 mb-1">
                 <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">계정 계층</p>
                 <p className="text-sm font-bold text-black">{session?.user?.name || '관리자'}</p>
@@ -79,9 +79,9 @@ export default function Header() {
               <Link 
                 href="/settings"
                 onClick={() => setIsDropdownOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-500 hover:text-black hover:bg-gray-50 rounded-2xl transition-all group"
+                className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-500 hover:text-black hover:bg-gray-50 rounded-[8px] transition-all group"
               >
-                <div className="p-2 bg-gray-50 rounded-xl group-hover:bg-white transition-colors">
+                <div className="p-2 bg-gray-50 rounded-[8px] group-hover:bg-white transition-colors">
                   <Settings size={16} />
                 </div>
                 프로필 설정
@@ -92,9 +92,9 @@ export default function Header() {
                   setIsDropdownOpen(false);
                   signOut({ callbackUrl: '/login' });
                 }}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-2xl transition-all group"
+                className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-[8px] transition-all group"
               >
-                <div className="p-2 bg-red-50 rounded-xl group-hover:bg-white transition-colors">
+                <div className="p-2 bg-red-50 rounded-[8px] group-hover:bg-white transition-colors">
                   <LogOut size={16} />
                 </div>
                 로그아웃

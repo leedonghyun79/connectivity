@@ -99,10 +99,10 @@ function LogsContent() {
         </div>
 
         {/* 날짜 컨트롤러 */}
-        <div className="flex items-center bg-gray-50 p-2 rounded-[24px] border border-gray-100 shadow-sm">
+        <div className="flex items-center bg-gray-50 p-2 rounded-[8px] border border-gray-100 shadow-sm">
           <button
             onClick={() => moveDate(-1)}
-            className="p-3 hover:bg-white hover:shadow-md rounded-2xl transition-all"
+            className="p-3 hover:bg-white hover:shadow-md rounded-[8px] transition-all"
           >
             <ChevronLeft size={20} />
           </button>
@@ -119,7 +119,7 @@ function LogsContent() {
 
           <button
             onClick={() => moveDate(1)}
-            className="p-3 hover:bg-white hover:shadow-md rounded-2xl transition-all"
+            className="p-3 hover:bg-white hover:shadow-md rounded-[8px] transition-all"
           >
             <ChevronRight size={20} />
           </button>
@@ -129,7 +129,7 @@ function LogsContent() {
       {/* 통계 요약 섹션 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((stat, idx) => (
-          <div key={idx} className="bg-white p-8 rounded-[32px] border border-gray-100 hover:border-black hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)] transition-all group relative overflow-hidden">
+          <div key={idx} className="bg-white p-8 rounded-[8px] border border-gray-100 hover:border-black hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)] transition-all group relative overflow-hidden">
             {/* 배경 아이콘 효과 */}
             <div className={`absolute -right-4 -bottom-6 text-gray-100 group-hover:text-gray-200 opacity-20 group-hover:opacity-40 transition-all duration-500 group-hover:scale-110`}>
               <stat.icon size={120} strokeWidth={1} />
@@ -137,7 +137,7 @@ function LogsContent() {
 
             <div className="relative z-10">
               <div className="flex justify-between items-start mb-6">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 bg-gray-50 text-gray-300 group-hover:bg-black group-hover:text-white`}>
+                <div className={`w-12 h-12 rounded-[8px] flex items-center justify-center transition-all duration-300 bg-gray-50 text-gray-300 group-hover:bg-black group-hover:text-white`}>
                   <stat.icon size={24} />
                 </div>
                 <div className="text-[10px] font-black text-gray-200 uppercase tracking-widest group-hover:text-black transition-colors">SUMMARY</div>
@@ -156,10 +156,10 @@ function LogsContent() {
 
       {/* 상세 활동 로그 섹션 */}
       <div className="grid grid-cols-1 gap-8">
-        <div className="bg-white p-10 rounded-[40px] border border-gray-100 min-h-[500px]">
+        <div className="bg-white p-10 rounded-[8px] border border-gray-100 min-h-[500px]">
           <div className="flex justify-between items-center mb-10 pb-6 border-b border-gray-50">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center text-white">
+              <div className="w-12 h-12 bg-black rounded-[8px] flex items-center justify-center text-white">
                 <Activity size={24} />
               </div>
               <div>
@@ -176,7 +176,7 @@ function LogsContent() {
           <div className="space-y-2">
             {isLoading ? (
               Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-16 bg-gray-50 rounded-2xl animate-pulse mb-3" />
+                <div key={i} className="h-16 bg-gray-50 rounded-[8px] animate-pulse mb-3" />
               ))
             ) : logs.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-32 gap-6 opacity-20">

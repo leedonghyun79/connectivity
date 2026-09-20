@@ -19,7 +19,7 @@ export default function RecentInquiryList() {
   }, []);
 
   return (
-    <div className="bg-white p-10 rounded-[40px] border border-gray-100 flex flex-col gap-6 group">
+    <div className="bg-white p-10 rounded-[8px] border border-gray-100 flex flex-col gap-6 group">
       {/* 헤더 */}
       <div className="flex justify-between items-start">
         <div>
@@ -32,7 +32,7 @@ export default function RecentInquiryList() {
         </div>
         <Link
           href="/inquiries"
-          className="p-3 bg-gray-50 rounded-2xl text-gray-200 group-hover:bg-black group-hover:text-white transition-all duration-300"
+          className="p-3 bg-gray-50 rounded-[8px] text-gray-200 group-hover:bg-black group-hover:text-white transition-all duration-300"
         >
           <ArrowUpRight size={20} />
         </Link>
@@ -43,8 +43,8 @@ export default function RecentInquiryList() {
         {isLoading ? (
           // 스켈레톤
           Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 rounded-2xl animate-pulse">
-              <div className="w-8 h-8 bg-gray-100 rounded-xl flex-shrink-0" />
+            <div key={i} className="flex items-center gap-3 p-3 rounded-[8px] animate-pulse">
+              <div className="w-8 h-8 bg-gray-100 rounded-[8px] flex-shrink-0" />
               <div className="flex-1 space-y-1.5">
                 <div className="h-3 bg-gray-100 rounded w-3/4" />
                 <div className="h-2.5 bg-gray-50 rounded w-1/2" />
@@ -63,10 +63,10 @@ export default function RecentInquiryList() {
           inquiries.map((inquiry) => (
             <div
               key={inquiry.id}
-              className="flex items-center gap-3 p-3 rounded-2xl hover:bg-gray-50 transition-all group cursor-pointer"
+              className="flex items-center gap-3 p-3 rounded-[8px] hover:bg-gray-50 transition-all group cursor-pointer"
             >
               {/* 상태 아이콘 */}
-              <div className={`p-2 rounded-xl flex-shrink-0 ${
+              <div className={`p-2 rounded-[8px] flex-shrink-0 ${
                 inquiry.status === 'pending'
                   ? 'bg-orange-50 text-orange-500'
                   : 'bg-gray-50 text-gray-400'

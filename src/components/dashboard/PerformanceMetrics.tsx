@@ -27,7 +27,7 @@ export default function PerformanceMetrics() {
   };
 
   return (
-    <div className="bg-white p-10 rounded-[40px] border border-gray-100 h-[480px] flex flex-col group">
+    <div className="bg-white p-10 rounded-[8px] border border-gray-100 h-[480px] flex flex-col group">
       <div className="flex justify-between items-start mb-8">
         <div>
           <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">시스템 운영 현황</div>
@@ -36,7 +36,7 @@ export default function PerformanceMetrics() {
         <button
           onClick={handleSync}
           disabled={isSyncing}
-          className={`p-3 rounded-2xl transition-all flex items-center gap-2 group/btn ${isSyncing ? 'bg-black text-white' : 'bg-gray-50 text-gray-200 group-hover:bg-black group-hover:text-white'}`}
+          className={`p-3 rounded-[8px] transition-all flex items-center gap-2 group/btn ${isSyncing ? 'bg-black text-white' : 'bg-gray-50 text-gray-200 group-hover:bg-black group-hover:text-white'}`}
           title="원격 DB 동기화"
         >
           <RefreshCcw size={20} className={isSyncing ? 'animate-spin' : 'group-hover/btn:rotate-180 transition-transform duration-500'} />
@@ -66,7 +66,7 @@ export default function PerformanceMetrics() {
                   <td className="py-5 text-center text-xs font-bold text-gray-900">{row.pageViews.toLocaleString()}</td>
                   <td className="py-5 text-center text-xs font-bold text-gray-900">{row.visitors.toLocaleString()}</td>
                   <td className="py-5 text-center text-xs font-black text-black">
-                    <span className={row.signups > 0 ? 'bg-black text-white px-2 py-0.5 rounded-md' : 'text-gray-300'}>{row.signups}</span>
+                    <span className={row.signups > 0 ? 'bg-black text-white px-2 py-0.5 rounded-[8px]' : 'text-gray-300'}>{row.signups}</span>
                   </td>
                   <td className="py-5 text-center text-xs font-bold text-gray-400">{row.inquiries}</td>
                   <td className="py-5 text-right font-black text-black text-sm">

@@ -70,7 +70,7 @@ export default function ConfirmModal({
       <div 
         role="dialog"
         aria-modal="true"
-        className="bg-white w-full max-w-md rounded-[32px] overflow-hidden shadow-2xl border border-gray-100 animate-in zoom-in-95 duration-300"
+        className="bg-white w-full max-w-md rounded-[8px] overflow-hidden shadow-2xl border border-gray-100 animate-in zoom-in-95 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header (Optional Decorative) */}
@@ -78,7 +78,7 @@ export default function ConfirmModal({
         
         <div className="p-8">
           <div className="flex justify-between items-start mb-6">
-            <div className={`p-3 rounded-2xl ${styles.bg}`}>
+            <div className={`p-3 rounded-[8px] ${styles.bg}`}>
               {styles.icon}
             </div>
             <button 
@@ -101,7 +101,7 @@ export default function ConfirmModal({
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 py-4 px-6 rounded-2xl font-black uppercase tracking-widest text-[11px] text-gray-500 bg-gray-50 hover:bg-gray-100 transition-all border border-gray-100"
+              className="flex-1 py-4 px-6 rounded-[8px] font-black uppercase tracking-widest text-[11px] text-gray-500 bg-gray-50 hover:bg-gray-100 transition-all border border-gray-100"
             >
               {cancelText}
             </button>
@@ -110,7 +110,7 @@ export default function ConfirmModal({
                 onConfirm();
                 onClose();
               }}
-              className={`flex-1 py-4 px-6 rounded-2xl font-black uppercase tracking-widest text-[11px] transition-all ${styles.button}`}
+              className={`flex-1 py-4 px-6 rounded-[8px] font-black uppercase tracking-widest text-[11px] transition-all ${styles.button}`}
             >
               {confirmText}
             </button>

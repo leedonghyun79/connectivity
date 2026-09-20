@@ -112,14 +112,14 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
       <div
         role="dialog"
         aria-modal="true"
-        className="bg-white rounded-[40px] shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all scale-100 border border-gray-100 flex flex-col md:flex-row"
+        className="bg-white rounded-[8px] shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all scale-100 border border-gray-100 flex flex-col md:flex-row"
         onClick={(e) => e.stopPropagation()}
       >
 
         {/* 사이드 정보 패널 */}
         <div className="w-full md:w-64 bg-black p-10 text-white flex flex-col justify-between overflow-hidden relative">
           <div className="z-10">
-            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-10 border border-white/10">
+            <div className="w-12 h-12 bg-white/10 rounded-[8px] flex items-center justify-center mb-10 border border-white/10">
               {customer ? <Briefcase className="text-white" size={24} /> : <User className="text-white" size={24} />}
             </div>
             <h3 className="text-2xl font-black uppercase tracking-tighter leading-tight mb-4">
@@ -159,7 +159,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className={`w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-black placeholder:text-gray-200 ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                    className={`w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-black placeholder:text-gray-200 ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                     placeholder="고객 성함을 입력하세요"
                   />
                 </div>
@@ -176,7 +176,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                       setFormData({ ...formData, email: e.target.value });
                       if (errors.email) setErrors({ ...errors, email: '' });
                     }}
-                    className={`w-full pl-12 pr-6 py-4 bg-white border rounded-2xl outline-none transition-all font-bold text-black placeholder:text-gray-200 ${errors.email ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-gray-100 focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                    className={`w-full pl-12 pr-6 py-4 bg-white border rounded-[8px] outline-none transition-all font-bold text-black placeholder:text-gray-200 ${errors.email ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-gray-100 focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                     placeholder="example@vault.com"
                     readOnly={isReadOnly}
                   />
@@ -193,7 +193,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                       type="text"
                       value={formData.company}
                       onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      className={`w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-black placeholder:text-gray-200 ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                      className={`w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-black placeholder:text-gray-200 ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                       placeholder="회사명을 입력하세요"
                       readOnly={isReadOnly}
                     />
@@ -211,7 +211,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                         setFormData({ ...formData, phone: val });
                         if (errors.phone) setErrors({ ...errors, phone: '' });
                       }}
-                      className={`w-full pl-12 pr-6 py-4 bg-white border rounded-2xl outline-none transition-all font-bold text-black placeholder:text-gray-200 ${errors.phone ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-gray-100 focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                      className={`w-full pl-12 pr-6 py-4 bg-white border rounded-[8px] outline-none transition-all font-bold text-black placeholder:text-gray-200 ${errors.phone ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-gray-100 focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                       placeholder="숫자만 입력"
                       readOnly={isReadOnly}
                     />
@@ -228,7 +228,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                       type="button"
                       disabled={isReadOnly}
                       onClick={() => !isReadOnly && setIsStatusOpen(!isStatusOpen)}
-                      className={`w-full px-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-left flex items-center justify-between ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : 'group-hover:border-gray-200'}`}
+                      className={`w-full px-6 py-4 bg-white border border-gray-100 rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-left flex items-center justify-between ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : 'group-hover:border-gray-200'}`}
                     >
                       <span className="text-black">
                         {formData.status === 'pending' ? '대기 (Waiting)' :
@@ -238,7 +238,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                     </button>
 
                     {isStatusOpen && (
-                      <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden z-20 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-[8px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden z-20 animate-in fade-in slide-in-from-top-2 duration-200">
                         {[
                           { value: 'pending', label: '대기 (Waiting)' },
                           { value: 'processing', label: '진행 (Active)' },
@@ -269,7 +269,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
               <button
                 type="button"
                 onClick={onClose}
-                className={`flex-1 px-8 py-4 border border-gray-200 rounded-2xl text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-black hover:bg-gray-50 transition-all active:scale-95 ${isReadOnly ? 'w-full' : ''}`}
+                className={`flex-1 px-8 py-4 border border-gray-200 rounded-[8px] text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-black hover:bg-gray-50 transition-all active:scale-95 ${isReadOnly ? 'w-full' : ''}`}
               >
                 {isReadOnly ? '닫기' : '취소'}
               </button>
@@ -277,7 +277,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-[2] px-8 py-4 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all shadow-xl shadow-black/20 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-[2] px-8 py-4 bg-black text-white rounded-[8px] text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all shadow-xl shadow-black/20 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>

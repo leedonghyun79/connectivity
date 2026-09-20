@@ -61,10 +61,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-md bg-white rounded-[40px] p-12 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+      <div className="w-full max-w-md bg-white rounded-[8px] p-12 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         {/* 헤더 */}
         <div className="mb-12 text-center">
-          <div className="w-16 h-16 bg-black rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-black rounded-[8px] flex items-center justify-center mx-auto mb-6">
             <Lock className="text-white" size={28} />
           </div>
           <div className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-3">
@@ -88,7 +88,7 @@ export default function LoginPage() {
                 placeholder="아이디 입력"
                 value={formData.username}
                 onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
-                className={`w-full pl-12 pr-4 py-4 bg-gray-50 border rounded-2xl focus:ring-4 focus:ring-black/5 outline-none font-bold text-sm transition-all text-gray-900 placeholder:text-gray-400
+                className={`w-full pl-12 pr-4 py-4 bg-gray-50 border rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none font-bold text-sm transition-all text-gray-900 placeholder:text-gray-400
                   ${errors.username ? 'border-red-300 focus:border-red-500' : 'border-transparent focus:border-gray-200'}`}
               />
             </div>
@@ -106,7 +106,7 @@ export default function LoginPage() {
                 placeholder="비밀번호 입력"
                 value={formData.password}
                 onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                className={`w-full pl-12 pr-12 py-4 bg-gray-50 border rounded-2xl focus:ring-4 focus:ring-black/5 outline-none font-bold text-sm transition-all text-gray-900 placeholder:text-gray-400
+                className={`w-full pl-12 pr-12 py-4 bg-gray-50 border rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none font-bold text-sm transition-all text-gray-900 placeholder:text-gray-400
                   ${errors.password ? 'border-red-300 focus:border-red-500' : 'border-transparent focus:border-gray-200'}`}
               />
               <button
@@ -123,7 +123,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full mt-4 bg-black hover:bg-gray-900 text-white rounded-2xl py-5 font-black uppercase tracking-[0.2em] text-[11px] transition-all flex items-center justify-center gap-2 group active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
+            className="w-full mt-4 bg-black hover:bg-gray-900 text-white rounded-[8px] py-5 font-black uppercase tracking-[0.2em] text-[11px] transition-all flex items-center justify-center gap-2 group active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
           >
             {isLoading ? (
               <Loader2 className="animate-spin" size={18} />

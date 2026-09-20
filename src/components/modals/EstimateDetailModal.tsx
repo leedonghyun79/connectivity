@@ -258,7 +258,7 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
       onClick={onClose}
     >
       <div
-        className="bg-[#fcfcfc] rounded-3xl shadow-2xl w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 animate-in zoom-in-95 duration-300"
+        className="bg-[#fcfcfc] rounded-[8px] shadow-2xl w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 animate-in zoom-in-95 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
 
@@ -286,20 +286,20 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
                   value={targetEmail}
                   onChange={(e) => setTargetEmail(e.target.value)}
                   placeholder="수신 이메일 주소"
-                  className="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:border-black transition-all text-xs w-60 font-bold"
+                  className="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-[8px] outline-none focus:border-black transition-all text-xs w-60 font-bold"
                   autoFocus
                 />
                 <button
                   onClick={handleSendEmail}
                   disabled={isEmailing}
-                  className="p-1.5 bg-black text-white rounded-lg hover:bg-gray-800 transition-all disabled:opacity-50"
+                  className="p-1.5 bg-black text-white rounded-[8px] hover:bg-gray-800 transition-all disabled:opacity-50"
                   title="전송"
                 >
                   {isEmailing ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
                 </button>
                 <button
                   onClick={() => setShowEmailInput(false)}
-                  className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400"
+                  className="p-1.5 hover:bg-gray-100 rounded-[8px] text-gray-400"
                   title="취소"
                 >
                   <X size={16} />
@@ -318,7 +318,7 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
             <button 
               onClick={() => handleStatusUpdate('approved')}
               disabled={isUpdating}
-              className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-xl font-bold hover:bg-green-100 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-[8px] font-bold hover:bg-green-100 transition-all disabled:opacity-50"
             >
               {isUpdating ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle size={16} />} 
               승인 처리
@@ -326,7 +326,7 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
             <button 
               onClick={() => handleStatusUpdate('rejected')}
               disabled={isUpdating}
-              className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-xl font-bold hover:bg-red-100 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-[8px] font-bold hover:bg-red-100 transition-all disabled:opacity-50"
             >
               {isUpdating ? <Loader2 size={16} className="animate-spin" /> : <XCircle size={16} />} 
               거절 처리
@@ -341,7 +341,7 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
         <div className="flex-1 overflow-y-auto p-12 bg-gray-100 flex justify-center custom-scrollbar">
           <div
             ref={printRef}
-            className="bg-white w-full max-w-[800px] shadow-[0_40px_100px_rgba(0,0,0,0.08)] p-[80px] pb-[120px] min-h-[1280px] relative font-sans text-gray-900 border border-gray-100 rounded-sm flex flex-col"
+            className="bg-white w-full max-w-[800px] shadow-[0_40px_100px_rgba(0,0,0,0.08)] p-[80px] pb-[120px] min-h-[1280px] relative font-sans text-gray-900 border border-gray-100 rounded-[8px] flex flex-col"
           >
 
             {/* 워터마크 배경 */}

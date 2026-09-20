@@ -32,13 +32,13 @@ export default function VisitorChart() {
   }, []);
 
   return (
-    <div className="bg-white p-10 rounded-[40px] border border-gray-100 h-[480px] flex flex-col group">
+    <div className="bg-white p-10 rounded-[8px] border border-gray-100 h-[480px] flex flex-col group">
       <div className="flex justify-between items-start mb-8">
         <div>
           <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">트래픽 분석</div>
           <h3 className="text-2xl font-black text-black uppercase tracking-tighter">방문자 통계</h3>
         </div>
-        <button className="p-3 bg-gray-50 rounded-2xl text-gray-200 group-hover:text-white group-hover:bg-black transition-all duration-300">
+        <button className="p-3 bg-gray-50 rounded-[8px] text-gray-200 group-hover:text-white group-hover:bg-black transition-all duration-300">
           <ArrowUpRight size={20} />
         </button>
       </div>
@@ -49,7 +49,7 @@ export default function VisitorChart() {
             {Array.from({ length: 7 }).map((_, i) => (
               <div
                 key={i}
-                className="flex-1 bg-gray-50 rounded-t-2xl animate-pulse"
+                className="flex-1 bg-gray-50 rounded-t-[8px] animate-pulse"
                 style={{ height: `${20 + Math.random() * 60}%` }}
               />
             ))}

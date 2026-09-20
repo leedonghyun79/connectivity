@@ -16,7 +16,7 @@ import { uploadImage } from '../editor/uploadImage';
 const ColumnEditor = dynamic(() => import('../editor/ColumnEditor'), {
   ssr: false,
   loading: () => (
-    <div className="mt-2 flex h-[460px] items-center justify-center rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-400">
+    <div className="mt-2 flex h-[460px] items-center justify-center rounded-[8px] border border-gray-200 bg-gray-50 text-sm text-gray-400">
       에디터를 불러오는 중입니다...
     </div>
   ),
@@ -191,24 +191,24 @@ export default function ColumnForm({ mode, id }: Props) {
         <div className="flex items-center gap-2">
           {mode === 'edit' && status === 'published' && (
             <button onClick={handleUnpublish} disabled={saving}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3.5 py-2 text-sm font-semibold text-gray-600 disabled:opacity-50">
+              className="inline-flex items-center gap-1.5 rounded-[8px] border border-gray-200 bg-white px-3.5 py-2 text-sm font-semibold text-gray-600 disabled:opacity-50">
               <Undo2 size={15} /> 발행 취소
             </button>
           )}
           <button onClick={handleSave} disabled={saving || !isDirty}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3.5 py-2 text-sm font-semibold text-gray-700 disabled:opacity-50">
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-gray-200 bg-white px-3.5 py-2 text-sm font-semibold text-gray-700 disabled:opacity-50">
             {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
             {mode === 'create' ? '임시저장' : '저장'}
           </button>
           <button onClick={handlePublish} disabled={saving || !isDirty}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+            className="inline-flex items-center gap-1.5 rounded-[8px] bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
             {saving ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
             {status === 'published' ? '저장 후 재발행' : '발행'}
           </button>
         </div>
       </div>
 
-      <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
+      <div className="rounded-[8px] border border-gray-100 bg-white p-8 shadow-sm">
         <div className="mb-2 flex items-center gap-2">
           <h1 className="text-xl font-black tracking-tight text-black">
             {mode === 'create' ? '새 칼럼 작성' : '칼럼 수정'}
@@ -228,7 +228,7 @@ export default function ColumnForm({ mode, id }: Props) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="칼럼 제목"
-              className="rounded-xl border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
+              className="rounded-[8px] border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
             />
           </div>
 
@@ -237,7 +237,7 @@ export default function ColumnForm({ mode, id }: Props) {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="rounded-xl border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
+              className="rounded-[8px] border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
             >
               <option value="">카테고리를 선택하세요</option>
               {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -246,7 +246,7 @@ export default function ColumnForm({ mode, id }: Props) {
 
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-800">대표 이미지</label>
-            <div className="relative h-48 w-full overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+            <div className="relative h-48 w-full overflow-hidden rounded-[8px] border border-gray-200 bg-gray-50">
               {effectiveThumb ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={effectiveThumb} alt="대표 이미지" className="h-full w-full object-cover" />
@@ -270,7 +270,7 @@ export default function ColumnForm({ mode, id }: Props) {
                 type="button"
                 onClick={() => thumbInputRef.current?.click()}
                 disabled={thumbUploading}
-                className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-[13px] font-semibold text-gray-700 disabled:opacity-50"
+                className="rounded-[8px] border border-gray-200 bg-white px-4 py-2 text-[13px] font-semibold text-gray-700 disabled:opacity-50"
               >
                 {thumbUploading ? '업로드 중...' : thumbnail ? '대표 이미지 변경' : '대표 이미지 추가'}
               </button>

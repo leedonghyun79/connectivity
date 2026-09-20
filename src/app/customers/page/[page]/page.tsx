@@ -113,7 +113,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
           </p>
         </div>
         <div className="flex gap-4">
-          <button className="px-6 py-3 bg-white border border-gray-100 rounded-2xl text-[11px] font-black text-black uppercase tracking-widest hover:bg-gray-50 transition-all flex items-center gap-2 active:scale-95">
+          <button className="px-6 py-3 bg-white border border-gray-100 rounded-[8px] text-[11px] font-black text-black uppercase tracking-widest hover:bg-gray-50 transition-all flex items-center gap-2 active:scale-95">
             <Download size={16} />
             데이터 추출
           </button>
@@ -124,7 +124,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
               setIsReadOnly(false);
               setIsModalOpen(true);
             }}
-            className="px-8 py-3 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 flex items-center gap-2"
+            className="px-8 py-3 bg-black text-white rounded-[8px] text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 flex items-center gap-2"
           >
             + 신규 고객 등록
           </button>
@@ -154,23 +154,23 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
 
       {/* 통계 요약 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100">
+        <div className="bg-white p-8 rounded-[8px] border border-gray-100">
           <div className="flex justify-between items-start mb-6">
             <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest">활성 고객</div>
-            <div className="p-2 bg-green-50 rounded-lg"><ArrowUpRight size={16} className="text-green-600" /></div>
+            <div className="p-2 bg-green-50 rounded-[8px]"><ArrowUpRight size={16} className="text-green-600" /></div>
           </div>
           <div className="text-4xl font-black text-black">84%</div>
           <div className="text-xs font-bold text-gray-400 mt-2">지난 달 기준 +12% 신장</div>
         </div>
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100">
+        <div className="bg-white p-8 rounded-[8px] border border-gray-100">
           <div className="flex justify-between items-start mb-6">
             <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest">성장 지표</div>
-            <div className="p-2 bg-black rounded-lg text-white font-black text-[10px]">최고치</div>
+            <div className="p-2 bg-black rounded-[8px] text-white font-black text-[10px]">최고치</div>
           </div>
           <div className="text-4xl font-black text-black">A+++</div>
           <div className="text-xs font-bold text-gray-400 mt-2">프리미엄 고객 유지율 안정</div>
         </div>
-        <div className="bg-black p-8 rounded-[32px]">
+        <div className="bg-black p-8 rounded-[8px]">
           <div className="flex justify-between items-start mb-6">
             <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest">총 가치 평가</div>
             <FileText size={20} className="text-gray-600" />
@@ -189,7 +189,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="고객 이름, 회사명 또는 프로젝트 검색..."
-            className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
+            className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
           />
         </div>
         <div className="relative" ref={filterRef}>
@@ -197,7 +197,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
             onClick={() => {
               setIsFilterOpen(!isFilterOpen);
             }}
-            className={`flex items-center gap-3 px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all border
+            className={`flex items-center gap-3 px-8 py-4 rounded-[8px] text-[11px] font-black uppercase tracking-widest transition-all border
               ${isFilterOpen || statusFilter !== 'all' ? 'bg-black text-white border-black' : 'bg-white text-gray-400 border-gray-100 hover:text-black hover:border-black'}`}
           >
             <Filter size={18} />
@@ -207,7 +207,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
           {/* 필터 드롭다운 */}
           {isFilterOpen && (
             <div
-              className="absolute right-0 top-full mt-4 w-64 bg-white border border-gray-100 rounded-[32px] shadow-[0_40px_80px_rgba(0,0,0,0.12)] z-40 p-6 animate-in fade-in slide-in-from-top-4 duration-300"
+              className="absolute right-0 top-full mt-4 w-64 bg-white border border-gray-100 rounded-[8px] shadow-[0_40px_80px_rgba(0,0,0,0.12)] z-40 p-6 animate-in fade-in slide-in-from-top-4 duration-300"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-4">상태별 보기</div>
@@ -224,7 +224,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
                       setStatusFilter(option.id);
                       setIsFilterOpen(false);
                     }}
-                    className={`w-full px-5 py-3 text-left rounded-xl text-[11px] font-black uppercase tracking-wider transition-all
+                    className={`w-full px-5 py-3 text-left rounded-[8px] text-[11px] font-black uppercase tracking-wider transition-all
                       ${statusFilter === option.id ? 'bg-black text-white' : 'text-gray-500 hover:bg-gray-50 hover:text-black'}`}
                   >
                     {option.label}
@@ -304,30 +304,30 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
                     e.stopPropagation();
                     setActiveMenuId(activeMenuId === customer.id ? null : customer.id);
                   }}
-                  className="p-3 text-gray-300 hover:text-black rounded-2xl hover:bg-gray-100 transition-all border border-transparent hover:border-gray-200"
+                  className="p-3 text-gray-300 hover:text-black rounded-[8px] hover:bg-gray-100 transition-all border border-transparent hover:border-gray-200"
                 >
                   <MoreHorizontal size={20} />
                 </button>
 
                 {/* 드롭다운 메뉴 */}
                 {activeMenuId === customer.id && (
-                  <div className="absolute right-10 top-20 w-48 bg-white border border-gray-100 rounded-2xl shadow-[0_30px_60px_rgba(0,0,0,0.12)] z-30 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
+                  <div className="absolute right-10 top-20 w-48 bg-white border border-gray-100 rounded-[8px] shadow-[0_30px_60px_rgba(0,0,0,0.12)] z-30 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
                     <div className="p-2 space-y-1">
                       <button
-                        className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-gray-700 hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
+                        className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-gray-700 hover:bg-gray-50 rounded-[8px] flex items-center gap-3 transition-colors"
                         onClick={(e) => { e.stopPropagation(); handleViewProfile(customer); }}
                       >
                         <Eye size={16} /> 프로필 확인
                       </button>
                       <button
-                        className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-black hover:bg-gray-50 rounded-xl flex items-center gap-3 transition-colors"
+                        className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-black hover:bg-gray-50 rounded-[8px] flex items-center gap-3 transition-colors"
                         onClick={(e) => { e.stopPropagation(); handleEdit(customer); }}
                       >
                         <Edit2 size={16} /> 정보 수정
                       </button>
                       <div className="h-px bg-gray-50 my-1"></div>
                       <button
-                        className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-red-600 hover:bg-red-50 rounded-xl flex items-center gap-3 transition-colors"
+                        className="w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest text-red-600 hover:bg-red-50 rounded-[8px] flex items-center gap-3 transition-colors"
                         onClick={(e) => {
                           e.stopPropagation();
                           setActiveMenuId(null);
@@ -350,9 +350,9 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
             데이터 매칭 결과: <span className="text-black">{filteredCustomers.length} 개의 항목</span>이 안전하게 보관 중입니다.
           </span>
           <div className="flex gap-2">
-            <button className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-black uppercase hover:bg-gray-50 transition-all">이전</button>
-            <button className="px-5 py-2 bg-black text-white rounded-xl text-[10px] font-black uppercase">1</button>
-            <button className="px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-black uppercase hover:bg-gray-50 transition-all">다음</button>
+            <button className="px-4 py-2 bg-white border border-gray-100 rounded-[8px] text-[10px] font-black uppercase hover:bg-gray-50 transition-all">이전</button>
+            <button className="px-5 py-2 bg-black text-white rounded-[8px] text-[10px] font-black uppercase">1</button>
+            <button className="px-4 py-2 bg-white border border-gray-100 rounded-[8px] text-[10px] font-black uppercase hover:bg-gray-50 transition-all">다음</button>
           </div>
         </div>
       </DataTable>

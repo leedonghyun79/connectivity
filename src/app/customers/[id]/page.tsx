@@ -105,7 +105,7 @@ export default function CustomerDetailPage() {
       />
 
       {/* 헤더 섹션 - 데코 추가 */}
-      <div className="relative group overflow-hidden bg-white p-10 rounded-[40px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.02)]">
+      <div className="relative group overflow-hidden bg-white p-10 rounded-[8px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.02)]">
         <div className="absolute top-0 right-0 p-12 opacity-[0.02] pointer-events-none select-none">
           <div className="text-[120px] font-black italic tracking-tighter leading-none uppercase">IDENTITY</div>
         </div>
@@ -122,12 +122,12 @@ export default function CustomerDetailPage() {
             <h1 className="text-6xl font-black text-gray-900 tracking-tighter uppercase leading-none">{customer.name}</h1>
             <div className="flex flex-wrap items-center gap-4 mt-6">
               {customer.company && (
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-xl border border-gray-100 text-[11px] font-bold text-gray-500">
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-[8px] border border-gray-100 text-[11px] font-bold text-gray-500">
                   <Building2 size={13} className="text-black" />
                   {customer.company}
                 </div>
               )}
-              <div className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest border shadow-sm ${statusStyle[customer.status] || ''}`}>
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-[8px] text-[11px] font-black uppercase tracking-widest border shadow-sm ${statusStyle[customer.status] || ''}`}>
                 <div className={`w-1.5 h-1.5 rounded-full ${customer.status === 'processing' ? 'bg-white animate-pulse' : 'bg-current'}`} />
                 {statusLabel[customer.status] || customer.status}
               </div>
@@ -136,14 +136,14 @@ export default function CustomerDetailPage() {
           <div className="flex gap-3 w-full md:w-auto">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="flex-1 md:flex-none px-8 py-4 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all flex items-center justify-center gap-2 shadow-xl shadow-black/10 active:scale-95"
+              className="flex-1 md:flex-none px-8 py-4 bg-black text-white rounded-[8px] text-[11px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all flex items-center justify-center gap-2 shadow-xl shadow-black/10 active:scale-95"
             >
               <Edit2 size={14} />
               프로필 수정
             </button>
             <button
               onClick={handleDelete}
-              className="px-4 py-4 bg-white border border-red-100 rounded-2xl text-red-500 hover:bg-red-50 transition-all active:scale-95 group/del"
+              className="px-4 py-4 bg-white border border-red-100 rounded-[8px] text-red-500 hover:bg-red-50 transition-all active:scale-95 group/del"
               title="삭제"
             >
               <Trash2 size={16} className="group-hover:scale-110 transition-transform" />
@@ -155,14 +155,14 @@ export default function CustomerDetailPage() {
       {/* 정보 메트릭스 그리드 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* 연락처 & 채널 */}
-        <div className="md:col-span-1 bg-white p-10 rounded-[40px] border border-gray-100 relative overflow-hidden group">
+        <div className="md:col-span-1 bg-white p-10 rounded-[8px] border border-gray-100 relative overflow-hidden group">
           <Phone className="absolute -bottom-6 -right-6 text-gray-50 opacity-[0.05] group-hover:scale-110 transition-transform duration-700" size={140} />
           <h3 className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-8 border-b pb-4">커뮤니케이션 채널</h3>
           <div className="space-y-6 relative z-10">
             <div>
               <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">대표 연락처</label>
               <div className="flex items-center gap-3 text-lg font-black text-black">
-                <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gray-50 rounded-[8px] flex items-center justify-center">
                   <Phone size={14} />
                 </div>
                 {customer.phone || 'N/A'}
@@ -171,7 +171,7 @@ export default function CustomerDetailPage() {
             <div>
               <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">이메일 주소</label>
               <div className="flex items-center gap-3 text-sm font-black text-black truncate">
-                <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gray-50 rounded-[8px] flex items-center justify-center">
                   <Mail size={14} />
                 </div>
                 {customer.email || 'N/A'}
@@ -181,7 +181,7 @@ export default function CustomerDetailPage() {
         </div>
 
         {/* 재무 요약 */}
-        <div className="md:col-span-1 bg-black p-10 rounded-[40px] shadow-2xl shadow-black/20 relative overflow-hidden group">
+        <div className="md:col-span-1 bg-black p-10 rounded-[8px] shadow-2xl shadow-black/20 relative overflow-hidden group">
           <Banknote className="absolute -bottom-6 -right-6 text-white opacity-[0.03] group-hover:scale-110 transition-transform duration-700" size={140} />
           <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-8 border-b border-white/10 pb-4">누적 비즈니스 가치</h3>
           <div className="relative z-10">
@@ -206,7 +206,7 @@ export default function CustomerDetailPage() {
         </div>
 
         {/* 라이프사이클 */}
-        <div className="md:col-span-1 bg-white p-10 rounded-[40px] border border-gray-100 relative overflow-hidden group">
+        <div className="md:col-span-1 bg-white p-10 rounded-[8px] border border-gray-100 relative overflow-hidden group">
           <Clock className="absolute -bottom-6 -right-6 text-gray-50 opacity-[0.05] group-hover:scale-110 transition-transform duration-700" size={140} />
           <h3 className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-8 border-b pb-4">파트너십 타임라인</h3>
           <div className="space-y-6 relative z-10">
@@ -266,7 +266,7 @@ export default function CustomerDetailPage() {
         </div>
 
         {/* 탭 콘텐츠 */}
-        <div className="bg-white rounded-[40px] border border-gray-100 shadow-[0_20px_60px_rgba(0,0,0,0.01)] min-h-[400px]">
+        <div className="bg-white rounded-[8px] border border-gray-100 shadow-[0_20px_60px_rgba(0,0,0,0.01)] min-h-[400px]">
           {/* 프로젝트 탭 */}
           {activeTab === 'projects' && (
             (customer.projects || []).length === 0 ? (
@@ -274,9 +274,9 @@ export default function CustomerDetailPage() {
             ) : (
               <div className="divide-y divide-gray-50 p-4">
                 {(customer.projects || []).map((project: any) => (
-                  <div key={project.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[32px] transition-all group">
+                  <div key={project.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[8px] transition-all group">
                     <div className="flex items-center gap-6">
-                      <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 group-hover:bg-black group-hover:text-white transition-all duration-500">
+                      <div className="w-12 h-12 bg-gray-50 rounded-[8px] flex items-center justify-center text-gray-400 group-hover:bg-black group-hover:text-white transition-all duration-500">
                         <FolderOpen size={20} />
                       </div>
                       <div>
@@ -294,7 +294,7 @@ export default function CustomerDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
-                      <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border ${projectStatusStyle[project.status] || ''}`}>
+                      <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-[8px] border ${projectStatusStyle[project.status] || ''}`}>
                         {projectStatusLabel[project.status] || project.status}
                       </span>
                     </div>
@@ -311,9 +311,9 @@ export default function CustomerDetailPage() {
             ) : (
               <div className="divide-y divide-gray-50 p-4">
                 {(customer.estimates || []).map((est: any) => (
-                  <div key={est.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[32px] transition-all group">
+                  <div key={est.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[8px] transition-all group">
                     <div className="flex items-center gap-6">
-                      <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 group-hover:bg-black group-hover:text-white transition-all duration-500">
+                      <div className="w-12 h-12 bg-gray-50 rounded-[8px] flex items-center justify-center text-gray-400 group-hover:bg-black group-hover:text-white transition-all duration-500">
                         <FileText size={20} />
                       </div>
                       <div>
@@ -336,7 +336,7 @@ export default function CustomerDetailPage() {
                           {Number(est.amount).toLocaleString()} <span className="text-xs text-gray-300 font-normal ml-1">₩</span>
                         </div>
                       </div>
-                      <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border ${
+                      <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-[8px] border ${
                         est.status === 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' :
                         est.status === 'approved' ? 'bg-black text-white border-black shadow-lg shadow-black/10' :
                         est.status === 'sent' ? 'bg-blue-50 text-blue-600 border-blue-100' :
@@ -358,9 +358,9 @@ export default function CustomerDetailPage() {
             ) : (
               <div className="divide-y divide-gray-50 p-4">
                 {(customer.transactions || []).map((tx: any) => (
-                  <div key={tx.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[32px] transition-all group">
+                  <div key={tx.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[8px] transition-all group">
                     <div className="flex items-center gap-6">
-                      <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-400 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
+                      <div className="w-12 h-12 bg-gray-50 rounded-[8px] flex items-center justify-center text-gray-400 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
                         <Banknote size={20} />
                       </div>
                       <div>
@@ -378,7 +378,7 @@ export default function CustomerDetailPage() {
                           {Number(tx.amount).toLocaleString()} <span className="text-xs text-blue-300 font-normal ml-1">₩</span>
                         </div>
                       </div>
-                      <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border ${
+                      <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-[8px] border ${
                         tx.status === 'completed' ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-400 border-gray-200'
                       }`}>
                         {tx.status === 'completed' ? '정산 완료' : '진행 중'}
@@ -397,7 +397,7 @@ export default function CustomerDetailPage() {
             ) : (
               <div className="divide-y divide-gray-50 p-4">
                 {(customer.inquiries || []).map((inq: any) => (
-                  <div key={inq.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[32px] transition-all group">
+                  <div key={inq.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[8px] transition-all group">
                     <div className="flex-1 min-w-0 pr-8">
                       <div className="flex items-center gap-3 mb-2">
                         <div className={`w-1.5 h-1.5 rounded-full ${inq.status === 'pending' ? 'bg-orange-400' : 'bg-black'}`} />
@@ -408,7 +408,7 @@ export default function CustomerDetailPage() {
                         Received at {fmt(inq.createdAt, true)}
                       </div>
                     </div>
-                    <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border flex-shrink-0 transition-all ${
+                    <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-[8px] border flex-shrink-0 transition-all ${
                       inq.status === 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' : 'bg-black text-white border-black shadow-lg shadow-black/10'
                     }`}>
                       {inq.status === 'pending' ? 'Action Required' : 'Solved'}
@@ -445,7 +445,7 @@ export default function CustomerDetailPage() {
 function EmptyState({ icon, message }: { icon: React.ReactNode; message: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-40 animate-in fade-in zoom-in-95 duration-700">
-      <div className="w-20 h-20 bg-gray-50 rounded-[30px] flex items-center justify-center text-gray-200 mb-6 group-hover:scale-110 transition-transform">
+      <div className="w-20 h-20 bg-gray-50 rounded-[8px] flex items-center justify-center text-gray-200 mb-6 group-hover:scale-110 transition-transform">
         {icon}
       </div>
       <p className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-300">{message}</p>

@@ -60,7 +60,10 @@ export default function Sidebar() {
       {/* 로고 섹션 */}
       <div className="h-24 flex items-center px-10">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white font-black text-xl group-hover:scale-110 transition-transform">C</div>
+          <div className="w-10 h-10 rounded-[8px] flex items-center justify-center overflow-hidden group-hover:scale-110 transition-transform">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/favicon196.png" alt="Pixel Connect" className="w-full h-full object-cover" />
+          </div>
           <span className="text-xl font-black text-black tracking-tighter">CONNECTIVITY</span>
         </Link>
       </div>
@@ -81,7 +84,7 @@ export default function Sidebar() {
                   <button
                     type="button"
                     onClick={() => setOpenGroup(openGroup === item.name ? null : item.name)}
-                    className={`group flex w-full items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 ${childActive
+                    className={`group flex w-full items-center justify-between px-4 py-3.5 rounded-[8px] transition-all duration-300 ${childActive
                       ? 'bg-gray-50 text-black'
                       : 'text-gray-400 hover:bg-gray-50 hover:text-black'
                       }`}
@@ -101,7 +104,7 @@ export default function Sidebar() {
                           <Link
                             key={child.path}
                             href={child.path}
-                            className={`group flex items-center px-3 py-2.5 rounded-xl transition-all duration-300 ${isActive
+                            className={`group flex items-center px-3 py-2.5 rounded-[8px] transition-all duration-300 ${isActive
                               ? 'bg-black text-white'
                               : 'text-gray-400 hover:bg-gray-50 hover:text-black'
                               }`}
@@ -122,7 +125,7 @@ export default function Sidebar() {
               <Link
                 key={item.path}
                 href={item.path}
-                className={`group flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 ${isActive
+                className={`group flex items-center justify-between px-4 py-3.5 rounded-[8px] transition-all duration-300 ${isActive
                   ? 'bg-black text-white'
                   : 'text-gray-400 hover:bg-gray-50 hover:text-black'
                   }`}

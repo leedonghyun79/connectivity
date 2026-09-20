@@ -84,10 +84,10 @@ export default function InquiriesPage() {
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100 group hover:bg-black hover:text-white transition-all duration-500">
+        <div className="bg-white p-8 rounded-[8px] border border-gray-100 group hover:bg-black hover:text-white transition-all duration-500">
           <div className="flex justify-between items-start mb-6">
             <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest group-hover:text-gray-500">답변 대기 중</p>
-            <div className="p-2 bg-gray-50 rounded-xl group-hover:bg-white/10 transition-colors">
+            <div className="p-2 bg-gray-50 rounded-[8px] group-hover:bg-white/10 transition-colors">
               <AlertCircle size={20} className="text-gray-300 group-hover:text-white" />
             </div>
           </div>
@@ -96,10 +96,10 @@ export default function InquiriesPage() {
           </p>
         </div>
 
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100 group hover:bg-black hover:text-white transition-all duration-500">
+        <div className="bg-white p-8 rounded-[8px] border border-gray-100 group hover:bg-black hover:text-white transition-all duration-500">
           <div className="flex justify-between items-start mb-6">
             <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest group-hover:text-gray-500">해결 완료</p>
-            <div className="p-2 bg-gray-50 rounded-xl group-hover:bg-white/10 transition-colors">
+            <div className="p-2 bg-gray-50 rounded-[8px] group-hover:bg-white/10 transition-colors">
               <CheckCircle2 size={20} className="text-gray-300 group-hover:text-white" />
             </div>
           </div>
@@ -108,14 +108,13 @@ export default function InquiriesPage() {
           </p>
         </div>
 
-        <div className="bg-black p-8 rounded-[32px] flex flex-col justify-between">
+        <div className="bg-black p-8 rounded-[8px] flex flex-col justify-between">
           <div className="flex justify-between items-start">
             <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">총 문의 건수</p>
             <MessageCircle size={20} className="text-gray-600" />
           </div>
           <div className="flex items-end justify-between">
             <p className="text-4xl font-black text-white tracking-tighter">{stats.total}</p>
-            <div className="w-12 h-1 bg-white/20 rounded-full mb-3"></div>
           </div>
         </div>
       </div>
@@ -132,7 +131,7 @@ export default function InquiriesPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+              className={`px-6 py-2.5 rounded-[8px] text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'bg-black text-white'
                   : 'bg-white border border-gray-100 text-gray-300 hover:text-black'
@@ -151,17 +150,17 @@ export default function InquiriesPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="제목, 문의자 이름으로 검색..."
-            className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
+            className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
           />
         </div>
       </div>
 
       {/* 문의 목록 테이블 */}
-      <div className="bg-white border border-gray-100 rounded-[40px] overflow-hidden">
+      <div className="bg-white border border-gray-100 rounded-[8px] overflow-hidden">
         <div className="min-h-[600px] overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50/30">
+              <tr className="bg-gray-50/30 border-b border-gray-100">
                 <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-24">번호</th>
                 <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 w-32 text-center">유형</th>
                 <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">문의 제목 및 내용</th>
@@ -180,7 +179,7 @@ export default function InquiriesPage() {
                   >
                     <td className="px-10 py-8 text-center text-xs font-mono font-bold text-gray-300 group-hover:text-black transition-colors">{index + 1}</td>
                     <td className="px-10 py-8 text-center">
-                      <span className="inline-block px-3 py-1 rounded-lg bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-widest border border-gray-100">
+                      <span className="inline-block whitespace-nowrap px-3 py-1 rounded-[8px] bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-widest border border-gray-100">
                         {inquiry.type || '일반'}
                       </span>
                     </td>
@@ -196,11 +195,11 @@ export default function InquiriesPage() {
                     </td>
                     <td className="px-10 py-8 text-center">
                       {inquiry.status === 'pending' ? (
-                        <span className="inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-orange-100 bg-orange-50 text-orange-600">
+                        <span className="inline-flex items-center whitespace-nowrap px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-orange-100 bg-orange-50 text-orange-600">
                           답변 대기
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-black bg-black text-white">
+                        <span className="inline-flex items-center whitespace-nowrap px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-black bg-black text-white">
                           해결 완료
                         </span>
                       )}

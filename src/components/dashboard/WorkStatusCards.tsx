@@ -44,7 +44,7 @@ export default function WorkStatusCards() {
 
 function StatCard({ label, value, unit, icon: Icon, highlight, black }: any) {
   return (
-    <div className={`p-8 rounded-[32px] border transition-all duration-500 relative overflow-hidden group
+    <div className={`p-8 rounded-[8px] border transition-all duration-500 relative overflow-hidden group
             ${black ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-100 hover:border-black hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)]'}
             ${highlight ? 'border-l-4 border-l-black' : ''}`}>
 
@@ -52,7 +52,7 @@ function StatCard({ label, value, unit, icon: Icon, highlight, black }: any) {
         <div className={`text-[10px] font-black uppercase tracking-widest transition-colors ${black ? 'text-gray-500' : 'text-gray-200 group-hover:text-black'}`}>
           {label}
         </div>
-        <div className={`p-2 rounded-xl transition-all duration-300 ${black ? 'bg-white/10 text-white' : 'bg-gray-50 text-gray-200 group-hover:bg-black group-hover:text-white'}`}>
+        <div className={`p-2 rounded-[8px] transition-all duration-300 ${black ? 'bg-white/10 text-white' : 'bg-gray-50 text-gray-200 group-hover:bg-black group-hover:text-white'}`}>
           <Icon size={18} />
         </div>
       </div>

@@ -93,11 +93,11 @@ export default function Toolbar({ editor, mode, onToggleSource }: Props) {
 
   const blockValue = state.h1 ? 'h1' : state.h2 ? 'h2' : state.h3 ? 'h3' : state.h4 ? 'h4' : state.h5 ? 'h5' : state.h6 ? 'h6' : 'p';
   const btn = (active: boolean) =>
-    `inline-flex h-[30px] w-[30px] items-center justify-center rounded-md border border-transparent transition ${
+    `inline-flex h-[30px] w-[30px] items-center justify-center rounded-[8px] border border-transparent transition ${
       active ? 'border-[#2d2dc9]/25 bg-[#2d2dc9]/10 text-[#2d2dc9]' : 'text-gray-800 hover:bg-gray-100'
     }`;
   const selectCls =
-    'h-[30px] rounded-md border border-gray-200 bg-white px-2 text-[13px] text-gray-800';
+    'h-[30px] rounded-[8px] border border-gray-200 bg-white px-2 text-[13px] text-gray-800';
   const sep = <span className="mx-1.5 h-5 w-px bg-gray-200" />;
 
   return (
@@ -131,12 +131,12 @@ export default function Toolbar({ editor, mode, onToggleSource }: Props) {
         <button type="button" className={btn(state.strike)} onClick={() => chain().toggleStrike().run()} title="취소선"><Strikethrough size={16} /></button>
 
         {sep}
-        <label className="relative inline-flex h-[30px] w-[30px] cursor-pointer flex-col items-center justify-center gap-px overflow-hidden rounded-md hover:bg-gray-100" title="글자색">
+        <label className="relative inline-flex h-[30px] w-[30px] cursor-pointer flex-col items-center justify-center gap-px overflow-hidden rounded-[8px] hover:bg-gray-100" title="글자색">
           <Type size={16} />
           <span className="h-[3px] w-4 rounded" style={{ background: state.color }} />
           <input type="color" value={state.color} onChange={(e) => chain().setColor(e.target.value).run()} className="absolute inset-0 cursor-pointer opacity-0" />
         </label>
-        <label className="relative inline-flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-md hover:bg-gray-100" title="배경색">
+        <label className="relative inline-flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-[8px] hover:bg-gray-100" title="배경색">
           <span className="h-4 w-4 rounded border border-gray-200" style={{ background: state.bg }} />
           <input type="color" value={state.bg} onChange={(e) => chain().setBackgroundColor(e.target.value).run()} className="absolute inset-0 cursor-pointer opacity-0" />
         </label>

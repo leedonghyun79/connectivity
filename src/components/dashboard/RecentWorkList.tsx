@@ -28,13 +28,13 @@ export default function RecentWorkList() {
   };
 
   return (
-    <div className="bg-white p-10 rounded-[32px] border border-gray-100 h-full flex flex-col group">
+    <div className="bg-white p-10 rounded-[8px] border border-gray-100 h-full flex flex-col group">
       <div className="flex justify-between items-start mb-8">
         <div>
           <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">운영 감사 로그</div>
           <h3 className="text-2xl font-black text-black uppercase tracking-tighter">최근 활동 피드</h3>
         </div>
-        <div className="p-3 bg-gray-50 rounded-2xl text-gray-300 group-hover:text-black transition-all">
+        <div className="p-3 bg-gray-50 rounded-[8px] text-gray-300 group-hover:text-black transition-all">
           <Eye size={20} />
         </div>
       </div>
@@ -80,7 +80,7 @@ export default function RecentWorkList() {
 
       <Link 
         href="/logs"
-        className="w-full mt-10 py-4 text-center text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-2xl hover:bg-black hover:text-white hover:border-black transition-all flex items-center justify-center gap-2"
+        className="w-full mt-10 py-4 text-center text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-[8px] hover:bg-black hover:text-white hover:border-black transition-all flex items-center justify-center gap-2"
       >
         전체 활동 내역 확인 <ArrowRight size={14} />
       </Link>

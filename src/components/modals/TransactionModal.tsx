@@ -74,14 +74,14 @@ export default function TransactionModal({ isOpen, onClose, onSuccess }: Transac
         className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300"
         onClick={onClose}
       />
-      <div className="relative w-full max-w-xl bg-white rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-500">
+      <div className="relative w-full max-w-xl bg-white rounded-[8px] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-500">
         {/* 헤더 */}
         <div className="px-10 py-8 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
           <div>
             <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Financial Entry</div>
             <h2 className="text-2xl font-black text-black uppercase tracking-tighter">새 거래 내역 등록</h2>
           </div>
-          <button onClick={onClose} className="p-3 hover:bg-white rounded-2xl transition-all group">
+          <button onClick={onClose} className="p-3 hover:bg-white rounded-[8px] transition-all group">
             <X size={20} className="text-gray-300 group-hover:text-black" />
           </button>
         </div>
@@ -97,7 +97,7 @@ export default function TransactionModal({ isOpen, onClose, onSuccess }: Transac
                 type="text"
                 required
                 placeholder="예: 웹사이트 리뉴얼"
-                className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-[13px] font-bold focus:ring-2 focus:ring-black transition-all"
+                className="w-full px-6 py-4 bg-gray-50 border-none rounded-[8px] text-[13px] font-bold focus:ring-2 focus:ring-black transition-all"
                 value={formData.serviceType}
                 onChange={(e) => setFormData({ ...formData, serviceType: e.target.value })}
               />
@@ -112,7 +112,7 @@ export default function TransactionModal({ isOpen, onClose, onSuccess }: Transac
                 type="number"
                 required
                 placeholder="0"
-                className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-[13px] font-bold focus:ring-2 focus:ring-black transition-all"
+                className="w-full px-6 py-4 bg-gray-50 border-none rounded-[8px] text-[13px] font-bold focus:ring-2 focus:ring-black transition-all"
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
               />
@@ -124,7 +124,7 @@ export default function TransactionModal({ isOpen, onClose, onSuccess }: Transac
                 <User size={12} /> 고객 선택
               </label>
               <select
-                className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-[13px] font-bold focus:ring-2 focus:ring-black transition-all appearance-none"
+                className="w-full px-6 py-4 bg-gray-50 border-none rounded-[8px] text-[13px] font-bold focus:ring-2 focus:ring-black transition-all appearance-none"
                 value={formData.customerId}
                 onChange={(e) => setFormData({ ...formData, customerId: e.target.value, customerName: '' })}
               >
@@ -144,7 +144,7 @@ export default function TransactionModal({ isOpen, onClose, onSuccess }: Transac
                 <input
                   type="text"
                   placeholder="비회원 고객명"
-                  className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-[13px] font-bold focus:ring-2 focus:ring-black transition-all"
+                  className="w-full px-6 py-4 bg-gray-50 border-none rounded-[8px] text-[13px] font-bold focus:ring-2 focus:ring-black transition-all"
                   value={formData.customerName}
                   onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
                 />
@@ -159,7 +159,7 @@ export default function TransactionModal({ isOpen, onClose, onSuccess }: Transac
               <input
                 type="date"
                 required
-                className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-[13px] font-bold focus:ring-2 focus:ring-black transition-all"
+                className="w-full px-6 py-4 bg-gray-50 border-none rounded-[8px] text-[13px] font-bold focus:ring-2 focus:ring-black transition-all"
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               />
@@ -176,7 +176,7 @@ export default function TransactionModal({ isOpen, onClose, onSuccess }: Transac
                     key={s}
                     type="button"
                     onClick={() => setFormData({ ...formData, status: s })}
-                    className={`flex-1 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all
+                    className={`flex-1 py-4 rounded-[8px] text-[11px] font-black uppercase tracking-widest transition-all
                       ${formData.status === s 
                         ? 'bg-black text-white' 
                         : 'bg-gray-50 text-gray-300 hover:text-gray-500'}`}
@@ -192,7 +192,7 @@ export default function TransactionModal({ isOpen, onClose, onSuccess }: Transac
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-5 bg-black text-white rounded-3xl text-[13px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all shadow-xl shadow-black/10 active:scale-[0.98] disabled:opacity-50"
+              className="w-full py-5 bg-black text-white rounded-[8px] text-[13px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all shadow-xl shadow-black/10 active:scale-[0.98] disabled:opacity-50"
             >
               {isLoading ? '저장 중...' : '거래 내역 등록 완료'}
             </button>

@@ -86,7 +86,7 @@ export default function SalesPage() {
         <div className="flex gap-4">
           <button 
             onClick={downloadCSV}
-            className="px-6 py-3 bg-white border border-gray-100 rounded-2xl text-[11px] font-black text-black uppercase tracking-widest hover:bg-black hover:text-white transition-all flex items-center gap-2 active:scale-95">
+            className="px-6 py-3 bg-white border border-gray-100 rounded-[8px] text-[11px] font-black text-black uppercase tracking-widest hover:bg-black hover:text-white transition-all flex items-center gap-2 active:scale-95">
             <Download size={16} />
             리포트 추출
           </button>
@@ -128,13 +128,13 @@ export default function SalesPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* 월별 매출 그래프 */}
-        <div className="lg:col-span-2 bg-white p-10 rounded-[40px] border border-gray-100 h-[480px] flex flex-col group">
+        <div className="lg:col-span-2 bg-white p-10 rounded-[8px] border border-gray-100 h-[480px] flex flex-col group">
           <div className="flex justify-between items-start mb-8">
             <div>
               <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">기간별 성장</div>
               <h3 className="text-2xl font-black text-black uppercase tracking-tighter">월별 매출 흐름</h3>
             </div>
-            <button className="p-3 bg-gray-50 rounded-2xl text-gray-300 group-hover:text-black group-hover:bg-black group-hover:text-white transition-all">
+            <button className="p-3 bg-gray-50 rounded-[8px] text-gray-300 group-hover:text-black group-hover:bg-black group-hover:text-white transition-all">
               <ArrowUpRight size={20} />
             </button>
           </div>
@@ -164,13 +164,13 @@ export default function SalesPage() {
         </div>
 
         {/* 서비스 비중 차트 */}
-        <div className="bg-white p-10 rounded-[40px] border border-gray-100 h-[480px] flex flex-col group">
+        <div className="bg-white p-10 rounded-[8px] border border-gray-100 h-[480px] flex flex-col group">
           <div className="flex justify-between items-start mb-10">
             <div>
               <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">자산 구성</div>
               <h3 className="text-2xl font-black text-black uppercase tracking-tighter">서비스 비중</h3>
             </div>
-            <div className="p-3 bg-gray-50 rounded-2xl text-gray-300 group-hover:text-black transition-all">
+            <div className="p-3 bg-gray-50 rounded-[8px] text-gray-300 group-hover:text-black transition-all">
               <PieIcon size={20} />
             </div>
           </div>
@@ -208,7 +208,7 @@ export default function SalesPage() {
       </div>
 
       {/* 최근 거래 목록 */}
-      <div className="bg-white rounded-[40px] border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-[8px] border border-gray-100 overflow-hidden">
         <div className="px-10 py-8 border-b border-gray-50 flex justify-between items-end">
           <div>
             <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">거래 히스토리</div>
@@ -217,7 +217,7 @@ export default function SalesPage() {
           <div className="flex gap-4">
             <button 
               onClick={() => setIsTransactionModalOpen(true)}
-              className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all active:scale-95">
+              className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-[8px] text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all active:scale-95">
               <Plus size={16} /> 거래 등록
             </button>
             <button 
@@ -229,7 +229,7 @@ export default function SalesPage() {
                 };
                 setFilterStatus(next[filterStatus]);
               }}
-              className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all
+              className={`flex items-center gap-2 px-6 py-3 rounded-[8px] text-[10px] font-black uppercase tracking-widest transition-all
                 ${filterStatus === 'all' ? 'bg-gray-50 text-gray-400' : 'bg-black text-white'}`}>
               <Filter size={16} /> 
               {filterStatus === 'all' ? '결과 필터링' : filterStatus === 'completed' ? '정산 완료만' : '대기 중만'}
@@ -300,7 +300,7 @@ export default function SalesPage() {
 // 보조 컴포넌트:MetricCard
 function MetricCard({ title, value, unit, trend, icon: Icon, black, highlight }: any) {
   return (
-    <div className={`p-8 rounded-[32px] border transition-all duration-500 relative overflow-hidden group
+    <div className={`p-8 rounded-[8px] border transition-all duration-500 relative overflow-hidden group
         ${black ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-100'}
         ${highlight ? 'border-l-4 border-l-black' : ''}`}>
 
@@ -308,7 +308,7 @@ function MetricCard({ title, value, unit, trend, icon: Icon, black, highlight }:
         <div className={`text-[10px] font-black uppercase tracking-widest group-hover:tracking-[0.2em] transition-all ${black ? 'text-gray-500' : 'text-gray-300'}`}>
           {title}
         </div>
-        <div className={`p-2 rounded-xl transition-colors ${black ? 'bg-white/10 text-white' : 'bg-gray-50 text-gray-300 group-hover:text-black'}`}>
+        <div className={`p-2 rounded-[8px] transition-colors ${black ? 'bg-white/10 text-white' : 'bg-gray-50 text-gray-300 group-hover:text-black'}`}>
           <Icon size={18} />
         </div>
       </div>

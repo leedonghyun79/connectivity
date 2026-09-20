@@ -58,7 +58,7 @@ export default function ColumnsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 py-10">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-black tracking-tight text-black">칼럼 관리</h1>
@@ -66,13 +66,13 @@ export default function ColumnsPage() {
         </div>
         <Link
           href="/columns/new"
-          className="inline-flex items-center gap-1.5 rounded-xl bg-black px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+          className="inline-flex items-center gap-1.5 rounded-[8px] bg-black px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
         >
           <Plus size={16} /> 새 칼럼
         </Link>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-[8px] border border-gray-100 bg-white shadow-sm">
         {loading ? (
           <div className="flex h-48 items-center justify-center">
             <Loader2 className="animate-spin text-gray-300" />
@@ -119,7 +119,7 @@ export default function ColumnsPage() {
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => router.push(`/columns/${r.id}/edit`)}
-                          className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-black"
+                          className="rounded-[8px] p-1.5 text-gray-400 hover:bg-gray-100 hover:text-black"
                           title="수정"
                         >
                           <Pencil size={15} />
@@ -127,7 +127,7 @@ export default function ColumnsPage() {
                         {published ? (
                           <button
                             onClick={() => doUnpublish(r.id)} disabled={rowBusy}
-                            className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-black disabled:opacity-40"
+                            className="rounded-[8px] p-1.5 text-gray-400 hover:bg-gray-100 hover:text-black disabled:opacity-40"
                             title="발행 취소"
                           >
                             {rowBusy ? <Loader2 size={15} className="animate-spin" /> : <Undo2 size={15} />}
@@ -135,7 +135,7 @@ export default function ColumnsPage() {
                         ) : (
                           <button
                             onClick={() => doPublish(r.id)} disabled={rowBusy}
-                            className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-green-600 disabled:opacity-40"
+                            className="rounded-[8px] p-1.5 text-gray-400 hover:bg-gray-100 hover:text-green-600 disabled:opacity-40"
                             title="발행"
                           >
                             {rowBusy ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
@@ -143,7 +143,7 @@ export default function ColumnsPage() {
                         )}
                         <button
                           onClick={() => setDeleteId(r.id)}
-                          className="rounded-md p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
+                          className="rounded-[8px] p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
                           title="삭제"
                         >
                           <Trash2 size={15} />

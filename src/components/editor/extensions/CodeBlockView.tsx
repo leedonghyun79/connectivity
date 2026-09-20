@@ -26,7 +26,7 @@ export function CodeBlockView({ node, updateAttributes, extension }: NodeViewPro
         contentEditable={false}
         value={current}
         onChange={(e) => updateAttributes({ language: e.target.value })}
-        className="absolute right-2 top-2 z-10 h-6 rounded-md border border-white/20 bg-white/10 px-1.5 text-[11px] text-slate-300 focus:outline-none"
+        className="absolute right-2 top-2 z-10 h-6 rounded-[8px] border border-white/20 bg-white/10 px-1.5 text-[11px] text-slate-300 focus:outline-none"
       >
         {LANGUAGES.map((l) => (
           <option key={l.value} value={l.value} className="text-slate-900">
@@ -34,7 +34,7 @@ export function CodeBlockView({ node, updateAttributes, extension }: NodeViewPro
           </option>
         ))}
       </select>
-      <pre className="m-0 overflow-x-auto rounded-[10px] bg-[#1a1a2e] px-[18px] pb-4 pt-10 text-[13px] text-[#f2f2f7]">
+      <pre className="m-0 overflow-x-auto rounded-[8px] bg-[#1a1a2e] px-[18px] pb-4 pt-10 text-[13px] text-[#f2f2f7]">
         <NodeViewContent<'code'>
           as="code"
           className={`hljs bg-transparent p-0 font-mono text-[13px] text-inherit language-${current}`}

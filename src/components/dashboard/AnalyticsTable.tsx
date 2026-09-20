@@ -66,7 +66,7 @@ export default function AnalyticsTable() {
   ];
 
   return (
-    <div className="bg-white rounded-[32px] border border-gray-100 overflow-hidden">
+    <div className="bg-white rounded-[8px] border border-gray-100 overflow-hidden">
       {/* 헤더 */}
       <div className="px-8 py-6 border-b border-gray-50 flex justify-between items-center">
         <div>
@@ -78,10 +78,10 @@ export default function AnalyticsTable() {
           </h3>
         </div>
         <div className="flex gap-2">
-          <Link href="/customers/page/1" className="p-2 bg-gray-50 rounded-xl text-gray-300 hover:text-black transition-all">
+          <Link href="/customers/page/1" className="p-2 bg-gray-50 rounded-[8px] text-gray-300 hover:text-black transition-all">
             <Users size={14} />
           </Link>
-          <Link href="/estimates" className="p-2 bg-gray-50 rounded-xl text-gray-300 hover:text-black transition-all">
+          <Link href="/estimates" className="p-2 bg-gray-50 rounded-[8px] text-gray-300 hover:text-black transition-all">
             <FileText size={14} />
           </Link>
         </div>

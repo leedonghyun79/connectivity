@@ -74,7 +74,7 @@ export default function SettingsPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center justify-between px-6 py-4 rounded-2xl transition-all duration-300 group
+                className={`w-full flex items-center justify-between px-6 py-4 rounded-[8px] transition-all duration-300 group
                   ${isActive ? 'bg-black text-white shadow-xl shadow-black/10' : 'text-gray-400 hover:bg-gray-50 hover:text-black'}`}
               >
                 <div className="flex items-center gap-3">
@@ -103,7 +103,7 @@ export default function SettingsPage() {
 
 function SettingSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.02)] space-y-8">
+    <div className="bg-white p-10 rounded-[8px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.02)] space-y-8">
       <h3 className="text-[10px] font-black text-black uppercase tracking-[0.3em] border-b pb-3">{title}</h3>
       {children}
     </div>
@@ -115,7 +115,7 @@ function SettingInput({ label, ...props }: { label: string } & React.InputHTMLAt
     <div>
       <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2 px-1">{label}</label>
       <input
-        className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all disabled:opacity-50"
+        className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-[8px] focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all disabled:opacity-50"
         {...props}
       />
     </div>
@@ -238,7 +238,7 @@ function ProfileTab({ session, update }: { session: any, update: any }) {
           <button
             onClick={handleUpdateProfile}
             disabled={isUpdatingProfile}
-            className="px-6 py-3 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all flex items-center gap-2"
+            className="px-6 py-3 bg-black text-white rounded-[8px] text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all flex items-center gap-2"
           >
             {isUpdatingProfile ? <Loader2 className="animate-spin" size={14} /> : <Save size={14} />}
             프로필 저장
@@ -256,7 +256,7 @@ function ProfileTab({ session, update }: { session: any, update: any }) {
                 placeholder="현재 비밀번호 입력"
                 value={passwords.current}
                 onChange={(e) => setPasswords(prev => ({ ...prev, current: e.target.value }))}
-                className="w-full px-6 py-4 pr-14 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all"
+                className="w-full px-6 py-4 pr-14 bg-gray-50 border border-transparent rounded-[8px] focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all"
               />
               <button onClick={() => setShowCurrent(!showCurrent)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors">
                 {showCurrent ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -271,7 +271,7 @@ function ProfileTab({ session, update }: { session: any, update: any }) {
                 placeholder="새 비밀번호 입력 (6자 이상)"
                 value={passwords.new}
                 onChange={(e) => setPasswords(prev => ({ ...prev, new: e.target.value }))}
-                className="w-full px-6 py-4 pr-14 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all"
+                className="w-full px-6 py-4 pr-14 bg-gray-50 border border-transparent rounded-[8px] focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all"
               />
               <button onClick={() => setShowNew(!showNew)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors">
                 {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -286,7 +286,7 @@ function ProfileTab({ session, update }: { session: any, update: any }) {
                 placeholder="동일하게 재입력"
                 value={passwords.confirm}
                 onChange={(e) => setPasswords(prev => ({ ...prev, confirm: e.target.value }))}
-                className="w-full px-6 py-4 pr-14 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all"
+                className="w-full px-6 py-4 pr-14 bg-gray-50 border border-transparent rounded-[8px] focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all"
               />
               <button onClick={() => setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors">
                 {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -298,17 +298,17 @@ function ProfileTab({ session, update }: { session: any, update: any }) {
           <button
             onClick={handlePasswordChange}
             disabled={isUpdatingPassword}
-            className="px-6 py-3 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all flex items-center gap-2"
+            className="px-6 py-3 bg-black text-white rounded-[8px] text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all flex items-center gap-2"
           >
             {isUpdatingPassword ? <Loader2 className="animate-spin" size={14} /> : <Shield size={14} />}
             비밀번호 변경
           </button>
         </div>
-        <div className="p-6 bg-gray-50 rounded-2xl">
+        <div className="p-6 bg-gray-50 rounded-[8px]">
           <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3">2단계 인증 (2FA)</div>
           <div className="flex items-center justify-between">
             <p className="text-sm font-bold text-gray-500">Google Authenticator 앱과 연동합니다.</p>
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3 py-1.5 bg-white border border-gray-200 rounded-xl">준비 중</span>
+            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3 py-1.5 bg-white border border-gray-200 rounded-[8px]">준비 중</span>
           </div>
         </div>
       </SettingSection>
@@ -375,7 +375,7 @@ function NotificationsTab({ initialConfig, onSave }: { initialConfig: any; onSav
         <button
           onClick={handleUpdate}
           disabled={isSaving}
-          className="px-6 py-3 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all flex items-center gap-2"
+          className="px-6 py-3 bg-black text-white rounded-[8px] text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all flex items-center gap-2"
         >
           {isSaving ? <Loader2 className="animate-spin" size={14} /> : <Save size={14} />}
           알림 설정 저장
@@ -417,7 +417,7 @@ function LocaleTab({ initialConfig, onSave }: { initialConfig: any; onSave: () =
             name="timezone"
             value={config.timezone}
             onChange={handleChange}
-            className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all appearance-none"
+            className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-[8px] focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all appearance-none"
           >
             <option value="Asia/Seoul">Asia/Seoul (UTC+9)</option>
             <option value="UTC">UTC (UTC+0)</option>
@@ -429,7 +429,7 @@ function LocaleTab({ initialConfig, onSave }: { initialConfig: any; onSave: () =
             name="dateFormat"
             value={config.dateFormat}
             onChange={handleChange}
-            className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all appearance-none"
+            className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-[8px] focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all appearance-none"
           >
             <option value="YYYY.MM.DD">YYYY.MM.DD (2026.04.20)</option>
             <option value="DD/MM/YYYY">DD/MM/YYYY (20/04/2026)</option>
@@ -441,7 +441,7 @@ function LocaleTab({ initialConfig, onSave }: { initialConfig: any; onSave: () =
           <button
             onClick={handleUpdate}
             disabled={isSaving}
-            className="px-6 py-3 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all flex items-center gap-2"
+            className="px-6 py-3 bg-black text-white rounded-[8px] text-[10px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all flex items-center gap-2"
           >
             {isSaving ? <Loader2 className="animate-spin" size={14} /> : <Save size={14} />}
             지역 설정 저장
@@ -536,7 +536,7 @@ function StorageTab() {
             </div>
           ) : logs.length > 0 ? (
             logs.map((log) => (
-              <div key={log.id} className="flex items-center justify-between px-5 py-3 bg-gray-50 rounded-xl">
+              <div key={log.id} className="flex items-center justify-between px-5 py-3 bg-gray-50 rounded-[8px]">
                 <div className="flex items-center gap-3">
                   <div className={`w-1.5 h-1.5 rounded-full ${log.action === 'LOGIN' ? 'bg-blue-400' : 'bg-black'}`} />
                   <span className="text-[11px] font-bold text-gray-700">{log.message}</span>
@@ -551,14 +551,14 @@ function StorageTab() {
       </div>
 
       {/* 데이터 초기화 경고 */}
-      <div className="p-6 bg-red-50 rounded-2xl border border-red-100">
+      <div className="p-6 bg-red-50 rounded-[8px] border border-red-100">
         <div className="text-[9px] font-black text-red-500 uppercase tracking-widest mb-2">위험 구역</div>
         <div className="flex items-center justify-between">
           <p className="text-sm font-bold text-red-600">모든 데이터를 초기화합니다. 이 작업은 되돌릴 수 없습니다.</p>
           <button 
             onClick={handleReset}
             disabled={isResetting}
-            className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-red-500 border border-red-200 rounded-xl hover:bg-red-100 transition-all ml-4 whitespace-nowrap disabled:opacity-50"
+            className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-red-500 border border-red-200 rounded-[8px] hover:bg-red-100 transition-all ml-4 whitespace-nowrap disabled:opacity-50"
           >
             {isResetting ? '초기화 중...' : '초기화'}
           </button>

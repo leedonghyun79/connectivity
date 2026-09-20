@@ -103,13 +103,13 @@ export default function InquiryDetailModal({
       />
 
       {/* 모달 */}
-      <div className="relative bg-white rounded-[40px] w-full max-w-2xl shadow-[0_60px_120px_rgba(0,0,0,0.25)] animate-in fade-in zoom-in-95 duration-300 overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="relative bg-white rounded-[8px] w-full max-w-2xl shadow-[0_60px_120px_rgba(0,0,0,0.25)] animate-in fade-in zoom-in-95 duration-300 overflow-hidden flex flex-col max-h-[90vh]">
         {/* 헤더 */}
         <div className="px-10 pt-10 pb-6 border-b border-gray-50 flex-shrink-0">
           <div className="flex justify-between items-start gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3 mb-3">
-                <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-gray-50 text-gray-400 rounded-lg border border-gray-100">
+                <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-gray-50 text-gray-400 rounded-[8px] border border-gray-100">
                   {inquiry.type || '일반'}
                 </span>
                 <span className={`inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${
@@ -128,7 +128,7 @@ export default function InquiryDetailModal({
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-2xl text-gray-300 hover:text-black hover:bg-gray-100 transition-all flex-shrink-0"
+              className="p-2 rounded-[8px] text-gray-300 hover:text-black hover:bg-gray-100 transition-all flex-shrink-0"
             >
               <X size={20} />
             </button>
@@ -139,20 +139,20 @@ export default function InquiryDetailModal({
         <div className="flex-1 overflow-y-auto px-10 py-8 space-y-8 custom-scrollbar">
           {/* 문의 정보 요약 */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-5 bg-gray-50 rounded-2xl">
+            <div className="p-5 bg-gray-50 rounded-[8px]">
               <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">문의자</div>
               <div className="text-sm font-black text-black">
                 {inquiry.authorName || inquiry.customer?.name || '익명'}
               </div>
             </div>
-            <div className="p-5 bg-gray-50 rounded-2xl">
+            <div className="p-5 bg-gray-50 rounded-[8px]">
               <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">접수 일시</div>
               <div className="text-sm font-black text-black font-mono">
                 {fmt(inquiry.createdAt)}
               </div>
             </div>
             {inquiry.authorEmail && (
-              <div className="p-5 bg-gray-50 rounded-2xl">
+              <div className="p-5 bg-gray-50 rounded-[8px]">
                 <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">이메일</div>
                 <a
                   href={`mailto:${inquiry.authorEmail}`}
@@ -163,7 +163,7 @@ export default function InquiryDetailModal({
               </div>
             )}
             {inquiry.authorPhone && (
-              <div className="p-5 bg-gray-50 rounded-2xl">
+              <div className="p-5 bg-gray-50 rounded-[8px]">
                 <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">연락처</div>
                 <div className="text-sm font-black text-black font-mono">
                   {inquiry.authorPhone}
@@ -178,7 +178,7 @@ export default function InquiryDetailModal({
               <div className="w-1.5 h-4 bg-gray-200 rounded-full"></div>
               <div className="text-[10px] font-black text-gray-900 uppercase tracking-widest">문의 상세 내용</div>
             </div>
-            <div className="p-6 bg-white border border-gray-100 rounded-2xl text-sm font-medium text-gray-700 leading-relaxed whitespace-pre-wrap">
+            <div className="p-6 bg-white border border-gray-100 rounded-[8px] text-sm font-medium text-gray-700 leading-relaxed whitespace-pre-wrap">
               {inquiry.content}
             </div>
           </div>
@@ -201,7 +201,7 @@ export default function InquiryDetailModal({
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 placeholder="고객님의 문의에 대한 답변을 입력해주세요..."
-                className="w-full min-h-[160px] p-6 bg-gray-50 border border-transparent rounded-2xl focus:bg-white focus:border-black/10 focus:ring-4 focus:ring-black/5 outline-none text-sm font-medium text-gray-800 transition-all resize-none leading-relaxed"
+                className="w-full min-h-[160px] p-6 bg-gray-50 border border-transparent rounded-[8px] focus:bg-white focus:border-black/10 focus:ring-4 focus:ring-black/5 outline-none text-sm font-medium text-gray-800 transition-all resize-none leading-relaxed"
               />
               <div className="absolute bottom-4 right-4 text-[9px] font-black text-gray-300 uppercase tracking-widest">
                 {answer.length} characters
@@ -215,7 +215,7 @@ export default function InquiryDetailModal({
           <button
             onClick={handleDelete}
             disabled={isUpdating}
-            className="flex items-center gap-2 px-5 py-3 text-[11px] font-black uppercase tracking-widest text-red-500 border border-red-100 rounded-2xl hover:bg-red-50 transition-all disabled:opacity-50"
+            className="flex items-center gap-2 px-5 py-3 text-[11px] font-black uppercase tracking-widest text-red-500 border border-red-100 rounded-[8px] hover:bg-red-50 transition-all disabled:opacity-50"
           >
             <Trash2 size={14} />
             삭제
@@ -224,7 +224,7 @@ export default function InquiryDetailModal({
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="px-6 py-3 text-[11px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-2xl hover:bg-gray-50 transition-all"
+              className="px-6 py-3 text-[11px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-[8px] hover:bg-gray-50 transition-all"
             >
               닫기
             </button>
@@ -233,7 +233,7 @@ export default function InquiryDetailModal({
               <button
                 onClick={handleAnswerSubmit}
                 disabled={isUpdating || !answer.trim()}
-                className="px-8 py-3 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all disabled:opacity-30 flex items-center gap-2 shadow-xl shadow-black/10"
+                className="px-8 py-3 bg-black text-white rounded-[8px] text-[11px] font-black uppercase tracking-widest hover:bg-gray-800 transition-all disabled:opacity-30 flex items-center gap-2 shadow-xl shadow-black/10"
               >
                 <Send size={14} />
                 {isUpdating ? '등록 중...' : (inquiry.answer ? '답변 수정하기' : '답변 등록하기')}
@@ -242,7 +242,7 @@ export default function InquiryDetailModal({
               <button
                 onClick={handleMarkPending}
                 disabled={isUpdating}
-                className="px-6 py-3 bg-orange-50 text-orange-600 border border-orange-100 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-orange-100 transition-all disabled:opacity-50 flex items-center gap-2"
+                className="px-6 py-3 bg-orange-50 text-orange-600 border border-orange-100 rounded-[8px] text-[11px] font-black uppercase tracking-widest hover:bg-orange-100 transition-all disabled:opacity-50 flex items-center gap-2"
               >
                 <AlertCircle size={14} />
                 답변 취소 (대기)

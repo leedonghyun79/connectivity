@@ -26,7 +26,7 @@ export default function DataTable<T extends { id: string }>({
   children,
 }: DataTableProps<T>) {
   return (
-    <div className="bg-white rounded-[40px] border border-gray-100 overflow-hidden mb-20">
+    <div className="bg-white rounded-[8px] border border-gray-100 overflow-hidden mb-20">
       <div className="overflow-x-auto min-h-[500px]">
         <table className="w-full text-left">
           <thead>

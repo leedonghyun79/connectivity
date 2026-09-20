@@ -124,7 +124,7 @@ export default function EstimatesPage() {
         <div className="flex gap-4">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-8 py-3 bg-black text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 flex items-center gap-2"
+            className="px-8 py-3 bg-black text-white rounded-[8px] text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 flex items-center gap-2"
           >
             <Plus size={16} />
             신규 견적서 작성
@@ -160,7 +160,7 @@ export default function EstimatesPage() {
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100">
+        <div className="bg-white p-8 rounded-[8px] border border-gray-100">
           <div className="flex items-center justify-between mb-6">
             <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">총 가치 평가</span>
             <FileText size={20} className="text-gray-300" />
@@ -169,21 +169,21 @@ export default function EstimatesPage() {
             {Number(stats.totalAmount).toLocaleString()} <span className="text-[10px] text-gray-400">KRW</span>
           </p>
         </div>
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100">
+        <div className="bg-white p-8 rounded-[8px] border border-gray-100">
           <div className="flex items-center justify-between mb-6">
             <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">승인 대기</span>
             <Clock size={20} className="text-gray-300" />
           </div>
           <p className="text-3xl font-black text-gray-900 tracking-tighter">{stats.pending} <span className="text-[10px] text-gray-400">건</span></p>
         </div>
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100">
+        <div className="bg-white p-8 rounded-[8px] border border-gray-100">
           <div className="flex items-center justify-between mb-6">
             <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">최종 승인</span>
             <CheckCircle size={20} className="text-gray-300" />
           </div>
           <p className="text-3xl font-black text-gray-900 tracking-tighter">{stats.approved} <span className="text-[10px] text-gray-400">건</span></p>
         </div>
-        <div className="bg-black p-8 rounded-[32px]">
+        <div className="bg-black p-8 rounded-[8px]">
           <div className="flex items-center justify-between mb-6">
             <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">전체 발행 수</span>
           </div>
@@ -205,14 +205,14 @@ export default function EstimatesPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="견적서 번호, 고객명 또는 프로젝트명 검색..."
-            className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
+            className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
           />
         </div>
 
         <div className="relative" ref={filterRef}>
           <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className={`flex items-center gap-3 px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all border
+            className={`flex items-center gap-3 px-8 py-4 rounded-[8px] text-[11px] font-black uppercase tracking-widest transition-all border
               ${isFilterOpen || statusFilter !== 'all' ? 'bg-black text-white border-black' : 'bg-white text-gray-400 border-gray-100 hover:text-black hover:border-black'}`}
           >
             <Filter size={18} />
@@ -226,7 +226,7 @@ export default function EstimatesPage() {
           {/* 필터 드롭다운 */}
           {isFilterOpen && (
             <div
-              className="absolute right-0 top-full mt-4 w-64 bg-white border border-gray-100 rounded-[32px] shadow-[0_40px_80px_rgba(0,0,0,0.12)] z-40 p-6 animate-in fade-in slide-in-from-top-4 duration-300"
+              className="absolute right-0 top-full mt-4 w-64 bg-white border border-gray-100 rounded-[8px] shadow-[0_40px_80px_rgba(0,0,0,0.12)] z-40 p-6 animate-in fade-in slide-in-from-top-4 duration-300"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-4">상태별 보기</div>
@@ -244,7 +244,7 @@ export default function EstimatesPage() {
                       setStatusFilter(option.id);
                       setIsFilterOpen(false);
                     }}
-                    className={`w-full px-5 py-3 text-left rounded-xl text-[11px] font-black uppercase tracking-wider transition-all
+                    className={`w-full px-5 py-3 text-left rounded-[8px] text-[11px] font-black uppercase tracking-wider transition-all
                       ${statusFilter === option.id ? 'bg-black text-white' : 'text-gray-500 hover:bg-gray-50 hover:text-black'}`}
                   >
                     {option.label}
@@ -326,13 +326,13 @@ export default function EstimatesPage() {
               <>
                 <button
                   onClick={(e) => toggleMenu(e, estimate.id)}
-                  className={`p-3 rounded-2xl transition-all ${activeMenuId === estimate.id ? 'bg-black text-white' : 'text-gray-300 hover:text-black hover:bg-gray-100'}`}
+                  className={`p-3 rounded-[8px] transition-all ${activeMenuId === estimate.id ? 'bg-black text-white' : 'text-gray-300 hover:text-black hover:bg-gray-100'}`}
                 >
                   <MoreHorizontal size={20} />
                 </button>
 
                 {activeMenuId === estimate.id && (
-                  <div className="absolute right-10 top-16 w-36 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-20 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="absolute right-10 top-16 w-36 bg-white rounded-[8px] shadow-xl border border-gray-100 overflow-hidden z-20 animate-in fade-in zoom-in-95 duration-200">
                     <button
                       onClick={(e) => handleEdit(e, estimate)}
                       className="w-full px-4 py-3 text-left text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-black flex items-center gap-2"

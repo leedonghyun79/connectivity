@@ -23,7 +23,7 @@ export default function StatChart() {
   const total = data.reduce((sum, d) => sum + d.amount, 0);
 
   return (
-    <div className="bg-white p-10 rounded-[40px] border border-gray-100 flex flex-col gap-6 h-full group">
+    <div className="bg-white p-10 rounded-[8px] border border-gray-100 flex flex-col gap-6 h-full group">
       {/* 헤더 */}
       <div className="flex justify-between items-start">
         <div>
@@ -36,7 +36,7 @@ export default function StatChart() {
         </div>
         <Link
           href="/sales"
-          className="p-3 bg-gray-50 rounded-2xl text-gray-200 group-hover:bg-black group-hover:text-white transition-all duration-300"
+          className="p-3 bg-gray-50 rounded-[8px] text-gray-200 group-hover:bg-black group-hover:text-white transition-all duration-300"
         >
           <ArrowUpRight size={20} />
         </Link>

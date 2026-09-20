@@ -65,7 +65,7 @@ export default function ColumnEditor({ value, onChange, placeholder }: ColumnEdi
       ) : (
         <EditorContent
           editor={editor}
-          className="rounded-b-xl border border-t-0 border-gray-200 bg-white"
+          className="rounded-b-[8px] border border-t-0 border-gray-200 bg-white"
         />
       )}
     </div>

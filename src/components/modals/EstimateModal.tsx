@@ -175,13 +175,13 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
       onClick={onClose}
     >
       <div
-        className="bg-[#fcfcfc] rounded-3xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col border border-gray-200"
+        className="bg-[#fcfcfc] rounded-[8px] shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col border border-gray-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 모달 헤더 */}
         <div className="px-8 py-5 border-b border-gray-100 flex items-center justify-between bg-white/50 backdrop-blur-sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white font-bold text-xl">C</div>
+            <div className="w-10 h-10 bg-black rounded-[8px] flex items-center justify-center text-white font-bold text-xl">C</div>
             <h3 className="text-xl font-black text-gray-900 tracking-tight">{editData ? '견적서 수정' : '신규 견적서 작성'}</h3>
           </div>
           <button onClick={onClose} className="p-2.5 hover:bg-gray-100 rounded-full transition-all text-gray-400 hover:text-gray-900 border border-transparent hover:border-gray-200">
@@ -190,7 +190,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
         </div>
 
         <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
-          <form id="estimate-form" onSubmit={handleSubmit} className="space-y-12 max-w-4xl mx-auto bg-white p-12 shadow-[0_0_50px_rgba(0,0,0,0.02)] border border-gray-100 rounded-2xl">
+          <form id="estimate-form" onSubmit={handleSubmit} className="space-y-12 max-w-4xl mx-auto bg-white p-12 shadow-[0_0_50px_rgba(0,0,0,0.02)] border border-gray-100 rounded-[8px]">
 
             {/* 상단 섹션: 견적서 제목 및 날짜 */}
             <div className="flex justify-between items-start">
@@ -212,7 +212,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                     type="date"
                     value={formData.issueDate}
                     onChange={(e) => setFormData({ ...formData, issueDate: e.target.value })}
-                    className="text-lg font-bold bg-gray-50 px-3 py-1 rounded-lg outline-none"
+                    className="text-lg font-bold bg-gray-50 px-3 py-1 rounded-[8px] outline-none"
                   />
                 </div>
                 <div>
@@ -371,7 +371,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                         <button
                           type="button"
                           onClick={() => removeItem(index)}
-                          className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                          className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-[8px] transition-all opacity-0 group-hover:opacity-100"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -383,7 +383,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                       <button
                         type="button"
                         onClick={addItem}
-                        className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-xl text-xs font-bold hover:bg-gray-800 transition-all active:scale-95"
+                        className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-[8px] text-xs font-bold hover:bg-gray-800 transition-all active:scale-95"
                       >
                         <Plus size={14} /> 품목 추가
                       </button>
@@ -404,7 +404,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                   <span className="text-gray-400 font-bold uppercase tracking-widest">부가세 (VAT 10%)</span>
                   <span className="font-mono font-bold">{totalVat.toLocaleString()} KRW</span>
                 </div>
-                <div className="flex justify-between items-center bg-black text-white p-6 rounded-2xl shadow-xl shadow-black/10">
+                <div className="flex justify-between items-center bg-black text-white p-6 rounded-[8px] shadow-xl shadow-black/10">
                   <span className="font-black uppercase tracking-widest text-xs">최종 합계액</span>
                   <span className="text-2xl font-black font-mono">{grandTotal.toLocaleString()} KRW</span>
                 </div>
@@ -416,7 +416,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
               <div className="flex justify-center items-center gap-10">
                 <div className="flex items-center gap-4">
                   <span className="text-sm font-bold">서명 :</span>
-                  <div className="w-32 h-10 bg-gray-50 rounded-lg border-b-2 border-gray-200 flex items-center justify-center italic text-gray-300 text-sm">(인)</div>
+                  <div className="w-32 h-10 bg-gray-50 rounded-[8px] border-b-2 border-gray-200 flex items-center justify-center italic text-gray-300 text-sm">(인)</div>
                 </div>
                 <div className="text-gray-400 font-mono text-sm">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Seoul' })}</div>
               </div>
@@ -434,7 +434,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2.5 border border-gray-200 rounded-2xl text-sm font-bold text-gray-600 hover:bg-gray-50 transition-all active:scale-95"
+              className="px-6 py-2.5 border border-gray-200 rounded-[8px] text-sm font-bold text-gray-600 hover:bg-gray-50 transition-all active:scale-95"
             >
               취소
             </button>
@@ -442,7 +442,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
               form="estimate-form"
               type="submit"
               disabled={isSubmitting}
-              className="px-10 py-2.5 bg-black text-white rounded-2xl text-sm font-black hover:bg-gray-800 transition-all shadow-xl shadow-black/10 active:scale-95 disabled:opacity-50 flex items-center gap-2"
+              className="px-10 py-2.5 bg-black text-white rounded-[8px] text-sm font-black hover:bg-gray-800 transition-all shadow-xl shadow-black/10 active:scale-95 disabled:opacity-50 flex items-center gap-2"
             >
               {isSubmitting ? (
                 <>

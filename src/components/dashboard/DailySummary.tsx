@@ -33,7 +33,7 @@ export default function DailySummary() {
   }, []);
 
   return (
-    <div className="bg-white p-10 rounded-[32px] border border-gray-100 h-full flex flex-col">
+    <div className="bg-white p-10 rounded-[8px] border border-gray-100 h-full flex flex-col">
       <div className="flex justify-between items-start mb-8">
         <div>
           <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">일 업무 일지</div>
@@ -50,16 +50,16 @@ export default function DailySummary() {
           Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="flex items-center justify-between p-4 animate-pulse">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gray-50 rounded-2xl" />
+                <div className="w-12 h-12 bg-gray-50 rounded-[8px]" />
                 <div className="h-3 bg-gray-50 rounded w-20" />
               </div>
               <div className="h-6 bg-gray-50 rounded w-8" />
             </div>
           ))
         ) : stats?.map((stat: any, index: number) => (
-          <div key={index} className="flex items-center justify-between p-4 hover:bg-gray-50/50 rounded-2xl transition-all border border-transparent hover:border-gray-50 group">
+          <div key={index} className="flex items-center justify-between p-4 hover:bg-gray-50/50 rounded-[8px] transition-all border border-transparent hover:border-gray-50 group">
             <div className="flex items-center gap-4">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${stat.bg} ${stat.color} group-hover:bg-black group-hover:text-white`}>
+              <div className={`w-12 h-12 rounded-[8px] flex items-center justify-center transition-colors ${stat.bg} ${stat.color} group-hover:bg-black group-hover:text-white`}>
                 <stat.icon size={20} />
               </div>
               <span className="text-[11px] text-gray-400 group-hover:text-black font-black uppercase tracking-widest transition-colors">{stat.label}</span>
@@ -74,7 +74,7 @@ export default function DailySummary() {
 
       <Link 
         href="/logs"
-        className="w-full mt-10 py-4 text-center text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-2xl hover:bg-black hover:text-white hover:border-black transition-all"
+        className="w-full mt-10 py-4 text-center text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-[8px] hover:bg-black hover:text-white hover:border-black transition-all"
       >
         전체 브리핑 확인
       </Link>

@@ -24,7 +24,7 @@ export default function SourceView({ value, onChange }: Props) {
   );
 
   return (
-    <div className="overflow-hidden rounded-b-xl border border-t-0 border-gray-200 bg-white">
+    <div className="overflow-hidden rounded-b-[8px] border border-t-0 border-gray-200 bg-white">
       <CodeMirror
         value={value}
         extensions={extensions}
