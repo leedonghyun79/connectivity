@@ -170,6 +170,7 @@ model Column {
   id           String    @id @default(cuid())
   title        String
   category     String    // 홈페이지 기획 | 전환율 최적화 | 유지보수 | 디자인 트렌드 | 마케팅
+  description  String?                             // SEO meta description (150~160자 권장), 비어있으면 본문에서 자동 요약
   contentHtml  String                              // Tiptap getHTML()
   contentJson  Json?                               // 재편집 안정성용 (Tiptap getJSON)
   thumbnail    String?                             // 대표 이미지 URL (/api/images/[id])
@@ -184,6 +185,7 @@ model Portfolio {
   id          String    @id @default(cuid())
   title       String                       // 프로젝트명 예: "비자르테 쇼핑몰"
   category    String                       // 필터용 단일값 (PORTFOLIO_CATEGORIES)
+  description String?                      // SEO meta description (150~160자 권장), 비어있으면 본문에서 자동 요약
   tags        String[]                      // 카드 칩 예: ["인테리어", "쇼핑몰"]
   result      String?                       // 카드 한줄 성과 예: "제작 후 문의 3배 증가"
   client      String?                       // 고객사 (상세 스펙 표 Client)

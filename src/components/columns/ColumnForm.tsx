@@ -24,8 +24,8 @@ const ColumnEditor = dynamic(() => import('../editor/ColumnEditor'), {
 
 const CATEGORIES = ['홈페이지 기획', '전환율 최적화', '유지보수', '디자인 트렌드', '마케팅'];
 
-function snapshotOf(title: string, category: string, thumbnail: string, html: string) {
-  return JSON.stringify({ title, category, thumbnail, html });
+function snapshotOf(title: string, category: string, description: string, thumbnail: string, html: string) {
+  return JSON.stringify({ title, category, description, thumbnail, html });
 }
 
 interface Props {
@@ -41,6 +41,7 @@ export default function ColumnForm({ mode, id }: Props) {
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
+  const [description, setDescription] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [html, setHtml] = useState('');
   const jsonRef = useRef<JSONContent>({});
@@ -60,11 +61,12 @@ export default function ColumnForm({ mode, id }: Props) {
       }
       setTitle(col.title);
       setCategory(col.category);
+      setDescription(col.description ?? '');
       setThumbnail(col.thumbnail ?? '');
       setHtml(col.contentHtml);
       jsonRef.current = (col.contentJson as JSONContent) ?? {};
       setStatus(col.status as 'draft' | 'published');
-      setSavedSnapshot(snapshotOf(col.title, col.category, col.thumbnail ?? '', col.contentHtml));
+      setSavedSnapshot(snapshotOf(col.title, col.category, col.description ?? '', col.thumbnail ?? '', col.contentHtml));
       setLoading(false);
     });
   }, [mode, id, router]);
@@ -93,6 +95,7 @@ export default function ColumnForm({ mode, id }: Props) {
   const payload = () => ({
     title,
     category,
+    description: description || null,
     contentHtml: html,
     // Tiptap(ProseMirror)가 노드 attrs를 Object.create(null)로 만들어서
     // 그대로 넘기면 서버 액션 직렬화가 "null prototype" 에러를 낸다. plain 객체로 복제.
@@ -120,7 +123,7 @@ export default function ColumnForm({ mode, id }: Props) {
       } else {
         const res = await updateColumn(id!, payload());
         if (!res.success) throw new Error(res.error);
-        setSavedSnapshot(snapshotOf(title, category, thumbnail, html));
+        setSavedSnapshot(snapshotOf(title, category, description, thumbnail, html));
         toast.success('저장했습니다.');
       }
     } catch (e) {
@@ -172,7 +175,7 @@ export default function ColumnForm({ mode, id }: Props) {
 
   const effectiveThumb = thumbnail || autoThumb;
   const usingAuto = !thumbnail && !!autoThumb;
-  const isDirty = mode === 'create' || savedSnapshot !== snapshotOf(title, category, thumbnail, html);
+  const isDirty = mode === 'create' || savedSnapshot !== snapshotOf(title, category, description, thumbnail, html);
 
   if (loading) {
     return (
@@ -242,6 +245,24 @@ export default function ColumnForm({ mode, id }: Props) {
               <option value="">카테고리를 선택하세요</option>
               {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-semibold text-gray-800">SEO 요약 (meta description)</label>
+              <span className={`text-xs font-medium ${
+                description.length > 160 ? 'text-red-500' : 'text-gray-400'
+              }`}>
+                {description.length}/160
+              </span>
+            </div>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="검색결과·공유 미리보기에 노출될 요약입니다. 150~160자 권장. 비워두면 본문에서 자동으로 생성됩니다."
+              rows={3}
+              className="resize-none rounded-[8px] border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
+            />
           </div>
 
           <div className="flex flex-col gap-2">

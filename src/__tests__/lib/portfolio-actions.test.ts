@@ -54,6 +54,30 @@ describe('Server Actions (lib/portfolio-actions.ts) Test', () => {
       );
       expect(revalidatePath).toHaveBeenCalledWith('/portfolios');
     });
+
+    it('description을 입력하면 trim해서 prisma에 전달해야 함', async () => {
+      (prisma.portfolio.create as jest.Mock).mockResolvedValue({ id: 'pf_1', ...basePayload });
+
+      await createPortfolio({ ...basePayload, description: '  SEO 요약  ' });
+
+      expect(prisma.portfolio.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ description: 'SEO 요약' }),
+        })
+      );
+    });
+
+    it('description을 비워두면 null로 저장해야 함', async () => {
+      (prisma.portfolio.create as jest.Mock).mockResolvedValue({ id: 'pf_1', ...basePayload });
+
+      await createPortfolio(basePayload);
+
+      expect(prisma.portfolio.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ description: null }),
+        })
+      );
+    });
   });
 
   describe('publishPortfolio', () => {

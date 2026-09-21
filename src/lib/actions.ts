@@ -1022,6 +1022,7 @@ const COLUMN_CATEGORIES = ['홈페이지 기획', '전환율 최적화', '유지
 interface ColumnInput {
   title: string;
   category: string;
+  description?: string | null;
   contentHtml: string;
   contentJson?: any;
   thumbnail?: string | null;
@@ -1053,6 +1054,7 @@ export async function createColumn(data: ColumnInput) {
       data: {
         title: data.title.trim(),
         category: data.category,
+        description: data.description?.trim() || null,
         contentHtml: data.contentHtml ?? '',
         contentJson: data.contentJson ?? undefined,
         thumbnail: data.thumbnail || null,
@@ -1076,6 +1078,7 @@ export async function updateColumn(id: string, data: ColumnInput) {
       data: {
         title: data.title.trim(),
         category: data.category,
+        description: data.description?.trim() || null,
         contentHtml: data.contentHtml ?? '',
         contentJson: data.contentJson ?? undefined,
         thumbnail: data.thumbnail || null,

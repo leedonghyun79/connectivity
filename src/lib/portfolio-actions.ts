@@ -13,6 +13,7 @@ const PORTFOLIO_CATEGORIES = ['쇼핑몰', '기업 홈페이지', '병원·클�
 export interface PortfolioInput {
   title: string;
   category: string;
+  description?: string | null;
   tags: string[];
   result?: string | null;
   client?: string | null;
@@ -49,6 +50,7 @@ export async function createPortfolio(data: PortfolioInput) {
       data: {
         title: data.title.trim(),
         category: data.category,
+        description: data.description?.trim() || null,
         tags: data.tags ?? [],
         result: data.result || null,
         client: data.client || null,
@@ -77,6 +79,7 @@ export async function updatePortfolio(id: string, data: PortfolioInput) {
       data: {
         title: data.title.trim(),
         category: data.category,
+        description: data.description?.trim() || null,
         tags: data.tags ?? [],
         result: data.result || null,
         client: data.client || null,

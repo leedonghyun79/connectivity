@@ -16,10 +16,10 @@ import { uploadImage } from '../editor/uploadImage';
 const PORTFOLIO_CATEGORIES = ['쇼핑몰', '기업 홈페이지', '병원·클리닉', '교육', '기타'];
 
 function snapshotOf(
-  title: string, category: string, tagsText: string, result: string,
+  title: string, category: string, description: string, tagsText: string, result: string,
   client: string, projectType: string, websiteUrl: string, thumbnail: string, html: string
 ) {
-  return JSON.stringify({ title, category, tagsText, result, client, projectType, websiteUrl, thumbnail, html });
+  return JSON.stringify({ title, category, description, tagsText, result, client, projectType, websiteUrl, thumbnail, html });
 }
 
 const PortfolioEditor = dynamic(() => import('../editor/ColumnEditor'), {
@@ -44,6 +44,7 @@ export default function PortfolioForm({ mode, id }: Props) {
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
+  const [description, setDescription] = useState('');
   const [tagsText, setTagsText] = useState('');
   const [result, setResult] = useState('');
   const [client, setClient] = useState('');
@@ -69,6 +70,7 @@ export default function PortfolioForm({ mode, id }: Props) {
       const tags = (item.tags ?? []).join(', ');
       setTitle(item.title);
       setCategory(item.category);
+      setDescription(item.description ?? '');
       setTagsText(tags);
       setResult(item.result ?? '');
       setClient(item.client ?? '');
@@ -79,7 +81,7 @@ export default function PortfolioForm({ mode, id }: Props) {
       jsonRef.current = (item.contentJson as JSONContent) ?? {};
       setStatus(item.status as 'draft' | 'published');
       setSavedSnapshot(snapshotOf(
-        item.title, item.category, tags, item.result ?? '',
+        item.title, item.category, item.description ?? '', tags, item.result ?? '',
         item.client ?? '', item.projectType ?? '', item.websiteUrl ?? '', item.thumbnail ?? '', item.contentHtml
       ));
       setLoading(false);
@@ -110,6 +112,7 @@ export default function PortfolioForm({ mode, id }: Props) {
   const payload = () => ({
     title,
     category,
+    description: description || null,
     tags: tagsText.split(',').map((t) => t.trim()).filter(Boolean),
     result: result || null,
     client: client || null,
@@ -139,7 +142,7 @@ export default function PortfolioForm({ mode, id }: Props) {
       } else {
         const res = await updatePortfolio(id!, payload());
         if (!res.success) throw new Error(res.error);
-        setSavedSnapshot(snapshotOf(title, category, tagsText, result, client, projectType, websiteUrl, thumbnail, html));
+        setSavedSnapshot(snapshotOf(title, category, description, tagsText, result, client, projectType, websiteUrl, thumbnail, html));
         toast.success('저장했습니다.');
       }
     } catch (e) {
@@ -191,7 +194,7 @@ export default function PortfolioForm({ mode, id }: Props) {
   const effectiveThumb = thumbnail || autoThumb;
   const usingAuto = !thumbnail && !!autoThumb;
   const isDirty = mode === 'create' || savedSnapshot !== snapshotOf(
-    title, category, tagsText, result, client, projectType, websiteUrl, thumbnail, html
+    title, category, description, tagsText, result, client, projectType, websiteUrl, thumbnail, html
   );
 
   if (loading) {
@@ -283,6 +286,24 @@ export default function PortfolioForm({ mode, id }: Props) {
                 className="rounded-[8px] border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
               />
             </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-semibold text-gray-800">SEO 요약 (meta description)</label>
+              <span className={`text-xs font-medium ${
+                description.length > 160 ? 'text-red-500' : 'text-gray-400'
+              }`}>
+                {description.length}/160
+              </span>
+            </div>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="검색결과·공유 미리보기에 노출될 요약입니다. 150~160자 권장. 비워두면 본문에서 자동으로 생성됩니다."
+              rows={3}
+              className="resize-none rounded-[8px] border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
+            />
           </div>
 
           <div className="flex flex-col gap-2">

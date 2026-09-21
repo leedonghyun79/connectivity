@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { excerptFromHtml } from '@/lib/seo';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -19,6 +20,7 @@ export async function GET() {
       id: true,
       title: true,
       category: true,
+      description: true,
       thumbnail: true,
       contentHtml: true,
       publishedAt: true,
@@ -30,6 +32,7 @@ export async function GET() {
     id: r.id,
     title: r.title,
     category: r.category,
+    description: r.description || excerptFromHtml(r.contentHtml),
     thumbnail: r.thumbnail || firstImageSrc(r.contentHtml),
     publishedAt: (r.publishedAt ?? new Date()).toISOString(),
     updatedAt: r.updatedAt.toISOString(),

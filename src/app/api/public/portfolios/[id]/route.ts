@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { excerptFromHtml } from '@/lib/seo';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -35,6 +36,7 @@ export async function GET(
     id: row.id,
     title: row.title,
     category: row.category,
+    description: row.description || excerptFromHtml(row.contentHtml),
     tags: row.tags,
     result: row.result,
     client: row.client,
