@@ -16,11 +16,14 @@ function stripFirstImage(html: string): string {
 }
 
 // pixelconnect 공개 사이트가 칼럼 상세를 가져가는 공개 엔드포인트 (인증 없음)
+// params.id는 slug 또는 (구 URL 호환용) cuid 둘 다 받는다.
 export async function GET(
   _req: Request,
   { params }: { params: { id: string } }
 ) {
-  const row = await prisma.column.findUnique({ where: { id: params.id } });
+  const row = await prisma.column.findFirst({
+    where: { OR: [{ slug: params.id }, { id: params.id }] },
+  });
 
   if (!row || row.status !== 'published') {
     return NextResponse.json({ error: 'not found' }, { status: 404 });
@@ -34,6 +37,7 @@ export async function GET(
 
   return NextResponse.json({
     id: row.id,
+    slug: row.slug,
     title: row.title,
     category: row.category,
     description: row.description || excerptFromHtml(row.contentHtml),

@@ -168,6 +168,7 @@ model SystemConfig {
 // 픽셀커넥트 공개 사이트에 발행하는 칼럼(블로그) 글
 model Column {
   id           String    @id @default(cuid())
+  slug         String?   @unique                    // SEO URL용 슬러그. 생성 시 제목에서 1회 생성, 이후 고정(수정해도 안 바뀜)
   title        String
   category     String    // 홈페이지 기획 | 전환율 최적화 | 유지보수 | 디자인 트렌드 | 마케팅
   description  String?                             // SEO meta description (150~160자 권장), 비어있으면 본문에서 자동 요약

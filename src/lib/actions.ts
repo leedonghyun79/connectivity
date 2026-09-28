@@ -2,6 +2,7 @@
 
 import prisma from './prisma';
 import { revalidatePath } from 'next/cache';
+import { generateUniqueSlug } from './slug';
 
 /**
  * 고객 관련 액션
@@ -1050,8 +1051,10 @@ export async function createColumn(data: ColumnInput) {
   try {
     if (!data.title?.trim()) return { success: false, error: '제목을 입력하세요.' };
     if (!COLUMN_CATEGORIES.includes(data.category)) return { success: false, error: '카테고리를 선택하세요.' };
+    const slug = await generateUniqueSlug(data.title.trim());
     const col = await prisma.column.create({
       data: {
+        slug,
         title: data.title.trim(),
         category: data.category,
         description: data.description?.trim() || null,
@@ -1073,9 +1076,12 @@ export async function updateColumn(id: string, data: ColumnInput) {
   try {
     if (!data.title?.trim()) return { success: false, error: '제목을 입력하세요.' };
     if (!COLUMN_CATEGORIES.includes(data.category)) return { success: false, error: '카테고리를 선택하세요.' };
+    const existing = await prisma.column.findUnique({ where: { id }, select: { slug: true } });
+    const slug = existing?.slug || (await generateUniqueSlug(data.title.trim(), id));
     const col = await prisma.column.update({
       where: { id },
       data: {
+        slug,
         title: data.title.trim(),
         category: data.category,
         description: data.description?.trim() || null,
