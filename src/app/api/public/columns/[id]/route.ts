@@ -35,7 +35,7 @@ export async function GET(
     ? stripFirstImage(row.contentHtml)
     : row.contentHtml;
 
-  return NextResponse.json({
+  const response = NextResponse.json({
     id: row.id,
     slug: row.slug,
     title: row.title,
@@ -46,4 +46,8 @@ export async function GET(
     publishedAt: (row.publishedAt ?? new Date()).toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   });
+
+  // Vercel Edge Cache: 1시간 캐시
+  response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+  return response;
 }
