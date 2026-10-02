@@ -16,13 +16,14 @@ function stripFirstImage(html: string): string {
 }
 
 // pixelconnect 공개 사이트가 칼럼 상세를 가져가는 공개 엔드포인트 (인증 없음)
-// params.id는 slug 또는 (구 URL 호환용) cuid 둘 다 받는다.
+// params.id는 slug만 받는다. (같은 글이 주소 두 개로 캐시되는 걸 막기 위해 cuid 조회는 제거)
+// 라우트 폴더명이 [id]인 건 기존 경로 유지용이며 실제 값은 slug다.
 export async function GET(
   _req: Request,
   { params }: { params: { id: string } }
 ) {
-  const row = await prisma.column.findFirst({
-    where: { OR: [{ slug: params.id }, { id: params.id }] },
+  const row = await prisma.column.findUnique({
+    where: { slug: params.id },
   });
 
   if (!row || row.status !== 'published') {
