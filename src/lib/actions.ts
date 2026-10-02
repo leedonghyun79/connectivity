@@ -3,6 +3,7 @@
 import prisma from './prisma';
 import { revalidatePath } from 'next/cache';
 import { generateUniqueSlug } from './slug';
+import { revalidateSite } from './revalidate-site';
 
 /**
  * 고객 관련 액션
@@ -1091,6 +1092,7 @@ export async function updateColumn(id: string, data: ColumnInput) {
       },
     });
     revalidatePath('/columns');
+    await revalidateSite();
     return { success: true, data: col };
   } catch (error) {
     console.error('Failed to update column:', error);
@@ -1107,6 +1109,7 @@ export async function publishColumn(id: string) {
       data: { status: 'published', publishedAt: existing.publishedAt ?? new Date() },
     });
     revalidatePath('/columns');
+    await revalidateSite();
     return { success: true, data: col };
   } catch (error: any) {
     console.error('Failed to publish column:', error);
@@ -1121,6 +1124,7 @@ export async function unpublishColumn(id: string) {
       data: { status: 'draft' },
     });
     revalidatePath('/columns');
+    await revalidateSite();
     return { success: true, data: col };
   } catch (error: any) {
     console.error('Failed to unpublish column:', error);
@@ -1132,6 +1136,7 @@ export async function deleteColumn(id: string) {
   try {
     await prisma.column.delete({ where: { id } });
     revalidatePath('/columns');
+    await revalidateSite();
     return { success: true };
   } catch (error) {
     console.error('Failed to delete column:', error);

@@ -47,7 +47,7 @@ export async function GET(
     updatedAt: row.updatedAt.toISOString(),
   });
 
-  // Vercel Edge Cache: 1시간 캐시
-  response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+  // 엣지 캐시 없음: 캐시는 pixelconnect 쪽에서 하고, 어드민 저장 시 태그로 즉시 무효화한다.
+  response.headers.set('Cache-Control', 'no-store');
   return response;
 }

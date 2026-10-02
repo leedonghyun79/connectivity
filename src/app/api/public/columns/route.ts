@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
 import { excerptFromHtml } from '@/lib/seo';
 
 export const runtime = 'nodejs';
-export const revalidate = 300; // 5분 캐시 — 발행/취소 시 최대 5분 지연 허용
+export const dynamic = 'force-dynamic'; // 캐시는 pixelconnect 쪽에서 하고, 어드민 저장 시 태그로 즉시 무효화한다.
 
 // 본문 HTML에서 첫 이미지 추출 (대표 이미지 폴백)
 function firstImageSrc(html: string): string | null {
