@@ -1,5 +1,6 @@
 import prisma from './prisma';
 import { verifyTurnstile } from './turnstile';
+import { notifyInquiry } from './inquiry-notify';
 
 export interface IntakeCtx {
   remoteip?: string;
@@ -77,6 +78,8 @@ export async function processInquiry(
         status: 'pending',
       },
     });
+    // 5. 관리자 알림 메일 (실패해도 접수는 성공 처리)
+    await notifyInquiry({ name, email, phone, service: label, message });
     return { status: 200, body: { ok: true } };
   } catch (err) {
     console.error('[inquiry-intake] 저장 실패', err);

@@ -1,6 +1,7 @@
 import { processInquiry, serviceLabel } from '@/lib/inquiry-intake';
 import prisma from '@/lib/prisma';
 import { verifyTurnstile } from '@/lib/turnstile';
+import { notifyInquiry } from '@/lib/inquiry-notify';
 
 jest.mock('@/lib/prisma', () => ({
   __esModule: true,
@@ -9,6 +10,11 @@ jest.mock('@/lib/prisma', () => ({
 jest.mock('@/lib/turnstile', () => ({
   __esModule: true,
   verifyTurnstile: jest.fn(),
+}));
+
+jest.mock('@/lib/inquiry-notify', () => ({
+  __esModule: true,
+  notifyInquiry: jest.fn(),
 }));
 
 const create = prisma.inquiry.create as jest.Mock;
@@ -96,6 +102,20 @@ describe('processInquiry', () => {
         status: 'pending',
       },
     });
+  });
+
+  it('정상 → 알림 메일 1회 호출', async () => {
+    await processInquiry(base, {});
+    expect(notifyInquiry).toHaveBeenCalledTimes(1);
+    expect(notifyInquiry).toHaveBeenCalledWith(
+      expect.objectContaining({ name: '홍길동', email: 'hong@example.com', service: '웹사이트 제작' }),
+    );
+  });
+
+  it('DB 저장 실패 → 알림 메일 안 보냄', async () => {
+    create.mockRejectedValue(new Error('db down'));
+    await processInquiry(base, {});
+    expect(notifyInquiry).not.toHaveBeenCalled();
   });
 
   it('service 미선택 → type null, 제목에 "서비스 미선택"', async () => {
