@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Search, Loader2, Plus, Trash2, Printer } from 'lucide-react';
 import { createEstimate, updateEstimate, getCustomers } from '@/lib/actions';
 import { toast } from 'sonner';
+import SignaturePad from './SignaturePad';
 
 interface EstimateItem {
   id: string;
@@ -27,6 +28,18 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
   const [mounted, setMounted] = useState(false);
   const [customers, setCustomers] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [stamp, setStamp] = useState<string | null>(null);
+  const stampFileRef = useRef<HTMLInputElement>(null);
+  const [signMenuOpen, setSignMenuOpen] = useState(false);
+  const [padOpen, setPadOpen] = useState(false);
+
+  const handleStampChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => setStamp(reader.result as string);
+    reader.readAsDataURL(file);
+  };
 
   const defaultBizInfo = useMemo(() => ({
     bizNumber: '123-45-67890',
@@ -167,6 +180,8 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
     }
   };
 
+  const selectedCustomer = customers.find((c) => c.id === formData.customerId);
+
   if (!mounted || !isOpen) return null;
 
   return createPortal(
@@ -190,7 +205,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
         </div>
 
         <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
-          <form id="estimate-form" onSubmit={handleSubmit} className="space-y-12 max-w-4xl mx-auto bg-white p-12 shadow-[0_0_50px_rgba(0,0,0,0.02)] border border-gray-100 rounded-[8px]">
+          <form id="estimate-form" onSubmit={handleSubmit} className="space-y-12 max-w-4xl mx-auto bg-white text-black p-12 shadow-[0_0_50px_rgba(0,0,0,0.02)] border border-gray-100 rounded-[8px]">
 
             {/* 상단 섹션: 견적서 제목 및 날짜 */}
             <div className="flex justify-between items-start">
@@ -202,12 +217,12 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="견적 명칭을 입력하세요"
-                  className="text-2xl font-bold bg-transparent border-b-2 border-gray-200 focus:border-black outline-none pb-2 w-full transition-all placeholder:text-gray-200"
+                  className="text-2xl font-bold bg-transparent border-b-2 border-gray-200 focus:border-black outline-none pb-2 w-full transition-all placeholder:text-gray-500"
                 />
               </div>
               <div className="text-right">
                 <div className="mb-4">
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">발행일 (DATE)</label>
+                  <label className="text-[10px] font-black text-gray-700 uppercase tracking-widest block mb-1">발행일 (DATE)</label>
                   <input
                     type="date"
                     value={formData.issueDate}
@@ -216,8 +231,8 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">참조 번호 (REF NO.)</label>
-                  <div className="text-lg font-mono text-gray-400"># 자동 생성됨</div>
+                  <label className="text-[10px] font-black text-gray-700 uppercase tracking-widest block mb-1">참조 번호 (REF NO.)</label>
+                  <div className="text-lg font-mono text-gray-700"># 자동 생성됨</div>
                 </div>
               </div>
             </div>
@@ -234,23 +249,27 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                       onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
                       className="w-full text-xl font-bold bg-transparent hover:bg-gray-50 px-2 py-1 -ml-2 rounded transition-colors outline-none cursor-pointer"
                     >
-                      <option value="">고객을 선택하세요 ▾</option>
+                      <option value="">고객을 선택하세요</option>
                       {customers.map((c) => (
                         <option key={c.id} value={c.id}>
                           {c.name} ({c.company || '회사명 없음'})
                         </option>
                       ))}
                     </select>
-                    <div className="text-gray-500 space-y-2">
-                      {formData.customerId && (
-                        <>
-                          <p className="font-medium text-gray-800">{customers.find(c => c.id === formData.customerId)?.company}</p>
-                          <p className="text-sm">{customers.find(c => c.id === formData.customerId)?.address || '주소 정보 없음'}</p>
-                          <p className="text-sm">{customers.find(c => c.id === formData.customerId)?.phone}</p>
-                          <p className="text-sm">{customers.find(c => c.id === formData.customerId)?.email}</p>
-                        </>
-                      )}
-                    </div>
+                    {formData.customerId && (
+                      <div className="grid grid-cols-3 gap-2 text-[15px]">
+                        <span className="text-gray-700 font-bold">사업자번호</span>
+                        <span className="col-span-2 font-bold">{selectedCustomer?.bizNumber || '-'}</span>
+                        <span className="text-gray-700 font-bold">상호</span>
+                        <span className="col-span-2 font-bold">{selectedCustomer?.company || '-'}</span>
+                        <span className="text-gray-700 font-bold">주소</span>
+                        <span className="col-span-2 font-bold">{selectedCustomer?.address || '-'}</span>
+                        <span className="text-gray-700 font-bold">연락처</span>
+                        <span className="col-span-2 font-bold">{selectedCustomer?.phone || '-'}</span>
+                        <span className="text-gray-700 font-bold">이메일</span>
+                        <span className="col-span-2 font-bold">{selectedCustomer?.email || '-'}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -260,33 +279,32 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                 <div>
                   <label className="text-[11px] font-black text-black uppercase tracking-[0.2em] block mb-4 border-b border-black pb-2">공급자 (FROM)</label>
                   <div className="space-y-3">
-                    <div className="grid grid-cols-3 gap-2 text-xs">
-                      <span className="text-gray-400 font-bold">사업자번호</span>
+                    <div className="grid grid-cols-3 gap-2 text-[15px]">
+                      <span className="text-gray-700 font-bold">사업자번호</span>
                       <input
                         className="col-span-2 font-bold outline-none border-b border-transparent focus:border-gray-200"
                         value={formData.bizNumber}
                         onChange={(e) => setFormData({ ...formData, bizNumber: e.target.value })}
                       />
-                      <span className="text-gray-400 font-bold">상호 / 대표</span>
-                      <div className="col-span-2 flex gap-2">
-                        <input
-                          className="flex-1 font-bold outline-none border-b border-transparent focus:border-gray-200"
-                          value={formData.bizName}
-                          onChange={(e) => setFormData({ ...formData, bizName: e.target.value })}
-                        />
-                        <input
-                          className="w-16 font-bold outline-none border-b border-transparent focus:border-gray-200"
-                          value={formData.bizCEO}
-                          onChange={(e) => setFormData({ ...formData, bizCEO: e.target.value })}
-                        />
-                      </div>
-                      <span className="text-gray-400 font-bold">주소</span>
+                      <span className="text-gray-700 font-bold">상호</span>
+                      <input
+                        className="col-span-2 font-bold outline-none border-b border-transparent focus:border-gray-200"
+                        value={formData.bizName}
+                        onChange={(e) => setFormData({ ...formData, bizName: e.target.value })}
+                      />
+                      <span className="text-gray-700 font-bold">대표</span>
+                      <input
+                        className="col-span-2 font-bold outline-none border-b border-transparent focus:border-gray-200"
+                        value={formData.bizCEO}
+                        onChange={(e) => setFormData({ ...formData, bizCEO: e.target.value })}
+                      />
+                      <span className="text-gray-700 font-bold">주소</span>
                       <input
                         className="col-span-2 font-bold outline-none border-b border-transparent focus:border-gray-200"
                         value={formData.bizAddress}
                         onChange={(e) => setFormData({ ...formData, bizAddress: e.target.value })}
                       />
-                      <span className="text-gray-400 font-bold">연락처</span>
+                      <span className="text-gray-700 font-bold">연락처</span>
                       <input
                         className="col-span-2 font-bold outline-none border-b border-transparent focus:border-gray-200"
                         value={formData.bizPhone}
@@ -320,7 +338,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                           value={item.itemName}
                           onChange={(e) => handleItemChange(index, 'itemName', e.target.value)}
                           placeholder="품명"
-                          className="w-full bg-transparent font-bold outline-none placeholder:text-gray-200"
+                          className="w-full bg-transparent font-bold outline-none placeholder:text-gray-500"
                         />
                       </td>
                       <td className="py-4 pr-4">
@@ -329,7 +347,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                           value={item.spec}
                           onChange={(e) => handleItemChange(index, 'spec', e.target.value)}
                           placeholder="세부항목"
-                          className="w-full bg-transparent text-sm text-gray-500 outline-none placeholder:text-gray-200"
+                          className="w-full bg-transparent text-sm text-gray-500 outline-none placeholder:text-gray-500"
                         />
                       </td>
                       <td className="py-4 text-center">
@@ -351,7 +369,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                           }}
                           onFocus={(e) => e.target.select()}
                           placeholder="0"
-                          className="w-full bg-transparent text-right font-mono outline-none placeholder:text-gray-200"
+                          className="w-full bg-transparent text-right font-mono outline-none placeholder:text-gray-500"
                         />
                       </td>
                       <td className="py-4 text-right pr-4 font-mono font-bold text-gray-900">
@@ -364,7 +382,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                           }}
                           onFocus={(e) => e.target.select()}
                           placeholder="0"
-                          className="w-full bg-transparent text-right outline-none placeholder:text-gray-200"
+                          className="w-full bg-transparent text-right outline-none placeholder:text-gray-500"
                         />
                       </td>
                       <td className="py-4 text-right">
@@ -383,7 +401,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                       <button
                         type="button"
                         onClick={addItem}
-                        className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-[8px] text-xs font-bold hover:bg-gray-800 transition-all active:scale-95"
+                        className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-[8px] text-[15px] font-bold hover:bg-gray-800 transition-all active:scale-95"
                       >
                         <Plus size={14} /> 품목 추가
                       </button>
@@ -397,15 +415,15 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
             <div className="flex justify-end pt-12">
               <div className="w-80 space-y-4">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-400 font-bold uppercase tracking-widest">소계 (Subtotal)</span>
+                  <span className="text-gray-700 font-bold uppercase tracking-widest">소계 (Subtotal)</span>
                   <span className="font-mono font-bold">{totalSupplyValue.toLocaleString()} KRW</span>
                 </div>
                 <div className="flex justify-between items-center text-sm pb-4 border-b border-gray-100">
-                  <span className="text-gray-400 font-bold uppercase tracking-widest">부가세 (VAT 10%)</span>
+                  <span className="text-gray-700 font-bold uppercase tracking-widest">부가세 (VAT 10%)</span>
                   <span className="font-mono font-bold">{totalVat.toLocaleString()} KRW</span>
                 </div>
-                <div className="flex justify-between items-center bg-black text-white p-6 rounded-[8px] shadow-xl shadow-black/10">
-                  <span className="font-black uppercase tracking-widest text-xs">최종 합계액</span>
+                <div className="flex justify-between items-center bg-black text-white px-6 py-3 rounded-[8px] shadow-xl shadow-black/10">
+                  <span className="font-black uppercase tracking-widest text-[15px]">최종 합계액</span>
                   <span className="text-2xl font-black font-mono">{grandTotal.toLocaleString()} KRW</span>
                 </div>
               </div>
@@ -416,17 +434,73 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
               <div className="flex justify-center items-center gap-10">
                 <div className="flex items-center gap-4">
                   <span className="text-sm font-bold">서명 :</span>
-                  <div className="w-32 h-10 bg-gray-50 rounded-[8px] border-b-2 border-gray-200 flex items-center justify-center italic text-gray-300 text-sm">(인)</div>
+                  <div className="relative">
+                    <div
+                      onClick={() => setSignMenuOpen((v) => !v)}
+                      className="relative w-32 h-10 bg-gray-50 rounded-[8px] border-b-2 border-gray-200 flex items-center justify-center italic text-gray-700 text-sm cursor-pointer"
+                    >
+                      <input
+                        type="file"
+                        ref={stampFileRef}
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleStampChange}
+                      />
+                      {stamp ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={stamp} alt="서명/도장" className="absolute inset-0 w-full h-full object-contain" />
+                      ) : (
+                        '(인)'
+                      )}
+                    </div>
+                    {signMenuOpen && (
+                      <>
+                        <div className="fixed inset-0 z-10" onClick={() => setSignMenuOpen(false)} />
+                        <div className="absolute left-0 top-full mt-2 w-44 bg-white rounded-[8px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 p-1.5 z-20 text-left not-italic">
+                          <button
+                            type="button"
+                            onClick={() => { setSignMenuOpen(false); stampFileRef.current?.click(); }}
+                            className="w-full px-3 py-2.5 text-sm font-bold text-gray-700 hover:text-black hover:bg-gray-50 rounded-[8px] text-left transition-all"
+                          >
+                            도장 이미지 불러오기
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => { setSignMenuOpen(false); setPadOpen(true); }}
+                            className="w-full px-3 py-2.5 text-sm font-bold text-gray-700 hover:text-black hover:bg-gray-50 rounded-[8px] text-left transition-all"
+                          >
+                            직접 서명하기
+                          </button>
+                          {stamp && (
+                            <button
+                              type="button"
+                              onClick={() => { setSignMenuOpen(false); setStamp(null); }}
+                              className="w-full px-3 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 rounded-[8px] text-left transition-all"
+                            >
+                              지우기
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
-                <div className="text-gray-400 font-mono text-sm">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Seoul' })}</div>
+                <div className="text-gray-700 font-mono text-sm">{new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Seoul' })}</div>
               </div>
             </div>
           </form>
         </div>
 
+        {padOpen && (
+          <SignaturePad
+            onApply={(dataUrl) => { setStamp(dataUrl); setPadOpen(false); }}
+            onClose={() => setPadOpen(false)}
+          />
+        )}
+
         {/* 하단 액션 버튼 */}
         <div className="px-8 py-6 border-t border-gray-100 bg-white flex justify-between items-center">
-          <div className="text-gray-400 text-xs flex items-center gap-2">
+          <div className="text-gray-700 text-[15px] flex items-center gap-2">
             <Printer size={14} />
             <span>작성 완료 후 바로 출력하거나 PDF로 저장할 수 있습니다.</span>
           </div>
