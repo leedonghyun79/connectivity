@@ -18,6 +18,7 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { usePendingInquiries } from '@/hooks/usePendingInquiries';
 
 const menuItems = [
   { name: '대시보드', path: '/', icon: LayoutDashboard, label: '통계 요약' },
@@ -40,6 +41,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState('대시보드');
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const { count: pendingCount } = usePendingInquiries();
 
   useEffect(() => {
     for (const item of menuItems) {
@@ -134,7 +136,14 @@ export default function Sidebar() {
                   <Icon size={18} className={`mr-3 ${isActive ? 'text-white' : 'text-gray-300 group-hover:text-black transition-colors'}`} />
                   <span className="text-[11px] font-black uppercase tracking-widest leading-none">{item.name}</span>
                 </div>
-                {isActive && <ChevronRight size={14} className="text-gray-500" />}
+                <div className="flex items-center gap-2">
+                  {item.path === '/inquiries' && pendingCount > 0 && (
+                    <span className={`min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center text-[10px] font-black leading-none ${isActive ? 'bg-white text-black' : 'bg-black text-white'}`}>
+                      {pendingCount > 99 ? '99+' : pendingCount}
+                    </span>
+                  )}
+                  {isActive && <ChevronRight size={14} className="text-gray-500" />}
+                </div>
               </Link>
             );
           })}

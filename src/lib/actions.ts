@@ -1143,3 +1143,26 @@ export async function deleteColumn(id: string) {
     return { success: false, error: '칼럼 삭제에 실패했습니다.' };
   }
 }
+
+// 사이드바 뱃지·알림 센터용: 답변 대기 문의 요약
+export async function getPendingInquirySummary() {
+  try {
+    const where = { status: 'pending' };
+    const [count, recent] = await Promise.all([
+      prisma.inquiry.count({ where }),
+      prisma.inquiry.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        select: { id: true, title: true, authorName: true, type: true, createdAt: true },
+      }),
+    ]);
+    return {
+      count,
+      recent: recent.map((i) => ({ ...i, createdAt: i.createdAt.toISOString() })),
+    };
+  } catch (error) {
+    console.error('Failed to fetch pending inquiry summary:', error);
+    return { count: 0, recent: [] };
+  }
+}
