@@ -1,5 +1,3 @@
-import { Resend } from 'resend';
-
 export interface InquiryNotice {
   name: string;
   email: string;
@@ -20,26 +18,21 @@ function esc(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ESC[c]);
 }
 
-/**
- * 새 문의가 들어오면 관리자에게 알림 메일을 보낸다.
- * 실패해도 문의 저장은 이미 끝났으니 절대 throw 하지 않는다.
- */
-export async function notifyInquiry(inq: InquiryNotice): Promise<void> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.INQUIRY_NOTIFY_EMAIL;
-  if (!apiKey || !to) {
-    console.warn('[inquiry-notify] RESEND_API_KEY / INQUIRY_NOTIFY_EMAIL 미설정 → 메일 생략');
-    return;
-  }
+/** 관리자 문의 게시판 주소. 설정이 없으면 null → 메일에서 버튼을 뺀다. */
+function inquiriesUrl(): string | null {
+  const base = process.env.CONNECTIVITY_PUBLIC_URL || process.env.NEXTAUTH_URL;
+  return base ? `${base.replace(/\/$/, '')}/inquiries` : null;
+}
 
-  try {
-    const resend = new Resend(apiKey);
-    const { error } = await resend.emails.send({
-      from: process.env.INQUIRY_FROM_EMAIL || 'PixelConnect <onboarding@resend.dev>',
-      to: [to],
-      replyTo: inq.email,
-      subject: `[상담문의] ${inq.name}님 - ${inq.service ?? '서비스 미선택'}`,
-      html: `
+function adminButton(): string {
+  const url = inquiriesUrl();
+  if (!url) return '';
+  return `<p style="margin:24px 0 0;text-align:center;"><a href="${esc(url)}" style="display:inline-block;background:#000;color:#fff;text-decoration:none;font-weight:bold;font-size:14px;padding:12px 24px;border-radius:8px;">관리자 페이지에서 확인하기 →</a></p>`;
+}
+
+/** 새 상담 문의 알림 메일 HTML */
+export function inquiryEmailHtml(inq: InquiryNotice): string {
+  return `
         <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px;border:1px solid #eee;border-radius:10px;">
           <h2 style="margin:0 0 16px;">새 상담 문의가 도착했어요</h2>
           <table style="width:100%;border-collapse:collapse;font-size:15px;">
@@ -49,12 +42,8 @@ export async function notifyInquiry(inq: InquiryNotice): Promise<void> {
             <tr><td style="padding:6px 0;color:#888;">서비스</td><td>${esc(inq.service || '미선택')}</td></tr>
           </table>
           <div style="background:#f9f9f9;padding:16px;border-radius:8px;margin-top:16px;white-space:pre-wrap;line-height:1.6;">${esc(inq.message)}</div>
+          ${adminButton()}
           <p style="font-size:12px;color:#999;margin-top:24px;">이 메일에 답장하면 문의자에게 바로 전달돼요.</p>
         </div>
-      `,
-    });
-    if (error) console.error('[inquiry-notify] Resend 오류', error);
-  } catch (err) {
-    console.error('[inquiry-notify] 발송 실패', err);
-  }
+      `;
 }

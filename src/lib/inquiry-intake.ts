@@ -1,6 +1,6 @@
 import prisma from './prisma';
 import { verifyTurnstile } from './turnstile';
-import { notifyInquiry } from './inquiry-notify';
+import { notifyInquiry } from '@/components/resend/inquiry-notify';
 
 export interface IntakeCtx {
   remoteip?: string;

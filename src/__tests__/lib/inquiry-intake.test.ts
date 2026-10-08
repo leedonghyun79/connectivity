@@ -1,7 +1,7 @@
 import { processInquiry, serviceLabel } from '@/lib/inquiry-intake';
 import prisma from '@/lib/prisma';
 import { verifyTurnstile } from '@/lib/turnstile';
-import { notifyInquiry } from '@/lib/inquiry-notify';
+import { notifyInquiry } from '@/components/resend/inquiry-notify';
 
 jest.mock('@/lib/prisma', () => ({
   __esModule: true,
@@ -12,7 +12,7 @@ jest.mock('@/lib/turnstile', () => ({
   verifyTurnstile: jest.fn(),
 }));
 
-jest.mock('@/lib/inquiry-notify', () => ({
+jest.mock('@/components/resend/inquiry-notify', () => ({
   __esModule: true,
   notifyInquiry: jest.fn(),
 }));
