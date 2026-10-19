@@ -28,7 +28,7 @@ export default function VisitorKeywordsPage() {
           <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">유입 검색어 분석</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <Zap size={14} className="text-[#060606]" />
-            최근 30일 동안 방문자가 사용한 검색어를 확인하세요.
+            최근 30일 동안 방문자가 검색한 검색어를 확인하세요.
           </p>
         </div>
       </div>
