@@ -9,15 +9,9 @@ export default function DailySummary() {
   const [isLoading, setIsLoading] = useState(true);
 
   const now = new Date();
-  const today = now.toLocaleDateString('ko-KR', { 
-    month: '2-digit', 
-    day: '2-digit',
-    timeZone: 'Asia/Seoul'
-  });
-  const weekday = now.toLocaleDateString('ko-KR', { 
-    weekday: 'long',
-    timeZone: 'Asia/Seoul'
-  }).toUpperCase();
+  const dateParts = new Intl.DateTimeFormat('ko-KR', { month: '2-digit', day: '2-digit', weekday: 'short', timeZone: 'Asia/Seoul' }).formatToParts(now);
+  const pick = (type: string) => dateParts.find(p => p.type === type)?.value ?? '';
+  const today = `${pick('month')}.${pick('day')} (${pick('weekday')})`;
 
   useEffect(() => {
     getTodayStats().then(data => {
@@ -38,9 +32,8 @@ export default function DailySummary() {
           <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">업무 현황</div>
           <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">오늘 작업 요약</h3>
         </div>
-        <div className="text-right">
-          <div className="text-[10px] font-black text-[#060606] uppercase tracking-widest mb-1 border-b border-black">{weekday}</div>
-          <div className="text-xl font-black text-[#4B5563] tracking-tighter">{today}</div>
+        <div className="p-3 text-right">
+          <div className="text-xl font-black text-[#4B5563] tracking-tighter leading-none">{today}</div>
         </div>
       </div>
 

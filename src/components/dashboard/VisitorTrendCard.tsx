@@ -42,22 +42,22 @@ export default function VisitorTrendCard() {
 
   return (
     <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-[420px] flex flex-col group">
-      <div className="flex justify-between items-start mb-8">
+      <div className="flex justify-between items-start mb-3">
         <div>
           <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">트래픽 분석</div>
           <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">방문자 분석</h3>
         </div>
         <Link
           href="/visitors"
-          className="px-3 py-2 rounded-[8px] text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[#060606] hover:bg-gray-50 transition-all flex items-center gap-1"
+          className="px-3 py-2 rounded-[8px] text-[10px] font-black uppercase tracking-widest text-[#4B5563] hover:text-[#060606] hover:bg-gray-50 transition-all flex items-center gap-1"
         >
           자세히 보기 <ArrowUpRight size={14} />
         </Link>
       </div>
 
       {!isLoading && stats.length > 0 && (
-        <p className="text-xs font-bold text-gray-400 mb-4">
-          최근 7일 · 페이지뷰 <span className="text-[#060606]">{totalPv.toLocaleString()}</span> · 방문자 <span className="text-[#060606]">{totalVisitor.toLocaleString()}</span>
+        <p className="text-sm font-bold text-gray-400 mb-2">
+          페이지뷰 <span className="text-[#060606]">{totalPv.toLocaleString()}</span> · 방문자 <span className="text-[#060606]">{totalVisitor.toLocaleString()}</span> (최근 7일)
         </p>
       )}
 

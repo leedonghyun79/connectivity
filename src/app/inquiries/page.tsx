@@ -170,13 +170,13 @@ export default function InquiriesPage() {
         <div className="min-h-[600px] overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50/30 border-b border-[#D1D5DB]">
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-24">번호</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 w-32 text-center">유형</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">문의 제목 및 내용</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-40">문의자</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-40">작성일</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-40">상태</th>
+              <tr className="bg-gray-50/30 border-b border-[#D1D5DB] h-[84px]">
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left w-24">번호</th>
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 w-32 text-left">유형</th>
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">문의 제목 및 내용</th>
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left w-40">문의자</th>
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left w-40">작성일</th>
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left w-40">상태</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#D1D5DB]">
@@ -187,8 +187,8 @@ export default function InquiriesPage() {
                     onClick={() => handleRowClick(inquiry)}
                     className="hover:bg-gray-50/50 transition-all cursor-pointer group"
                   >
-                    <td className="px-10 py-8 text-center text-xs font-mono font-bold text-[#4B5563] group-hover:text-[#060606] transition-colors">{index + 1}</td>
-                    <td className="px-10 py-8 text-center">
+                    <td className="px-10 py-8 text-left text-xs font-mono font-bold text-[#4B5563] group-hover:text-[#060606] transition-colors">{index + 1}</td>
+                    <td className="px-10 py-8 text-left">
                       <span className="inline-block whitespace-nowrap px-3 py-1 rounded-[8px] bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-widest border border-[#D1D5DB]">
                         {inquiry.type || '일반'}
                       </span>
@@ -197,13 +197,13 @@ export default function InquiriesPage() {
                       <div className="font-black text-gray-900 group-hover:translate-x-1 transition-transform mb-1">{inquiry.title}</div>
                       <div className="text-gray-400 text-[10px] font-bold uppercase tracking-tight truncate max-w-sm">{inquiry.content}</div>
                     </td>
-                    <td className="px-10 py-8 text-center text-xs font-black text-[#060606] uppercase tracking-tight">
+                    <td className="px-10 py-8 text-left text-xs font-black text-[#060606] uppercase tracking-tight">
                       {inquiry.authorName || inquiry.customer?.name || '익명'}
                     </td>
-                    <td className="px-10 py-8 text-center text-gray-400 font-mono text-[10px] font-bold uppercase tracking-widest">
+                    <td className="px-10 py-8 text-left text-gray-400 font-mono text-[10px] font-bold uppercase tracking-widest">
                       {fmt(inquiry.createdAt)}
                     </td>
-                    <td className="px-10 py-8 text-center">
+                    <td className="px-10 py-8 text-left">
                       {inquiry.status === 'pending' ? (
                         <span className="inline-flex items-center whitespace-nowrap px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-orange-100 bg-orange-50 text-orange-600">
                           답변 대기
@@ -218,7 +218,7 @@ export default function InquiriesPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-10 py-32 text-center">
+                  <td colSpan={6} className="px-10 py-32 text-left">
                     <div className="flex flex-col items-center gap-4 text-[#D1D5DB]">
                       <MessageSquare size={64} />
                       <p className="text-sm font-black uppercase tracking-[0.3em]">

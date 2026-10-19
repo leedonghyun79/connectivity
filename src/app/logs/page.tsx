@@ -19,6 +19,7 @@ import {
   Search
 } from 'lucide-react';
 import PageLoader from "@/components/common/PageLoader";
+import DataTable from '@/components/common/DataTable';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
@@ -108,72 +109,56 @@ function LogsContent() {
       </div>
 
       {/* 최근 활동 내역 섹션 */}
-      <div className="grid grid-cols-1 gap-8">
-        <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] min-h-[500px]">
-          <div className="flex justify-end items-center mb-10">
-            <div className="text-right">
-              <span className="text-lg font-black text-[#060606] tracking-tighter">{logs.length}</span>
-              <span className="text-[9px] font-black text-[#4B5563] uppercase ml-2">Total Events</span>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            {isLoading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-16 bg-gray-50 rounded-[8px] animate-pulse mb-3" />
-              ))
-            ) : logs.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-32 gap-6 text-[#D1D5DB]">
-                <Search size={60} />
-                <div className="text-center">
-                  <p className="text-[#D1D5DB] text-xl font-black uppercase tracking-widest mb-1">데이터가 없습니다</p>
-                  <p className="text-sm font-bold">해당 날짜에는 기록된 활동 내역이 존재하지 않습니다.</p>
-                </div>
-              </div>
-            ) : (
-              <div className="overflow-hidden">
-                <table className="w-full">
-                  <thead>
-                    <tr className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-[#D1D5DB]">
-                      <th className="px-6 py-4 text-left font-black">시간</th>
-                      <th className="px-6 py-4 text-left font-black">유형</th>
-                      <th className="px-6 py-4 text-left font-black">메시지</th>
-                      <th className="px-6 py-4 text-right font-black">수행자</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#D1D5DB]">
-                    {logs.map((log) => (
-                      <tr key={log.id} className="hover:bg-gray-50/50 transition-colors group">
-                        <td className="px-6 py-6 text-[11px] font-bold text-gray-400">
-                          {new Date(log.createdAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
-                        </td>
-                        <td className="px-6 py-6">
-                          <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border
-                            ${log.action === 'LOGIN' ? 'bg-black text-white border-black' :
-                              'bg-white text-[#060606] border-[#D1D5DB]'}`}>
-                            {log.action}
-                          </span>
-                        </td>
-                        <td className="px-6 py-6 text-sm font-bold text-gray-700 group-hover:text-[#060606] transition-colors">
-                          {log.message}
-                        </td>
-                        <td className="px-6 py-6 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <span className="text-[11px] font-black text-[#060606] uppercase tracking-widest">{log.user || 'SYSTEM'}</span>
-                            <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
-                              <Users size={12} className="text-gray-400" />
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+      {isLoading ? (
+        <div className="bg-white rounded-[8px] border border-[#D1D5DB] p-8 space-y-4 animate-pulse min-h-[500px]">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-12 bg-gray-50 rounded-[8px]" />
+          ))}
         </div>
-      </div>
+      ) : (
+        <DataTable
+          data={logs}
+          noDataIcon={<Search size={60} />}
+          noDataMessage="해당 날짜에는 기록된 활동 내역이 존재하지 않습니다."
+          columns={[
+            {
+              header: '시간',
+              className: 'px-10 py-8',
+              cell: (log) => (
+                <span className="text-[11px] font-bold text-gray-400">
+                  {new Date(log.createdAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
+                </span>
+              ),
+            },
+            {
+              header: '유형',
+              className: 'px-10 py-8',
+              cell: (log) => (
+                <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${log.action === 'LOGIN' ? 'bg-black text-white border-black' : 'bg-white text-[#060606] border-[#D1D5DB]'}`}>
+                  {log.action}
+                </span>
+              ),
+            },
+            {
+              header: '메시지',
+              className: 'px-10 py-8',
+              cell: (log) => <span className="text-sm font-bold text-gray-700">{log.message}</span>,
+            },
+            {
+              header: '수행자',
+              className: 'px-10 py-8 text-right',
+              cell: (log) => (
+                <div className="flex items-center justify-end gap-2">
+                  <span className="text-[11px] font-black text-[#060606] uppercase tracking-widest">{log.user || 'SYSTEM'}</span>
+                  <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
+                    <Users size={12} className="text-gray-400" />
+                  </div>
+                </div>
+              ),
+            },
+          ]}
+        />
+      )}
     </div>
   );
 }

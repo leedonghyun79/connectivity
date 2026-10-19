@@ -239,12 +239,12 @@ export default function SalesPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50/30">
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">거래 참조 번호</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">책임 당사자</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-right">거래 금액</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">상태</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">프로토콜 날짜</th>
+              <tr className="bg-gray-50/30 h-[84px]">
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">거래 참조 번호</th>
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">책임 당사자</th>
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left">거래 금액</th>
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left">상태</th>
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left">프로토콜 날짜</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#D1D5DB]">
@@ -259,23 +259,23 @@ export default function SalesPage() {
                     <td className="px-10 py-8">
                       <div className="font-black text-gray-900 uppercase tracking-tight">{tx.customerName || tx.customer?.name}</div>
                     </td>
-                    <td className="px-10 py-8 text-right font-black text-[#060606] text-lg">
+                    <td className="px-10 py-8 text-left font-black text-[#060606] text-lg">
                       {Number(tx.amount).toLocaleString()} <span className="text-xs text-[#4B5563]">₩</span>
                     </td>
-                    <td className="px-10 py-8 text-center">
+                    <td className="px-10 py-8 text-left">
                       <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border
                         ${tx.status === 'completed' ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-400 border-[#D1D5DB]'}`}>
                         {tx.status === 'completed' ? '정산 완료' : '대기 중'}
                       </span>
                     </td>
-                    <td className="px-10 py-8 text-center text-gray-400 font-mono text-xs font-bold">
+                    <td className="px-10 py-8 text-left text-gray-400 font-mono text-xs font-bold">
                       {fmt(tx.date)}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="py-32 text-center">
+                  <td colSpan={5} className="py-32 text-left">
                     <div className="flex flex-col items-center gap-4 text-[#D1D5DB]">
                       <CreditCard size={40} />
                       <span className="text-[#D1D5DB] text-[10px] font-black uppercase tracking-[0.3em]">수집된 거래 데이터가 없습니다</span>

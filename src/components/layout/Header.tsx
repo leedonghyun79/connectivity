@@ -71,7 +71,7 @@ export default function Header() {
           <input
             type="text"
             placeholder="전체 검색: 프로젝트, 고객사..."
-            className="w-full pl-10 pr-4 py-3 bg-transparent text-sm font-medium focus:outline-none transition-all placeholder:text-[#4B5563] placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
+            className="w-full pl-10 pr-4 py-3 bg-transparent text-sm font-medium focus:outline-none transition-all placeholder:text-gray-400 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 toast.info('통합 검색 엔진은 현재 개발 중입니다.');

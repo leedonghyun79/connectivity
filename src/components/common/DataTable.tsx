@@ -30,11 +30,11 @@ export default function DataTable<T extends { id: string }>({
       <div className="overflow-x-auto min-h-[500px]">
         <table className="w-full text-left">
           <thead>
-            <tr className="bg-gray-50/50 border-b border-[#D1D5DB]">
+            <tr className="bg-gray-50/50 border-b border-[#D1D5DB] h-[84px]">
               {columns.map((col, index) => (
                 <th
                   key={index}
-                  className={`px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 font-poppins ${col.className || ''}`}
+                  className={`px-10 !py-0 align-middle !text-left uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 font-poppins ${col.className || ''}`}
                 >
                   {col.header}
                 </th>
@@ -50,7 +50,7 @@ export default function DataTable<T extends { id: string }>({
                   className={`hover:bg-gray-50/50 transition-all group ${onRowClick ? 'cursor-pointer' : ''}`}
                 >
                   {columns.map((col, index) => (
-                    <td key={index} className={col.className}>
+                    <td key={index} className={`!text-left ${col.className || ""}`}>
                       {col.cell(item)}
                     </td>
                   ))}

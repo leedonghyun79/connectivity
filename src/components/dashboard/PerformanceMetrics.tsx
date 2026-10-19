@@ -146,7 +146,7 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
 
   return (
     <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-[650px] flex flex-col group">
-      <div className="flex justify-between items-start mb-8">
+      <div className="flex justify-between items-start mb-3">
         <div>
           <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">트래픽 분석</div>
           <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">방문자 통계</h3>
@@ -154,7 +154,7 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsDetail(v => !v)}
-            className="px-3 py-2 rounded-[8px] text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[#060606] hover:bg-gray-50 transition-all"
+            className="px-3 py-2 rounded-[8px] text-[10px] font-black uppercase tracking-widest text-[#4B5563] hover:text-[#060606] hover:bg-gray-50 transition-all"
           >
             {isDetail ? '접기' : '자세히 보기'}
           </button>
@@ -181,8 +181,8 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
             </div>
           ) : (
             <>
-              <p className="text-xs font-bold text-gray-400 mb-4">
-                최근 7일 · 페이지뷰 <span className="text-[#060606]">{totals.pageViews.toLocaleString()}</span> · 순 방문자 <span className="text-[#060606]">{totals.visitors.toLocaleString()}</span>
+              <p className="text-sm font-bold text-gray-400 mb-2">
+                페이지뷰 <span className="text-[#060606]">{totals.pageViews.toLocaleString()}</span> · 순 방문자 <span className="text-[#060606]">{totals.visitors.toLocaleString()}</span> (최근 7일)
               </p>
               <div className="flex-1 min-h-0 w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -324,11 +324,11 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
               <thead className="border-b border-[#D1D5DB]">
                 <tr>
                   <th className="pb-4 uppercase tracking-widest text-[9px] font-black text-gray-400">{isMonthly ? '월' : '날짜'}</th>
-                  <th className="pb-4 text-center uppercase tracking-widest text-[9px] font-black text-gray-400">페이지 뷰</th>
-                  <th className="pb-4 text-center uppercase tracking-widest text-[9px] font-black text-gray-400">순 방문자수</th>
-                  <th className="pb-4 text-center uppercase tracking-widest text-[9px] font-black text-gray-400">가입</th>
-                  <th className="pb-4 text-center uppercase tracking-widest text-[9px] font-black text-gray-400">문의</th>
-                  <th className="pb-4 text-right uppercase tracking-widest text-[9px] font-black text-gray-400">매출액 (KRW)</th>
+                  <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">페이지 뷰</th>
+                  <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">순 방문자수</th>
+                  <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">가입</th>
+                  <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">문의</th>
+                  <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">매출액 (KRW)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#D1D5DB]">
@@ -350,20 +350,20 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
                           ? row.month
                           : new Date(row.date).toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })}
                       </td>
-                      <td className="py-3 text-center text-xs font-bold text-gray-900">{row.pageViews.toLocaleString()}</td>
-                      <td className="py-3 text-center text-xs font-bold text-gray-900">{row.visitors.toLocaleString()}</td>
-                      <td className="py-3 text-center text-xs font-black text-[#060606]">
+                      <td className="py-3 text-left text-xs font-bold text-gray-900">{row.pageViews.toLocaleString()}</td>
+                      <td className="py-3 text-left text-xs font-bold text-gray-900">{row.visitors.toLocaleString()}</td>
+                      <td className="py-3 text-left text-xs font-black text-[#060606]">
                         <span className={row.signups > 0 ? 'bg-black text-white px-2 py-0.5 rounded-[8px]' : 'text-[#4B5563]'}>{row.signups}</span>
                       </td>
-                      <td className="py-3 text-center text-xs font-bold text-gray-400">{row.inquiries}</td>
-                      <td className="py-3 text-right font-black text-[#060606] text-sm">
+                      <td className="py-3 text-left text-xs font-bold text-gray-400">{row.inquiries}</td>
+                      <td className="py-3 text-left font-black text-[#060606] text-sm">
                         {Number(row.revenue).toLocaleString()}
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="py-20 text-center">
+                    <td colSpan={6} className="py-20 text-left">
                       <div className="flex flex-col items-center gap-2 text-[#D1D5DB]">
                         <Database size={40} />
                         <span className="text-[#D1D5DB] text-[10px] font-black uppercase tracking-widest">수집된 통계 데이터가 없습니다</span>
@@ -378,11 +378,11 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
                     <td className="py-3 text-xs font-black text-[#060606] uppercase tracking-widest">
                       {isMonthly ? '기간 합계 (월)' : '기간 합계 (일)'}
                     </td>
-                    <td className="py-3 text-center text-xs font-black text-[#060606]">{totals.pageViews.toLocaleString()}</td>
-                    <td className="py-3 text-center text-xs font-black text-[#060606]">{totals.visitors.toLocaleString()}</td>
-                    <td className="py-3 text-center text-xs font-black text-[#060606]">{totals.signups}</td>
-                    <td className="py-3 text-center text-xs font-black text-[#060606]">{totals.inquiries}</td>
-                    <td className="py-3 text-right font-black text-[#060606] text-sm">{totals.revenue.toLocaleString()}</td>
+                    <td className="py-3 text-left text-xs font-black text-[#060606]">{totals.pageViews.toLocaleString()}</td>
+                    <td className="py-3 text-left text-xs font-black text-[#060606]">{totals.visitors.toLocaleString()}</td>
+                    <td className="py-3 text-left text-xs font-black text-[#060606]">{totals.signups}</td>
+                    <td className="py-3 text-left text-xs font-black text-[#060606]">{totals.inquiries}</td>
+                    <td className="py-3 text-left font-black text-[#060606] text-sm">{totals.revenue.toLocaleString()}</td>
                   </tr>
                 </tfoot>
               )}
