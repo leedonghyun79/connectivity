@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "./queryProvider";
@@ -9,9 +8,6 @@ import { Toaster } from "sonner";
 
 // Prisma는 Node.js 런타임에서만 동작하므로 전역으로 강제합니다.
 export const runtime = "nodejs";
-
-// GA4 측정 ID (공개 값)
-const GA_ID = "G-9X8REDWSGW";
 
 // Poppins — 제목, 테이블 헤더, 레이블, 포인트 텍스트
 const poppins = Poppins({
@@ -60,13 +56,6 @@ export default function RootLayout({
             <Toaster position="top-right" richColors />
           </QueryProvider>
         </AuthProvider>
-        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
-        <Script id="ga4-init" strategy="afterInteractive">
-          {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', '${GA_ID}');`}
-        </Script>
       </body>
     </html>
   );

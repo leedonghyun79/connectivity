@@ -4,6 +4,7 @@ import prisma from './prisma';
 import { revalidatePath } from 'next/cache';
 import { generateUniqueSlug } from './slug';
 import { revalidateSite } from './revalidate-site';
+import { syncRecentStats } from './sync';
 
 /**
  * 고객 관련 액션
@@ -638,7 +639,7 @@ export async function getDailyStats() {
   try {
     const stats = await prisma.dailyStat.findMany({
       orderBy: { date: 'desc' },
-      take: 7
+      take: 30
     });
     return stats.map(s => ({
       ...s,
@@ -1006,11 +1007,12 @@ export async function updateSystemConfig(data: any) {
  */
 export async function syncAllStats() {
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await syncRecentStats(30);
     revalidatePath('/');
     return { success: true };
   } catch (error) {
-    return { success: false, error: '동기화에 실패했습니다.' };
+    console.error('GA4 sync failed:', error);
+    return { success: false, error: 'GA4 동기화에 실패했습니다.' };
   }
 }
 
