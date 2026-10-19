@@ -2,7 +2,6 @@
 
 import { useQuery } from '@tanstack/react-query';
 import WorkStatusCards from "@/components/dashboard/WorkStatusCards";
-import VisitorChart from "@/components/dashboard/VisitorChart";
 import PerformanceMetrics from "@/components/dashboard/PerformanceMetrics";
 import TrafficSource from "@/components/dashboard/TrafficSource";
 import DailySummary from "@/components/dashboard/DailySummary";
@@ -43,11 +42,6 @@ export default function Dashboard() {
 
 
       <WorkStatusCards />
-
-      {/* 메인 분석 섹션 */}
-      <div className="w-full">
-        <VisitorChart />
-      </div>
 
       {/* 운영 성과 + 동기화 */}
       <div className="w-full">

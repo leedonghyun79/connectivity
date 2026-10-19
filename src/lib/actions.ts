@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { generateUniqueSlug } from './slug';
 import { revalidateSite } from './revalidate-site';
 import { syncRecentStats } from './sync';
+import { fetchGA4TrafficSources } from './ga4';
 
 /**
  * 고객 관련 액션
@@ -635,11 +636,11 @@ export async function getTransactions() {
   }
 }
 
-export async function getDailyStats() {
+export async function getDailyStats(days = 7) {
   try {
     const stats = await prisma.dailyStat.findMany({
       orderBy: { date: 'desc' },
-      take: 30
+      take: days
     });
     return stats.map(s => ({
       ...s,
@@ -648,6 +649,63 @@ export async function getDailyStats() {
   } catch (error) {
     console.error('Failed to fetch daily stats:', error);
     return [];
+  }
+}
+
+/**
+ * 최근 `months`개월의 월별 합계 (KST 기준 월 구분).
+ * 방문자는 일별 값의 합이라 같은 사람이 여러 날 방문하면 중복 집계됨.
+ */
+export async function getMonthlyStats(months = 12) {
+  try {
+    const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+    const kstNow = new Date(Date.now() + KST_OFFSET_MS);
+    const start = new Date(
+      Date.UTC(kstNow.getUTCFullYear(), kstNow.getUTCMonth() - (months - 1), 1) - KST_OFFSET_MS
+    );
+
+    const rows = await prisma.dailyStat.findMany({
+      where: { date: { gte: start } },
+      orderBy: { date: 'desc' },
+    });
+
+    const byMonth = new Map<string, { month: string; pageViews: number; visitors: number; signups: number; inquiries: number; revenue: number }>();
+    for (const s of rows) {
+      const month = new Date(s.date.getTime() + KST_OFFSET_MS).toISOString().slice(0, 7);
+      const m = byMonth.get(month) ?? { month, pageViews: 0, visitors: 0, signups: 0, inquiries: 0, revenue: 0 };
+      m.pageViews += s.pageViews;
+      m.visitors += s.visitors;
+      m.signups += s.signups;
+      m.inquiries += s.inquiries;
+      m.revenue += Number(s.revenue);
+      byMonth.set(month, m);
+    }
+
+    return Array.from(byMonth.values()).map(m => ({ ...m, revenue: m.revenue.toString() }));
+  } catch (error) {
+    console.error('Failed to fetch monthly stats:', error);
+    return [];
+  }
+}
+
+/**
+ * 최근 `days`일 유입 채널 비율 (GA4 세션 기준). 실패하면 빈 값.
+ */
+export async function getTrafficSources(days = 30) {
+  try {
+    const totals = await fetchGA4TrafficSources(days);
+    const total = Object.values(totals).reduce((a, b) => a + b, 0);
+    const order = ['구글 검색', '네이버 검색', '소셜 미디어', '직접 유입', '참조 링크', '기타'] as const;
+    return {
+      total,
+      items: order.map(label => ({
+        label,
+        value: total ? Math.round((totals[label] / total) * 100) : 0,
+      })),
+    };
+  } catch (error) {
+    console.error('Failed to fetch traffic sources:', error);
+    return { total: 0, items: [] as { label: string; value: number }[] };
   }
 }
 

@@ -1,15 +1,32 @@
 'use client';
 
-import { BarChart3, PieChart } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { getTrafficSources } from '@/lib/actions';
+import { PieChart } from 'lucide-react';
+
+const STYLE: Record<string, { color: string; bg: string }> = {
+  '구글 검색': { color: '#000000', bg: 'bg-black' },
+  '네이버 검색': { color: '#444444', bg: 'bg-gray-700' },
+  '소셜 미디어': { color: '#888888', bg: 'bg-gray-400' },
+  '직접 유입': { color: '#CCCCCC', bg: 'bg-gray-300' },
+  '참조 링크': { color: '#EEEEEE', bg: 'bg-gray-100' },
+  '기타': { color: '#F7F7F7', bg: 'bg-gray-50' },
+};
 
 export default function TrafficSource() {
-  const data = [
-    { label: '구글 검색', value: 45, color: '#000000', bg: 'bg-black' },
-    { label: '네이버 검색', value: 25, color: '#444444', bg: 'bg-gray-700' },
-    { label: '소셜 미디어', value: 15, color: '#888888', bg: 'bg-gray-400' },
-    { label: '직접 유입', value: 10, color: '#CCCCCC', bg: 'bg-gray-300' },
-    { label: '참조 링크', value: 5, color: '#EEEEEE', bg: 'bg-gray-100' },
-  ];
+  const [total, setTotal] = useState(0);
+  const [items, setItems] = useState<{ label: string; value: number }[]>(
+    Object.keys(STYLE).map(label => ({ label, value: 0 }))
+  );
+
+  useEffect(() => {
+    getTrafficSources(30).then(data => {
+      setTotal(data.total);
+      if (data.items.length > 0) setItems(data.items);
+    });
+  }, []);
+
+  const data = items.map(item => ({ ...item, ...STYLE[item.label] }));
 
   let currentPercent = 0;
   const gradientParts = data.map(item => {
@@ -17,7 +34,9 @@ export default function TrafficSource() {
     currentPercent += item.value;
     return `${item.color} ${start}% ${currentPercent}%`;
   });
-  const gradientString = `conic-gradient(${gradientParts.join(', ')})`;
+  const gradientString = total > 0 ? `conic-gradient(${gradientParts.join(', ')})` : '#f8fafc';
+
+  const totalLabel = total >= 1000 ? `${(total / 1000).toFixed(1)}K` : total.toLocaleString();
 
   return (
     <div className="bg-white p-10 rounded-[8px] border border-gray-100 h-full flex flex-col group">
@@ -35,14 +54,14 @@ export default function TrafficSource() {
         <div className="relative w-48 h-48 rounded-full flex-shrink-0" style={{ background: gradientString }}>
           <div className="absolute inset-5 bg-white rounded-full flex items-center justify-center flex-col border border-gray-50">
             <span className="text-[10px] text-gray-300 font-black uppercase tracking-widest mb-1">전체 방문</span>
-            <span className="text-3xl font-black text-black tracking-tighter">3.4K</span>
+            <span className="text-3xl font-black text-black tracking-tighter">{totalLabel}</span>
             <div className="w-8 h-1 bg-black rounded-full mt-2"></div>
           </div>
         </div>
 
         <div className="w-full space-y-5 px-2">
-          {data.map((item, idx) => (
-            <div key={idx} className="flex items-center justify-between group/item">
+          {data.map((item) => (
+            <div key={item.label} className="flex items-center justify-between group/item">
               <div className="flex items-center gap-3 min-w-0">
                 <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${item.bg}`}></span>
                 <span className="text-[11px] text-gray-400 group-hover/item:text-black font-black uppercase tracking-wider transition-colors">{item.label}</span>
