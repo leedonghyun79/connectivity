@@ -8,6 +8,7 @@ import EstimateModal from '@/components/modals/EstimateModal';
 import EstimateDetailModal from '@/components/modals/EstimateDetailModal';
 import { toast } from 'sonner';
 import DataTable from '@/components/common/DataTable';
+import { PAGE_SIZE } from '@/components/common/Pagination';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import { useFormatDate } from '@/lib/SystemConfigContext';
 
@@ -27,6 +28,7 @@ export default function EstimatesPage() {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState(1);
 
   // 메뉴 및 필터 외부 클릭 감지
   useEffect(() => {
@@ -106,6 +108,14 @@ export default function EstimatesPage() {
     e.stopPropagation();
     setActiveMenuId(activeMenuId === id ? null : id);
   };
+
+  // 검색·필터가 바뀌면 첫 페이지로
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, statusFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredEstimates.length / PAGE_SIZE));
+  const pageEstimates = filteredEstimates.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   if (isLoading) return <PageLoader title="견적서 관리" variant="estimates" />;
   if (!estimates) return <div>데이터를 불러오지 못했습니다.</div>;
@@ -268,7 +278,8 @@ export default function EstimatesPage() {
       </div>
 
       <DataTable
-        data={filteredEstimates}
+        data={pageEstimates}
+        pagination={{ page, totalPages, onPageChange: setPage }}
         noDataIcon={<FileText size={64} />}
         noDataMessage="등록된 견적서가 없습니다."
         onRowClick={handleRowClick}

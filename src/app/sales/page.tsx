@@ -8,6 +8,7 @@ import { DollarSign, TrendingUp, CreditCard, Download, Activity, Calendar, Arrow
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import PageLoader from '@/components/common/PageLoader';
+import Pagination, { PAGE_SIZE } from '@/components/common/Pagination';
 import { getTransactions, getSalesStats } from '@/lib/actions';
 import TransactionModal from '@/components/modals/TransactionModal';
 import { Plus } from 'lucide-react';
@@ -19,6 +20,7 @@ export default function SalesPage() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'pending'>('all');
+  const [txPage, setTxPage] = useState(1);
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
 
   const fetchData = useCallback(async () => {
@@ -35,6 +37,15 @@ export default function SalesPage() {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  // 필터가 바뀌면 첫 페이지로
+  useEffect(() => {
+    setTxPage(1);
+  }, [filterStatus]);
+
+  const filteredTx = transactions.filter(tx => filterStatus === 'all' || tx.status === filterStatus);
+  const txTotalPages = Math.max(1, Math.ceil(filteredTx.length / PAGE_SIZE));
+  const pageTx = filteredTx.slice((txPage - 1) * PAGE_SIZE, txPage * PAGE_SIZE);
 
   if (isLoading || !stats) return <PageLoader title="매출 통계 분석" variant="sales" />;
 
@@ -140,9 +151,16 @@ export default function SalesPage() {
           </div>
           <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center">
             {!stats.monthlySales || stats.monthlySales.every((m: any) => m.amount === 0) ? (
-              <div className="flex flex-col items-center gap-2 text-[#D1D5DB]">
-                <Activity size={40} />
-                <span className="text-[#D1D5DB] text-[10px] font-black uppercase tracking-widest">수집된 성장 데이터가 없습니다</span>
+              <div className="relative w-full h-[220px]">
+                <div className="h-full flex items-end gap-2 pb-4 blur-[5px] opacity-60">
+                  {[45, 70, 55, 85, 60, 75].map((height, i) => (
+                    <div key={i} className="flex-1 bg-gray-100 rounded-t-lg" style={{ height: `${height}%` }} />
+                  ))}
+                </div>
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-[#D1D5DB]">
+                  <Activity size={40} />
+                  <span className="text-[10px] font-black uppercase tracking-widest">수집된 성장 데이터가 없습니다</span>
+                </div>
               </div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
@@ -249,8 +267,7 @@ export default function SalesPage() {
             </thead>
             <tbody className="divide-y divide-[#D1D5DB]">
               {transactions && transactions.length > 0 ? (
-                transactions
-                  .filter(tx => filterStatus === 'all' || tx.status === filterStatus)
+                pageTx
                   .map((tx) => (
                   <tr key={tx.id} className="hover:bg-gray-50/50 transition-all group">
                     <td className="px-10 py-8 font-mono font-bold text-[#4B5563] group-hover:text-[#060606] transition-colors">
@@ -286,6 +303,11 @@ export default function SalesPage() {
             </tbody>
           </table>
         </div>
+        {txTotalPages > 1 && (
+          <div className="px-10 py-6 border-t border-[#D1D5DB]">
+            <Pagination page={txPage} totalPages={txTotalPages} onPageChange={setTxPage} />
+          </div>
+        )}
       </div>
 
       <TransactionModal

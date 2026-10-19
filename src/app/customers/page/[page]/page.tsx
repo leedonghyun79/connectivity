@@ -8,6 +8,7 @@ import { getCustomers, deleteCustomer } from '@/lib/actions';
 import { toast } from 'sonner';
 import CustomerModal from '@/components/modals/CustomerModal';
 import DataTable, { Column } from '@/components/common/DataTable';
+import { PAGE_SIZE } from '@/components/common/Pagination';
 import ConfirmModal from '@/components/common/ConfirmModal';
 
 export default function CustomersPage({ params }: { params: { page: string } }) {
@@ -23,6 +24,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [deletingCustomerData, setDeletingCustomerData] = useState<{ id: string, name: string } | null>(null);
+  const [page, setPage] = useState(1);
   const filterRef = useRef<HTMLDivElement>(null);
 
   const fetchData = async () => {
@@ -60,6 +62,14 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
 
     return matchesSearch && matchesStatus;
   });
+
+  // 검색·필터가 바뀌면 첫 페이지로
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, statusFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredCustomers.length / PAGE_SIZE));
+  const pageCustomers = filteredCustomers.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   useEffect(() => {
     fetchData();
@@ -296,18 +306,14 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
 
       {/* 테이블 */}
       <DataTable
-        data={filteredCustomers}
+        data={pageCustomers}
+        pagination={{ page, totalPages, onPageChange: setPage }}
         noDataIcon={<Search size={48} />}
         noDataMessage="일치하는 고객 정보가 없습니다."
         onRowClick={(customer) => {
           router.push(`/customers/${customer.id}`);
         }}
         columns={[
-          {
-            header: '참조번호',
-            className: 'px-10 py-8 font-mono font-bold text-[#4B5563] group-hover:text-[#060606] transition-colors',
-            cell: (customer) => `#${customer.id.substring(0, 8).toUpperCase()}`
-          },
           {
             header: '고객 정보',
             className: 'px-10 py-8',
@@ -330,7 +336,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
           },
           {
             header: '상태 프로필',
-            className: 'px-10 py-8 text-center',
+            className: 'px-10 py-8',
             cell: (customer) => (
               <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.1em] border
                 ${customer.status === 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' :
@@ -343,7 +349,7 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
           },
           {
             header: '관리',
-            className: 'px-10 py-8 text-center relative action-menu w-24', // action-menu 클래스 유지
+            className: 'px-10 py-8 relative action-menu w-24', // action-menu 클래스 유지
             cell: (customer) => (
               <>
                 <button
@@ -391,14 +397,6 @@ export default function CustomersPage({ params }: { params: { page: string } }) 
           }
         ]}
       >
-        {/* 푸터 정보 (children으로 전달) */}
-        <div className="px-10 py-8 border-t border-[#D1D5DB] bg-gray-50/30 flex items-center justify-end">
-          <div className="flex gap-2">
-            <button className="px-4 py-2 bg-white border border-[#D1D5DB] rounded-[8px] text-[10px] font-black uppercase hover:bg-gray-50 transition-all">이전</button>
-            <button className="px-5 py-2 bg-black text-white rounded-[8px] text-[10px] font-black uppercase">1</button>
-            <button className="px-4 py-2 bg-white border border-[#D1D5DB] rounded-[8px] text-[10px] font-black uppercase hover:bg-gray-50 transition-all">다음</button>
-          </div>
-        </div>
       </DataTable>
     </div>
   );

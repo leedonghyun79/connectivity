@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Search, MessageCircle, AlertCircle, CheckCircle2, MessageSquare } from 'lucide-react';
 import PageLoader from '@/components/common/PageLoader';
+import Pagination, { PAGE_SIZE } from '@/components/common/Pagination';
 import { getInquiries, getInquiryStats } from '@/lib/actions';
 import InquiryDetailModal from '@/components/modals/InquiryDetailModal';
 import { useFormatDate } from '@/lib/SystemConfigContext';
@@ -16,6 +17,7 @@ export default function InquiriesPage() {
   const [stats, setStats] = useState({ total: 0, pending: 0, answered: 0 });
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
   const [selectedInquiry, setSelectedInquiry] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -65,6 +67,14 @@ export default function InquiriesPage() {
     if (target) handleRowClick(target);
     window.history.replaceState({}, '', '/inquiries');
   }, [isLoading, inquiries]);
+
+  // 검색·탭이 바뀌면 첫 페이지로
+  useEffect(() => {
+    setPage(1);
+  }, [activeTab, searchTerm]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredInquiries.length / PAGE_SIZE));
+  const pageInquiries = filteredInquiries.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   if (isLoading) return <PageLoader title="문의 게시판" variant="inquiries" />;
 
@@ -181,7 +191,7 @@ export default function InquiriesPage() {
             </thead>
             <tbody className="divide-y divide-[#D1D5DB]">
               {filteredInquiries.length > 0 ? (
-                filteredInquiries.map((inquiry, index) => (
+                pageInquiries.map((inquiry, index) => (
                   <tr
                     key={inquiry.id}
                     onClick={() => handleRowClick(inquiry)}
@@ -237,6 +247,7 @@ export default function InquiriesPage() {
           <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
             총 <span className="text-[#060606]">{filteredInquiries.length}개</span>의 문의 내역이 있습니다.
           </span>
+          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
         </div>
       </div>
     </div>

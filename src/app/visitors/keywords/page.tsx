@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import { Zap } from 'lucide-react';
 import { getTopKeywords } from '@/lib/actions';
 import PageLoader from '@/components/common/PageLoader';
+import Pagination, { PAGE_SIZE } from '@/components/common/Pagination';
 
 type KeywordItem = { keyword: string; sessions: number };
 
 export default function VisitorKeywordsPage() {
   const [items, setItems] = useState<KeywordItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     getTopKeywords(30).then(data => {
@@ -17,6 +19,9 @@ export default function VisitorKeywordsPage() {
       setIsLoading(false);
     });
   }, []);
+
+  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  const pageItems = items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   if (isLoading) return <PageLoader title="유입 검색어 분석" variant="table" />;
 
@@ -42,7 +47,7 @@ export default function VisitorKeywordsPage() {
         {items.length === 0 ? (
           <div className="py-16 text-center text-sm font-bold text-gray-400">유입 검색어 데이터가 없습니다.</div>
         ) : (
-          items.map((item, index) => (
+          pageItems.map((item, index) => (
             <div
               key={`${item.keyword}-${index}`}
               className="grid grid-cols-[1fr_120px] gap-4 px-8 py-5 border-b border-[#D1D5DB] last:border-b-0 items-center"
@@ -51,6 +56,11 @@ export default function VisitorKeywordsPage() {
               <span className="text-sm font-black text-[#060606] text-right tabular-nums">{item.sessions.toLocaleString()}</span>
             </div>
           ))
+        )}
+        {totalPages > 1 && (
+          <div className="px-8 py-6 border-t border-[#D1D5DB]">
+            <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+          </div>
         )}
       </div>
     </div>

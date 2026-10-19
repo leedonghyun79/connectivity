@@ -58,20 +58,6 @@ export async function fetchGA4DailyTraffic(startDate: string, endDate = 'today')
   return result;
 }
 
-/**
- * 지금 접속 중인 사용자 (최근 30분 기준 — 실시간 리포트는 하루 전체 합계를 주지 않음)
- */
-export async function fetchGA4RealtimeNow(): Promise<{ activeUsers: number; pageViews: number }> {
-  const [response] = await getClient().runRealtimeReport({
-    property: getPropertyPath(),
-    metrics: [{ name: 'activeUsers' }, { name: 'screenPageViews' }],
-  });
-  return {
-    activeUsers: Number(response.rows?.[0]?.metricValues?.[0]?.value ?? 0),
-    pageViews: Number(response.rows?.[0]?.metricValues?.[1]?.value ?? 0),
-  };
-}
-
 const SOCIAL_SOURCES =['facebook', 'instagram', 'youtube', 'twitter', 't.co', 'kakao', 'threads', 'linkedin', 'tiktok'];
 
 /** GA4 source/medium 조합을 대시보드 채널로 분류 */

@@ -7,6 +7,7 @@ import { Plus, Pencil, Trash2, Send, Undo2, Loader2, FileText } from 'lucide-rea
 import { toast } from 'sonner';
 import { getColumns, deleteColumn, publishColumn, unpublishColumn } from '@/lib/actions';
 import ConfirmModal from '@/components/common/ConfirmModal';
+import Pagination, { PAGE_SIZE } from '@/components/common/Pagination';
 import { useFormatDate } from '@/lib/SystemConfigContext';
 
 type Column = {
@@ -22,6 +23,7 @@ export default function ColumnsPage() {
   const router = useRouter();
   const fmt = useFormatDate();
   const [rows, setRows] = useState<Column[]>([]);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -56,6 +58,9 @@ export default function ColumnsPage() {
     if (res.success) { toast.success('삭제했습니다.'); load(); }
     else toast.error(res.error || '삭제 실패');
   };
+
+  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const pageRows = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="space-y-6 py-10">
@@ -103,7 +108,7 @@ export default function ColumnsPage() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => {
+              {pageRows.map((r) => {
                 const published = r.status === 'published';
                 const rowBusy = busyId === r.id;
                 return (
@@ -163,6 +168,11 @@ export default function ColumnsPage() {
               })}
             </tbody>
           </table>
+        )}
+        {totalPages > 1 && (
+          <div className="px-10 py-6 border-t border-[#D1D5DB]">
+            <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+          </div>
         )}
       </div>
 

@@ -13,6 +13,9 @@ export default function DailySummary() {
   const pick = (type: string) => dateParts.find(p => p.type === type)?.value ?? '';
   const today = `${pick('month')}.${pick('day')} (${pick('weekday')})`;
 
+  // 오늘 작업 수치가 전부 0이면 빈값 안내 (로딩 중에는 false)
+  const isEmpty = stats?.every((s: any) => s.count === 0) ?? false;
+
   useEffect(() => {
     getTodayStats().then(data => {
       setStats([
@@ -37,7 +40,9 @@ export default function DailySummary() {
         </div>
       </div>
 
-      <div className="space-y-4 flex-1">
+      <div className="relative flex-1">
+      {/* 오늘 작업이 전부 0이면 목록을 흐리게 보여주고 빈값 안내를 올림 */}
+      <div className={`space-y-4 h-full ${isEmpty ? 'blur-[5px] opacity-60' : ''}`}>
         {isLoading ? (
           Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="flex items-center justify-between p-4 animate-pulse">
@@ -62,6 +67,13 @@ export default function DailySummary() {
             </div>
           </div>
         ))}
+      </div>
+      {isEmpty && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-[#D1D5DB]">
+          <CheckCircle2 size={32} />
+          <p className="text-xs font-black uppercase tracking-[0.2em]">오늘 작업 없음</p>
+        </div>
+      )}
       </div>
     </div>
   );

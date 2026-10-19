@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import PageLoader from "@/components/common/PageLoader";
+import Pagination, { PAGE_SIZE } from "@/components/common/Pagination";
 import { Settings, Shield, User, Bell, Globe, Database, Save, ArrowRight, Eye, EyeOff, Check, Loader2 } from "lucide-react";
 import { 
   updateAdminProfile, 
@@ -452,6 +453,9 @@ function LocaleTab({ initialConfig, onSave }: { initialConfig: any; onSave: () =
 function StorageTab() {
   const [stats, setStats] = useState({ dbSizeMB: 0, totalRecords: 0 });
   const [logs, setLogs] = useState<any[]>([]);
+  const [logPage, setLogPage] = useState(1);
+  const logTotalPages = Math.max(1, Math.ceil(logs.length / PAGE_SIZE));
+  const pageLogs = logs.slice((logPage - 1) * PAGE_SIZE, logPage * PAGE_SIZE);
   const [isLoading, setIsLoading] = useState(true);
   const [isResetting, setIsResetting] = useState(false);
 
@@ -532,7 +536,8 @@ function StorageTab() {
               <Loader2 className="animate-spin text-gray-200" size={24} />
             </div>
           ) : logs.length > 0 ? (
-            logs.map((log) => (
+            <>
+            {pageLogs.map((log) => (
               <div key={log.id} className="flex items-center justify-between px-5 py-3 bg-gray-50 rounded-[8px]">
                 <div className="flex items-center gap-3">
                   <div className={`w-1.5 h-1.5 rounded-full ${log.action === 'LOGIN' ? 'bg-blue-400' : 'bg-black'}`} />
@@ -540,7 +545,9 @@ function StorageTab() {
                 </div>
                 <span className="text-[10px] font-black text-gray-400 font-mono">{formatTime(log.createdAt)}</span>
               </div>
-            ))
+            ))}
+            <Pagination page={logPage} totalPages={logTotalPages} onPageChange={setLogPage} />
+            </>
           ) : (
             <div className="text-center py-8 text-[11px] font-bold text-[#D1D5DB]">기록된 로그가 없습니다.</div>
           )}

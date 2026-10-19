@@ -29,7 +29,7 @@ export default function WorkStatusCards() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       <StatCard
-        label="일간 방문자"
+        label="오늘 방문자"
         value={stats.todayVisitors.toLocaleString()}
         unit="명"
         icon={Users}

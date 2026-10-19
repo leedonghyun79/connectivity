@@ -5,7 +5,7 @@ import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { generateUniqueSlug } from './slug';
 import { revalidateSite } from './revalidate-site';
 import { syncRecentStats } from './sync';
-import { fetchGA4TrafficSources, fetchGA4TopSources, fetchGA4TopKeywords, fetchGA4DailyTraffic, fetchGA4RealtimeNow } from './ga4';
+import { fetchGA4TrafficSources, fetchGA4TopSources, fetchGA4TopKeywords, fetchGA4DailyTraffic } from './ga4';
 
 // 방문자 지표(GA4) 캐시 태그 — syncAllStats에서 무효화
 const GA4_TRAFFIC_TAG = 'ga4-traffic';
@@ -95,16 +95,6 @@ export async function getDailyStats(days = 7) {
   } catch (error) {
     console.error('Failed to fetch daily stats:', error);
     return [];
-  }
-}
-
-/** 지금 접속 중 사용자 (최근 30분, 캐시 없이 실시간) */
-export async function getRealtimeNow() {
-  try {
-    return await fetchGA4RealtimeNow();
-  } catch (error) {
-    console.error('Failed to fetch realtime stats:', error);
-    return null;
   }
 }
 

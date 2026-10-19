@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getDailyStats, getDailyStatsRange, getMonthlyStatsRange, getRealtimeNow, syncAllStats } from '@/lib/actions';
+import { getDailyStats, getDailyStatsRange, getMonthlyStatsRange, syncAllStats } from '@/lib/actions';
 import {
   AreaChart,
   Area,
@@ -12,30 +12,12 @@ import {
   ResponsiveContainer,
   Legend
 } from 'recharts';
-import { RefreshCcw, Database, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { RefreshCcw, Database, TrendingUp } from 'lucide-react';
+import Pagination, { PAGE_SIZE } from '@/components/common/Pagination';
 import { toast } from 'sonner';
 
 type DetailView = 'daily' | 'monthly';
 
-const PAGE_SIZE = 6;
-
-/**
- * 페이지 번호 목록 생성. 페이지가 많으면 가운데를 줄여서 '…'로 표시.
- * 예) 1 2 3 4 5 … 10
- */
-function getPageItems(current: number, total: number): (number | '...')[] {
-  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-
-  const items: (number | '...')[] = [1];
-  const start = Math.max(2, current - 1);
-  const end = Math.min(total - 1, current + 1);
-
-  if (start > 2) items.push('...');
-  for (let n = start; n <= end; n++) items.push(n);
-  if (end < total - 1) items.push('...');
-  items.push(total);
-  return items;
-}
 
 /** 한국 시간 기준 오늘 'YYYY-MM-DD' */
 function kstToday() {
@@ -59,7 +41,6 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
   const thisMonth = today.slice(0, 7);
 
   const [stats, setStats] = useState<any[]>([]);
-  const [realtime, setRealtime] = useState<{ activeUsers: number } | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isDetail, setIsDetail] = useState(initialDetail);
   const [detailView, setDetailView] = useState<DetailView>('daily');
@@ -82,7 +63,6 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
     setStats(data);
     setDataMonthly(isDetail && detailView === 'monthly');
     setIsLoaded(true);
-    if (!isDetail) setRealtime(await getRealtimeNow());
   };
 
   useEffect(() => {
@@ -177,16 +157,27 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
           {!isLoaded ? (
             <div className="h-full w-full bg-gray-50 rounded-[8px] animate-pulse" />
           ) : stats.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center gap-4 text-[#D1D5DB]">
-              <TrendingUp size={48} />
-              <p className="text-[#D1D5DB] text-sm font-black uppercase tracking-[0.3em]">데이터 분석 중</p>
+            <div className="relative h-full w-full">
+              <div className="absolute inset-0 blur-[5px] opacity-60">
+                <div className="absolute inset-x-0 top-0 bottom-8 flex flex-col justify-between">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <div key={i} className="h-px w-full bg-gray-100" />
+                  ))}
+                </div>
+                <svg className="absolute inset-x-0 top-0 w-full h-[calc(100%-32px)]" preserveAspectRatio="none" viewBox="0 0 100 100">
+                  <path d="M0,70 C15,40 25,85 40,55 S65,20 80,45 S95,30 100,35 L100,100 L0,100 Z" fill="#F3F4F6" />
+                  <path d="M0,70 C15,40 25,85 40,55 S65,20 80,45 S95,30 100,35" fill="none" stroke="#D1D5DB" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+                </svg>
+              </div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-[#D1D5DB]">
+                <TrendingUp size={48} />
+                <p className="text-sm font-black uppercase tracking-[0.3em]">데이터 분석 중</p>
+              </div>
             </div>
           ) : (
             <>
               <p className="text-sm font-bold text-gray-400 mb-2">
-                페이지뷰 <span className="text-[#060606]">{totals.pageViews.toLocaleString()}</span> · 순 방문자 <span className="text-[#060606]">{totals.visitors.toLocaleString()}</span> (최근 7일)
-                {realtime && <> · 지금 접속 <span className="text-[#060606]">{realtime.activeUsers.toLocaleString()}</span> (최근 30분)</>}
-              </p>
+                페이지뷰 <span className="text-[#060606]">{totals.pageViews.toLocaleString()}</span> · 순 방문자 <span className="text-[#060606]">{totals.visitors.toLocaleString()}</span> (최근 7일)              </p>
               <div className="flex-1 min-h-0 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
@@ -393,36 +384,8 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
           </div>
 
           {stats.length > PAGE_SIZE && (
-            <div className="flex items-center justify-center gap-2 pt-4 border-t border-[#D1D5DB]">
-              <button
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="w-8 h-8 flex items-center justify-center rounded-[8px] bg-gray-50 text-gray-400 hover:text-[#060606] disabled:opacity-30 transition-all"
-                aria-label="이전 페이지"
-              >
-                <ChevronLeft size={14} />
-              </button>
-              {getPageItems(page, totalPages).map((item, idx) =>
-                item === '...' ? (
-                  <span key={`dots-${idx}`} className="w-8 text-center text-xs font-black text-[#4B5563]">…</span>
-                ) : (
-                  <button
-                    key={item}
-                    onClick={() => setPage(item)}
-                    className={`w-8 h-8 rounded-[8px] text-xs font-black tabular-nums transition-all ${page === item ? 'bg-black text-white' : 'bg-gray-50 text-gray-400 hover:text-[#060606]'}`}
-                  >
-                    {item}
-                  </button>
-                )
-              )}
-              <button
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="w-8 h-8 flex items-center justify-center rounded-[8px] bg-gray-50 text-gray-400 hover:text-[#060606] disabled:opacity-30 transition-all"
-                aria-label="다음 페이지"
-              >
-                <ChevronRight size={14} />
-              </button>
+            <div className="border-t border-[#D1D5DB]">
+              <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
             </div>
           )}
         </>

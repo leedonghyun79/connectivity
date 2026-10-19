@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { getRecentInquiries } from '@/lib/actions';
-import { MessageSquare, AlertCircle, CheckCircle2, ArrowUpRight } from 'lucide-react';
+import { AlertCircle, CheckCircle2, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { useFormatDate } from '@/lib/SystemConfigContext';
 
@@ -53,12 +53,9 @@ export default function RecentInquiryList() {
           ))
         ) : inquiries.length === 0 ? (
           // 빈 상태
-          <div className="flex flex-col items-center justify-center py-8 gap-3 text-[#D1D5DB]">
-            <MessageSquare size={32} />
-            <p className="text-[#D1D5DB] text-xs font-black uppercase tracking-[0.2em]">
-              접수된 문의 없음
-            </p>
-          </div>
+          <p className="py-8 text-center text-[#D1D5DB] text-xs font-black uppercase tracking-[0.2em]">
+            접수된 문의 없음
+          </p>
         ) : (
           inquiries.map((inquiry) => (
             <Link

@@ -39,6 +39,8 @@ export default function VisitorTrendCard() {
 
   // 스켈레톤은 데이터 로딩 + 영역 크기 측정이 끝날 때까지 유지
   const showSkeleton = isLoading || !chart.ready;
+  // 최근 7일 방문이 전부 0이면 차트를 흐리게 두고 빈값 안내를 올림
+  const isEmpty = totalPv === 0 && totalVisitor === 0;
 
   return (
     <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-[420px] flex flex-col group">
@@ -81,6 +83,8 @@ export default function VisitorTrendCard() {
             <p className="text-sm font-black uppercase tracking-[0.3em]">데이터 분석 중</p>
           </div>
         ) : (
+          <div className="relative h-full w-full">
+            <div className={isEmpty ? 'h-full w-full blur-[5px] opacity-60' : 'h-full w-full'}>
           <AreaChart width={chart.width} height={chart.height} data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
             <defs>
               <linearGradient id="dashColorPv" x1="0" y1="0" x2="0" y2="1">
@@ -148,6 +152,14 @@ export default function VisitorTrendCard() {
               activeDot={{ r: 8, strokeWidth: 4, stroke: '#fff', fill: '#000' }}
             />
           </AreaChart>
+            </div>
+            {isEmpty && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-[#D1D5DB]">
+                <TrendingUp size={32} />
+                <p className="text-xs font-black uppercase tracking-[0.2em]">방문 데이터 없음</p>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

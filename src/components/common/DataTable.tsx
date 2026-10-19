@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
+import Pagination from './Pagination';
 
 export interface Column<T> {
   header: string;
-  className?: string; // 헤더 셀 클래스 (text-right, text-center, w-24 등)
+  className?: string; // 헤더 셀 클래스 (w-24 등)
   cell: (item: T) => React.ReactNode;
 }
 
@@ -14,6 +15,8 @@ interface DataTableProps<T> {
   onRowClick?: (item: T) => void;
   noDataMessage?: string;
   noDataIcon?: React.ReactNode;
+  // 숫자 페이지네이션 — 부모가 data를 페이지 단위로 잘라서 넘긴다
+  pagination?: { page: number; totalPages: number; onPageChange: (page: number) => void };
   children?: React.ReactNode;
 }
 
@@ -23,6 +26,7 @@ export default function DataTable<T extends { id: string }>({
   onRowClick,
   noDataMessage = '데이터가 없습니다.',
   noDataIcon,
+  pagination,
   children,
 }: DataTableProps<T>) {
   return (
@@ -69,6 +73,11 @@ export default function DataTable<T extends { id: string }>({
           </tbody>
         </table>
       </div>
+      {pagination && (
+        <div className="px-10 py-6 border-t border-[#D1D5DB]">
+          <Pagination page={pagination.page} totalPages={pagination.totalPages} onPageChange={pagination.onPageChange} />
+        </div>
+      )}
       {children}
     </div>
   );

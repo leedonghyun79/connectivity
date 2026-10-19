@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import PageLoader from "@/components/common/PageLoader";
 import DataTable from '@/components/common/DataTable';
+import { PAGE_SIZE } from '@/components/common/Pagination';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
@@ -39,6 +40,12 @@ function LogsContent() {
   const [stats, setStats] = useState<any>(null);
   const [logs, setLogs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
+
+  // 날짜가 바뀌면 첫 페이지로
+  useEffect(() => {
+    setPage(1);
+  }, [selectedDate]);
 
   useEffect(() => {
     async function loadData() {
@@ -65,6 +72,9 @@ function LogsContent() {
     d.setDate(d.getDate() + days);
     handleDateChange(d.toISOString().split('T')[0]);
   };
+
+  const totalPages = Math.max(1, Math.ceil(logs.length / PAGE_SIZE));
+  const pageLogs = logs.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   if (isLoading && !stats) return <PageLoader title="일일 활동 내역" />;
 
@@ -117,7 +127,8 @@ function LogsContent() {
         </div>
       ) : (
         <DataTable
-          data={logs}
+          data={pageLogs}
+          pagination={{ page, totalPages, onPageChange: setPage }}
           noDataIcon={<Search size={60} />}
           noDataMessage="해당 날짜에는 기록된 활동 내역이 존재하지 않습니다."
           columns={[
@@ -145,11 +156,11 @@ function LogsContent() {
               cell: (log) => <span className="text-sm font-bold text-gray-700">{log.message}</span>,
             },
             {
-              header: '수행자',
-              className: 'px-10 py-8 text-right',
+              header: '사용자',
+              className: 'px-10 py-8 text-left',
               cell: (log) => (
-                <div className="flex items-center justify-end gap-2">
-                  <span className="text-[11px] font-black text-[#060606] uppercase tracking-widest">{log.user || 'SYSTEM'}</span>
+                <div className="flex items-center justify-start gap-2">
+                  <span className="text-[11px] font-black text-[#060606] tracking-widest">{log.user || 'SYSTEM'}</span>
                   <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
                     <Users size={12} className="text-gray-400" />
                   </div>

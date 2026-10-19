@@ -37,6 +37,8 @@ export default function TrafficSource() {
   const gradientString = (total ?? 0) > 0 ? `conic-gradient(${gradientParts.join(', ')})` : '#f8fafc';
 
   const shownTotal = total ?? 0;
+  // 유입 기록이 전부 0이면 빈값 안내
+  const isEmpty = shownTotal === 0;
   const totalLabel = shownTotal >= 1000 ? `${(shownTotal / 1000).toFixed(1)}K` : shownTotal.toLocaleString();
 
   // 데이터 도착 전에는 도넛과 막대 모양의 스켈레톤 표시
@@ -74,6 +76,9 @@ export default function TrafficSource() {
         </div>
       </div>
 
+      <div className="relative flex-1">
+      {/* 방문 기록이 없으면 흐리게 보여주고 빈값 안내를 올림 */}
+      <div className={isEmpty ? 'blur-[5px] opacity-60' : ''}>
       <div className="flex flex-col items-center gap-10">
         <div className="relative w-48 h-48 rounded-full flex-shrink-0" style={{ background: gradientString }}>
           <div className="absolute inset-5 bg-white rounded-full flex items-center justify-center flex-col border border-[#D1D5DB]">
@@ -99,6 +104,14 @@ export default function TrafficSource() {
             </div>
           ))}
         </div>
+      </div>
+      </div>
+      {isEmpty && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-[#D1D5DB]">
+          <PieChart size={32} />
+          <p className="text-xs font-black uppercase tracking-[0.2em]">유입 데이터 없음</p>
+        </div>
+      )}
       </div>
     </div>
   );
