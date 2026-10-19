@@ -190,22 +190,22 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
       onClick={onClose}
     >
       <div
-        className="bg-[#fcfcfc] rounded-[8px] shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col border border-gray-200"
+        className="bg-[#fcfcfc] rounded-[8px] shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col border border-[#D1D5DB]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 모달 헤더 */}
-        <div className="px-8 py-5 border-b border-gray-100 flex items-center justify-between bg-white/50 backdrop-blur-sm">
+        <div className="px-8 py-5 border-b border-[#D1D5DB] flex items-center justify-between bg-white/50 backdrop-blur-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-black rounded-[8px] flex items-center justify-center text-white font-bold text-xl">C</div>
             <h3 className="text-xl font-black text-gray-900 tracking-tight">{editData ? '견적서 수정' : '신규 견적서 작성'}</h3>
           </div>
-          <button onClick={onClose} className="p-2.5 hover:bg-gray-100 rounded-full transition-all text-gray-400 hover:text-gray-900 border border-transparent hover:border-gray-200">
+          <button onClick={onClose} className="p-2.5 hover:bg-gray-100 rounded-full transition-all text-gray-400 hover:text-gray-900 border border-transparent hover:border-[#D1D5DB]">
             <X size={20} />
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
-          <form id="estimate-form" onSubmit={handleSubmit} className="space-y-12 max-w-4xl mx-auto bg-white text-black p-12 shadow-[0_0_50px_rgba(0,0,0,0.02)] border border-gray-100 rounded-[8px]">
+          <form id="estimate-form" onSubmit={handleSubmit} className="space-y-12 max-w-4xl mx-auto bg-white text-[#060606] p-12 shadow-[0_0_50px_rgba(0,0,0,0.02)] border border-[#D1D5DB] rounded-[8px]">
 
             {/* 상단 섹션: 견적서 제목 및 날짜 */}
             <div className="flex justify-between items-start">
@@ -217,7 +217,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="견적 명칭을 입력하세요"
-                  className="text-2xl font-bold bg-transparent border-b-2 border-gray-200 focus:border-black outline-none pb-2 w-full transition-all placeholder:text-gray-500"
+                  className="text-2xl font-bold bg-transparent border-b-2 border-[#D1D5DB] focus:border-black outline-none pb-2 w-full transition-all placeholder:text-gray-500"
                 />
               </div>
               <div className="text-right">
@@ -230,10 +230,6 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                     className="text-lg font-bold bg-gray-50 px-3 py-1 rounded-[8px] outline-none"
                   />
                 </div>
-                <div>
-                  <label className="text-[10px] font-black text-gray-700 uppercase tracking-widest block mb-1">참조 번호 (REF NO.)</label>
-                  <div className="text-lg font-mono text-gray-700"># 자동 생성됨</div>
-                </div>
               </div>
             </div>
 
@@ -241,7 +237,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
               {/* 고객 정보 섹션 */}
               <div className="space-y-6">
                 <div>
-                  <label className="text-[11px] font-black text-black uppercase tracking-[0.2em] block mb-4 border-b border-black pb-2">수신인 (BILL TO)</label>
+                  <label className="text-[11px] font-black text-[#060606] uppercase tracking-[0.2em] block mb-4 border-b border-black pb-2">수신인 (BILL TO)</label>
                   <div className="space-y-4">
                     <select
                       required
@@ -277,36 +273,36 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
               {/* 공급자 정보 섹션 */}
               <div className="space-y-6">
                 <div>
-                  <label className="text-[11px] font-black text-black uppercase tracking-[0.2em] block mb-4 border-b border-black pb-2">공급자 (FROM)</label>
+                  <label className="text-[11px] font-black text-[#060606] uppercase tracking-[0.2em] block mb-4 border-b border-black pb-2">공급자 (FROM)</label>
                   <div className="space-y-3">
                     <div className="grid grid-cols-3 gap-2 text-[15px]">
                       <span className="text-gray-700 font-bold">사업자번호</span>
                       <input
-                        className="col-span-2 font-bold outline-none border-b border-transparent focus:border-gray-200"
+                        className="col-span-2 font-bold outline-none border-b border-transparent focus:border-[#D1D5DB]"
                         value={formData.bizNumber}
                         onChange={(e) => setFormData({ ...formData, bizNumber: e.target.value })}
                       />
                       <span className="text-gray-700 font-bold">상호</span>
                       <input
-                        className="col-span-2 font-bold outline-none border-b border-transparent focus:border-gray-200"
+                        className="col-span-2 font-bold outline-none border-b border-transparent focus:border-[#D1D5DB]"
                         value={formData.bizName}
                         onChange={(e) => setFormData({ ...formData, bizName: e.target.value })}
                       />
                       <span className="text-gray-700 font-bold">대표</span>
                       <input
-                        className="col-span-2 font-bold outline-none border-b border-transparent focus:border-gray-200"
+                        className="col-span-2 font-bold outline-none border-b border-transparent focus:border-[#D1D5DB]"
                         value={formData.bizCEO}
                         onChange={(e) => setFormData({ ...formData, bizCEO: e.target.value })}
                       />
                       <span className="text-gray-700 font-bold">주소</span>
                       <input
-                        className="col-span-2 font-bold outline-none border-b border-transparent focus:border-gray-200"
+                        className="col-span-2 font-bold outline-none border-b border-transparent focus:border-[#D1D5DB]"
                         value={formData.bizAddress}
                         onChange={(e) => setFormData({ ...formData, bizAddress: e.target.value })}
                       />
                       <span className="text-gray-700 font-bold">연락처</span>
                       <input
-                        className="col-span-2 font-bold outline-none border-b border-transparent focus:border-gray-200"
+                        className="col-span-2 font-bold outline-none border-b border-transparent focus:border-[#D1D5DB]"
                         value={formData.bizPhone}
                         onChange={(e) => setFormData({ ...formData, bizPhone: e.target.value })}
                       />
@@ -329,7 +325,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                     <th className="w-10"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-[#D1D5DB]">
                   {items.map((item, index) => (
                     <tr key={item.id} className="group">
                       <td className="py-4 pr-4">
@@ -389,14 +385,14 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                         <button
                           type="button"
                           onClick={() => removeItem(index)}
-                          className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-[8px] transition-all opacity-0 group-hover:opacity-100"
+                          className="p-1.5 text-[#4B5563] hover:text-red-500 hover:bg-red-50 rounded-[8px] transition-all opacity-0 group-hover:opacity-100"
                         >
                           <Trash2 size={14} />
                         </button>
                       </td>
                     </tr>
                   ))}
-                  <tr className="border-t border-gray-200">
+                  <tr className="border-t border-[#D1D5DB]">
                     <td colSpan={6} className="py-6">
                       <button
                         type="button"
@@ -418,7 +414,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                   <span className="text-gray-700 font-bold uppercase tracking-widest">소계 (Subtotal)</span>
                   <span className="font-mono font-bold">{totalSupplyValue.toLocaleString()} KRW</span>
                 </div>
-                <div className="flex justify-between items-center text-sm pb-4 border-b border-gray-100">
+                <div className="flex justify-between items-center text-sm pb-4 border-b border-[#D1D5DB]">
                   <span className="text-gray-700 font-bold uppercase tracking-widest">부가세 (VAT 10%)</span>
                   <span className="font-mono font-bold">{totalVat.toLocaleString()} KRW</span>
                 </div>
@@ -437,7 +433,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                   <div className="relative">
                     <div
                       onClick={() => setSignMenuOpen((v) => !v)}
-                      className="relative w-32 h-10 bg-gray-50 rounded-[8px] border-b-2 border-gray-200 flex items-center justify-center italic text-gray-700 text-sm cursor-pointer"
+                      className="relative w-32 h-10 bg-gray-50 rounded-[8px] border-b-2 border-[#D1D5DB] flex items-center justify-center italic text-gray-700 text-sm cursor-pointer"
                     >
                       <input
                         type="file"
@@ -456,18 +452,18 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                     {signMenuOpen && (
                       <>
                         <div className="fixed inset-0 z-10" onClick={() => setSignMenuOpen(false)} />
-                        <div className="absolute left-0 top-full mt-2 w-44 bg-white rounded-[8px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 p-1.5 z-20 text-left not-italic">
+                        <div className="absolute left-0 top-full mt-2 w-44 bg-white rounded-[8px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-[#D1D5DB] p-1.5 z-20 text-left not-italic">
                           <button
                             type="button"
                             onClick={() => { setSignMenuOpen(false); stampFileRef.current?.click(); }}
-                            className="w-full px-3 py-2.5 text-sm font-bold text-gray-700 hover:text-black hover:bg-gray-50 rounded-[8px] text-left transition-all"
+                            className="w-full px-3 py-2.5 text-sm font-bold text-gray-700 hover:text-[#060606] hover:bg-gray-50 rounded-[8px] text-left transition-all"
                           >
                             도장 이미지 불러오기
                           </button>
                           <button
                             type="button"
                             onClick={() => { setSignMenuOpen(false); setPadOpen(true); }}
-                            className="w-full px-3 py-2.5 text-sm font-bold text-gray-700 hover:text-black hover:bg-gray-50 rounded-[8px] text-left transition-all"
+                            className="w-full px-3 py-2.5 text-sm font-bold text-gray-700 hover:text-[#060606] hover:bg-gray-50 rounded-[8px] text-left transition-all"
                           >
                             직접 서명하기
                           </button>
@@ -499,7 +495,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
         )}
 
         {/* 하단 액션 버튼 */}
-        <div className="px-8 py-6 border-t border-gray-100 bg-white flex justify-between items-center">
+        <div className="px-8 py-6 border-t border-[#D1D5DB] bg-white flex justify-between items-center">
           <div className="text-gray-700 text-[15px] flex items-center gap-2">
             <Printer size={14} />
             <span>작성 완료 후 바로 출력하거나 PDF로 저장할 수 있습니다.</span>
@@ -508,7 +504,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2.5 border border-gray-200 rounded-[8px] text-sm font-bold text-gray-600 hover:bg-gray-50 transition-all active:scale-95"
+              className="px-6 py-2.5 border border-[#D1D5DB] rounded-[8px] text-sm font-bold text-gray-600 hover:bg-gray-50 transition-all active:scale-95"
             >
               취소
             </button>

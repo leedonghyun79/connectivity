@@ -97,11 +97,11 @@ export default function Toolbar({ editor, mode, onToggleSource }: Props) {
       active ? 'border-[#2d2dc9]/25 bg-[#2d2dc9]/10 text-[#2d2dc9]' : 'text-gray-800 hover:bg-gray-100'
     }`;
   const selectCls =
-    'h-[30px] rounded-[8px] border border-gray-200 bg-white px-2 text-[13px] text-gray-800';
+    'h-[30px] rounded-[8px] border border-[#D1D5DB] bg-white px-2 text-[13px] text-gray-800';
   const sep = <span className="mx-1.5 h-5 w-px bg-gray-200" />;
 
   return (
-    <div className="sticky -top-6 z-10 flex flex-wrap items-center gap-0.5 border-x border-b-0 border-t-0 border-gray-200 bg-[#fcfcfd] px-3 py-2.5">
+    <div className="sticky -top-6 z-10 flex flex-wrap items-center gap-0.5 border-x border-b-0 border-t-0 border-[#D1D5DB] bg-[#fcfcfd] px-3 py-2.5">
       <div
         aria-hidden={sourceMode}
         className={`flex flex-wrap items-center gap-0.5 transition-opacity ${
@@ -137,7 +137,7 @@ export default function Toolbar({ editor, mode, onToggleSource }: Props) {
           <input type="color" value={state.color} onChange={(e) => chain().setColor(e.target.value).run()} className="absolute inset-0 cursor-pointer opacity-0" />
         </label>
         <label className="relative inline-flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-[8px] hover:bg-gray-100" title="배경색">
-          <span className="h-4 w-4 rounded border border-gray-200" style={{ background: state.bg }} />
+          <span className="h-4 w-4 rounded border border-[#D1D5DB]" style={{ background: state.bg }} />
           <input type="color" value={state.bg} onChange={(e) => chain().setBackgroundColor(e.target.value).run()} className="absolute inset-0 cursor-pointer opacity-0" />
         </label>
 

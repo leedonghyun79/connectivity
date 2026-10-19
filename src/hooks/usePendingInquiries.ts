@@ -19,11 +19,13 @@ export function usePendingInquiries() {
   const pathname = usePathname();
   const [count, setCount] = useState(0);
   const [recent, setRecent] = useState<PendingInquiryItem[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const refresh = useCallback(async () => {
     const res = await getPendingInquirySummary();
     setCount(res.count);
     setRecent(res.recent);
+    setIsLoaded(true);
   }, []);
 
   useEffect(() => {
@@ -37,5 +39,5 @@ export function usePendingInquiries() {
     return () => clearInterval(id);
   }, [refresh]);
 
-  return { count, recent, refresh };
+  return { count, recent, isLoaded, refresh };
 }

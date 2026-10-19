@@ -258,23 +258,23 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
       onClick={onClose}
     >
       <div
-        className="bg-[#fcfcfc] rounded-[8px] shadow-2xl w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col border border-gray-200 animate-in zoom-in-95 duration-300"
+        className="bg-[#fcfcfc] rounded-[8px] shadow-2xl w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col border border-[#D1D5DB] animate-in zoom-in-95 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
 
         {/* 상단 컨트롤 바 */}
-        <div className="px-8 py-[30px] border-b border-gray-100 flex items-center justify-between bg-white text-sm">
+        <div className="px-8 py-[30px] border-b border-[#D1D5DB] flex items-center justify-between bg-white text-sm">
           <div className="flex items-center gap-6">
             <button
               onClick={handlePrint}
-              className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors font-bold"
+              className="flex items-center gap-2 text-gray-500 hover:text-[#060606] transition-colors font-bold"
             >
               <Printer size={16} /> 인쇄하기
             </button>
             <button
               onClick={handleDownloadPDF}
               disabled={isExporting}
-              className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors font-bold disabled:opacity-50"
+              className="flex items-center gap-2 text-gray-500 hover:text-[#060606] transition-colors font-bold disabled:opacity-50"
             >
               {isExporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
               {isExporting ? '생성 중...' : 'PDF 다운로드'}
@@ -286,7 +286,7 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
                   value={targetEmail}
                   onChange={(e) => setTargetEmail(e.target.value)}
                   placeholder="수신 이메일 주소"
-                  className="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-[8px] outline-none focus:border-black transition-all text-xs w-60 font-bold"
+                  className="px-3 py-1.5 bg-gray-50 border border-[#D1D5DB] rounded-[8px] outline-none focus:border-black transition-all text-xs w-60 font-bold"
                   autoFocus
                 />
                 <button
@@ -308,7 +308,7 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
             ) : (
               <button
                 onClick={() => setShowEmailInput(true)}
-                className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors font-bold"
+                className="flex items-center gap-2 text-gray-500 hover:text-[#060606] transition-colors font-bold"
               >
                 <Mail size={16} /> 이메일 발송
               </button>
@@ -341,7 +341,7 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
         <div className="flex-1 overflow-y-auto p-12 bg-gray-100 flex justify-center custom-scrollbar">
           <div
             ref={printRef}
-            className="bg-white w-full max-w-[800px] shadow-[0_40px_100px_rgba(0,0,0,0.08)] p-[80px] pb-[120px] min-h-[1280px] relative font-sans text-gray-900 border border-gray-100 rounded-[8px] flex flex-col"
+            className="bg-white w-full max-w-[800px] shadow-[0_40px_100px_rgba(0,0,0,0.08)] p-[80px] pb-[120px] min-h-[1280px] relative font-sans text-gray-900 border border-[#D1D5DB] rounded-[8px] flex flex-col"
           >
 
             {/* 워터마크 배경 */}
@@ -353,11 +353,11 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
               {/* 헤더 섹션 */}
               <div className="flex justify-between items-start mb-20">
                 <div>
-                  <h1 className="text-5xl font-black tracking-tighter mb-4 text-black">견적서</h1>
+                  <h1 className="text-5xl font-black tracking-tighter mb-4 text-[#060606]">견적서</h1>
                   <div className="text-2xl font-bold text-gray-800 tracking-tight">{estimate.title}</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-[13px] font-black text-gray-300 tracking-[0.3em] uppercase mb-2">작성 일자</div>
+                  <div className="text-[13px] font-black text-[#4B5563] tracking-[0.3em] uppercase mb-2">작성 일자</div>
                   <div className="text-xl font-bold">{new Date(estimate.issueDate).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
                 </div>
               </div>
@@ -365,58 +365,58 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
               {/* 정보 그리드 */}
               <div className="grid grid-cols-2 gap-20 mb-20">
                 <div>
-                  <div className="text-[13px] font-black text-black tracking-[0.2em] uppercase mb-6 border-b border-black pb-2">수신인 정보</div>
+                  <div className="text-[13px] font-black text-[#060606] tracking-[0.2em] uppercase mb-6 border-b border-black pb-2">수신인 정보</div>
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between border-b border-gray-100 pb-1">
+                    <div className="flex justify-between border-b border-[#D1D5DB] pb-1">
                       <span className="text-gray-400 font-bold text-[13px]">사업자번호</span>
                       <span className="font-bold">{estimate.customer?.bizNumber || '-'}</span>
                     </div>
-                    <div className="flex justify-between border-b border-gray-100 pb-1">
+                    <div className="flex justify-between border-b border-[#D1D5DB] pb-1">
                       <span className="text-gray-400 font-bold text-[13px]">상호</span>
                       <span className="font-bold">{estimate.customer?.company || '-'}</span>
                     </div>
-                    <div className="flex justify-between border-b border-gray-100 pb-1">
+                    <div className="flex justify-between border-b border-[#D1D5DB] pb-1">
                       <span className="text-gray-400 font-bold text-[13px]">성함 / 귀하</span>
                       <span className="font-bold">{estimate.customer?.name || estimate.customerName}</span>
                     </div>
-                    <div className="flex justify-between border-b border-gray-100 pb-1">
+                    <div className="flex justify-between border-b border-[#D1D5DB] pb-1">
                       <span className="text-gray-400 font-bold text-[13px] shrink-0 w-20">주소</span>
                       <span className="font-bold text-right">{estimate.customer?.address || '-'}</span>
                     </div>
-                    <div className="flex justify-between border-b border-gray-100 pb-1">
+                    <div className="flex justify-between border-b border-[#D1D5DB] pb-1">
                       <span className="text-gray-400 font-bold text-[13px]">연락처</span>
                       <span className="font-bold">{estimate.customer?.phone || '-'}</span>
                     </div>
-                    <div className="flex justify-between border-b border-gray-100 pb-1">
+                    <div className="flex justify-between border-b border-[#D1D5DB] pb-1">
                       <span className="text-gray-400 font-bold text-[13px]">이메일</span>
                       <span className="font-bold">{estimate.customer?.email || '-'}</span>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <div className="text-[13px] font-black text-black tracking-[0.2em] uppercase mb-6 border-b border-black pb-2">공급자 정보</div>
+                  <div className="text-[13px] font-black text-[#060606] tracking-[0.2em] uppercase mb-6 border-b border-black pb-2">공급자 정보</div>
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between border-b border-gray-100 pb-1">
+                    <div className="flex justify-between border-b border-[#D1D5DB] pb-1">
                       <span className="text-gray-400 font-bold text-[13px]">사업자번호</span>
                       <span className="font-bold">{estimate.bizNumber || '123-45-67890'}</span>
                     </div>
-                    <div className="flex justify-between border-b border-gray-100 pb-1">
+                    <div className="flex justify-between border-b border-[#D1D5DB] pb-1">
                       <span className="text-gray-400 font-bold text-[13px]">상호</span>
                       <span className="font-bold">{estimate.bizName}</span>
                     </div>
-                    <div className="flex justify-between border-b border-gray-100 pb-1">
+                    <div className="flex justify-between border-b border-[#D1D5DB] pb-1">
                       <span className="text-gray-400 font-bold text-[13px]">대표</span>
                       <span className="font-bold">{estimate.bizCEO}</span>
                     </div>
-                    <div className="flex justify-between border-b border-gray-100 pb-1">
+                    <div className="flex justify-between border-b border-[#D1D5DB] pb-1">
                       <span className="text-gray-400 font-bold text-[13px] shrink-0 w-20">사업장 주소</span>
                       <span className="font-bold text-right">{estimate.bizAddress}</span>
                     </div>
-                    <div className="flex justify-between border-b border-gray-100 pb-1">
+                    <div className="flex justify-between border-b border-[#D1D5DB] pb-1">
                       <span className="text-gray-400 font-bold text-[13px]">연락처</span>
                       <span className="font-bold">{estimate.bizPhone}</span>
                     </div>
-                    <div className="flex justify-between border-b border-gray-100 pb-1">
+                    <div className="flex justify-between border-b border-[#D1D5DB] pb-1">
                       <span className="text-gray-400 font-bold text-[13px]">이메일</span>
                       <span className="font-bold">{estimate.bizEmail}</span>
                     </div>
@@ -435,7 +435,7 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
                       <th className="text-[13px] font-black uppercase text-right py-4 tracking-widest w-[140px]">금액</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-[#D1D5DB]">
                     {estimate.items?.map((item: any) => (
                       <tr key={item.id}>
                         <td className="py-8 pr-4 align-top">
@@ -444,12 +444,12 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
                         <td className="py-8 pr-4 text-xs font-bold text-gray-400 uppercase tracking-tight break-keep leading-relaxed align-top">
                           {item.spec}
                         </td>
-                        <td className="py-8 text-center font-mono font-black text-black align-top">
+                        <td className="py-8 text-center font-mono font-black text-[#060606] align-top">
                           {item.quantity}
                         </td>
-                        <td className="py-8 text-right font-mono font-black text-black align-top">
+                        <td className="py-8 text-right font-mono font-black text-[#060606] align-top">
                           <span className="text-lg">{Number(item.supplyValue).toLocaleString()}</span>
-                          <span className="text-[13px] text-gray-300 ml-1.5 font-sans">KRW</span>
+                          <span className="text-[13px] text-[#4B5563] ml-1.5 font-sans">KRW</span>
                         </td>
                       </tr>
                     ))}
@@ -464,12 +464,12 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
                     <span>합계 소계</span>
                     <span className="font-mono">{totalSupplyValue.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between items-center text-[13px] font-bold text-gray-400 uppercase tracking-widest pb-4 border-b border-gray-100">
+                  <div className="flex justify-between items-center text-[13px] font-bold text-gray-400 uppercase tracking-widest pb-4 border-b border-[#D1D5DB]">
                     <span>부가가치세 (VAT 10%)</span>
                     <span className="font-mono">{totalVat.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center pt-2">
-                    <span className="text-l font-black text-black">총 금액</span>
+                    <span className="text-l font-black text-[#060606]">총 금액</span>
                     <span className="text-3xl font-black font-mono">{grandTotal.toLocaleString()}</span>
                   </div>
                 </div>
@@ -546,7 +546,7 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
                 </div>
 
                 {/* 발행 일자 */}
-                <div className="text-xl font-bold tracking-tight text-black mr-4">
+                <div className="text-xl font-bold tracking-tight text-[#060606] mr-4">
                   {(() => {
                     const d = new Date(estimate.issueDate);
                     return `${d.getFullYear()}년 ${String(d.getMonth() + 1).padStart(2, '0')}월 ${String(d.getDate()).padStart(2, '0')}일`;

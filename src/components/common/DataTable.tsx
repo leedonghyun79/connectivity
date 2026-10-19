@@ -26,11 +26,11 @@ export default function DataTable<T extends { id: string }>({
   children,
 }: DataTableProps<T>) {
   return (
-    <div className="bg-white rounded-[8px] border border-gray-100 overflow-hidden mb-20">
+    <div className="bg-white rounded-[8px] border border-[#D1D5DB] overflow-hidden mb-20">
       <div className="overflow-x-auto min-h-[500px]">
         <table className="w-full text-left">
           <thead>
-            <tr className="bg-gray-50/50 border-b border-gray-100">
+            <tr className="bg-gray-50/50 border-b border-[#D1D5DB]">
               {columns.map((col, index) => (
                 <th
                   key={index}
@@ -41,7 +41,7 @@ export default function DataTable<T extends { id: string }>({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-[#D1D5DB]">
             {data.length > 0 ? (
               data.map((item) => (
                 <tr
@@ -59,7 +59,7 @@ export default function DataTable<T extends { id: string }>({
             ) : (
               <tr>
                 <td colSpan={columns.length} className="px-10 py-32 text-center">
-                  <div className="flex flex-col items-center gap-4 opacity-10">
+                  <div className="flex flex-col items-center gap-4 text-[#D1D5DB]">
                     {noDataIcon}
                     <p className="text-sm font-black uppercase tracking-[0.3em]">{noDataMessage}</p>
                   </div>

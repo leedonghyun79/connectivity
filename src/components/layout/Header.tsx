@@ -26,7 +26,7 @@ export default function Header() {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
   const [lastSeenAt, setLastSeenAt] = useState<number>(0);
-  const { count: pendingCount, recent } = usePendingInquiries();
+  const { count: pendingCount, recent, isLoaded: notifLoaded } = usePendingInquiries();
 
   useEffect(() => {
     try {
@@ -64,14 +64,14 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="h-24 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-10 sticky top-0 z-30">
+    <header className="h-24 bg-white/80 backdrop-blur-md border-b border-[#D1D5DB] flex items-center justify-between px-10 sticky top-0 z-30">
       <div className="flex items-center flex-1 max-w-2xl">
         <div className="relative w-full group">
-          <Search className="absolute left-0 top-1/2 transform -translate-y-1/2 text-gray-300 group-focus-within:text-black transition-colors" size={20} />
+          <Search className="absolute left-0 top-1/2 transform -translate-y-1/2 text-[#4B5563] group-focus-within:text-[#060606] transition-colors" size={20} />
           <input
             type="text"
             placeholder="전체 검색: 프로젝트, 고객사..."
-            className="w-full pl-10 pr-4 py-3 bg-transparent text-sm font-medium focus:outline-none transition-all placeholder:text-gray-300 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
+            className="w-full pl-10 pr-4 py-3 bg-transparent text-sm font-medium focus:outline-none transition-all placeholder:text-[#4B5563] placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 toast.info('통합 검색 엔진은 현재 개발 중입니다.');
@@ -86,7 +86,7 @@ export default function Header() {
         <div className="relative" ref={notifRef}>
           <button
             onClick={toggleNotif}
-            className="p-2 text-gray-300 hover:text-black relative transition-all group">
+            className="p-2 text-[#4B5563] hover:text-[#060606] relative transition-all group">
             <Bell size={22} />
             {hasUnseen && (
               <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-black rounded-full ring-4 ring-white"></span>
@@ -94,13 +94,19 @@ export default function Header() {
           </button>
 
           {isNotifOpen && (
-            <div className="absolute right-0 top-full mt-4 w-80 bg-white rounded-[8px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 p-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
-              <div className="px-4 py-3 border-b border-gray-50 mb-1 flex items-center justify-between">
-                <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">알림</p>
-                <p className="text-[10px] font-black text-black">답변 대기 {pendingCount}건</p>
+            <div className="absolute right-0 top-full mt-4 w-80 bg-white rounded-[8px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-[#D1D5DB] p-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+              <div className="px-4 py-3 border-b border-[#D1D5DB] mb-1 flex items-center justify-between">
+                <p className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest">알림</p>
+                <p className="text-[10px] font-black text-[#060606]">답변 대기 {pendingCount}건</p>
               </div>
-              {recent.length === 0 ? (
-                <p className="px-4 py-8 text-center text-xs font-bold text-gray-300">새로운 알림이 없습니다</p>
+              {!notifLoaded ? (
+                <div className="px-4 py-6 space-y-3 animate-pulse">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="h-10 bg-gray-50 rounded-[8px]" />
+                  ))}
+                </div>
+              ) : recent.length === 0 ? (
+                <p className="px-4 py-8 text-center text-xs font-bold text-[#4B5563]">새로운 알림이 없습니다</p>
               ) : (
                 recent.map((item) => (
                   <Link
@@ -113,8 +119,8 @@ export default function Header() {
                       <MessageSquare size={14} />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-bold text-black truncate">{item.title}</p>
-                      <p className="text-[10px] font-bold text-gray-300 uppercase mt-0.5">
+                      <p className="text-sm font-bold text-[#060606] truncate">{item.title}</p>
+                      <p className="text-[10px] font-bold text-[#4B5563] uppercase mt-0.5">
                         {item.authorName || '익명'} · {timeAgo(item.createdAt)}
                       </p>
                     </div>
@@ -124,7 +130,7 @@ export default function Header() {
               <Link
                 href="/inquiries"
                 onClick={() => setIsNotifOpen(false)}
-                className="block px-4 py-3 mt-1 border-t border-gray-50 text-center text-[11px] font-black text-gray-500 hover:text-black transition-colors"
+                className="block px-4 py-3 mt-1 border-t border-[#D1D5DB] text-center text-[11px] font-black text-gray-500 hover:text-[#060606] transition-colors"
               >
                 문의 게시판 전체 보기
               </Link>
@@ -132,37 +138,37 @@ export default function Header() {
           )}
         </div>
 
-        <div className="flex items-center gap-4 pl-8 border-l border-gray-100 relative" ref={dropdownRef}>
+        <div className="flex items-center gap-4 pl-8 border-l border-[#D1D5DB] relative" ref={dropdownRef}>
           <div className="text-right hidden sm:block">
-            <p className="text-[11px] font-black text-black uppercase tracking-wider leading-tight">
+            <p className="text-[11px] font-black text-[#060606] uppercase tracking-wider leading-tight">
               {session?.user?.name || '관리자'}
             </p>
-            <p className="text-[10px] font-bold text-gray-300 uppercase">ADMINISTRATOR LEVEL</p>
+            <p className="text-[10px] font-bold text-[#4B5563] uppercase">ADMINISTRATOR LEVEL</p>
           </div>
           <button 
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="relative group focus:outline-none"
           >
-            <div className={`h-12 w-12 rounded-[8px] flex items-center justify-center border transition-all duration-300 overflow-hidden ${isDropdownOpen ? 'bg-black text-white border-black' : 'bg-gray-50 text-black border-gray-100 hover:border-black'}`}>
+            <div className={`h-12 w-12 rounded-[8px] flex items-center justify-center border transition-all duration-300 overflow-hidden ${isDropdownOpen ? 'bg-black text-white border-black' : 'bg-gray-50 text-[#060606] border-[#D1D5DB] hover:border-black'}`}>
               <User size={24} />
             </div>
-            <div className={`absolute -bottom-1 -right-1 w-5 h-5 bg-white border rounded-full flex items-center justify-center transition-transform duration-300 ${isDropdownOpen ? 'rotate-180 border-black' : 'border-gray-100'}`}>
-              <ChevronDown size={10} className={isDropdownOpen ? 'text-black' : 'text-gray-400'} />
+            <div className={`absolute -bottom-1 -right-1 w-5 h-5 bg-white border rounded-full flex items-center justify-center transition-transform duration-300 ${isDropdownOpen ? 'rotate-180 border-black' : 'border-[#D1D5DB]'}`}>
+              <ChevronDown size={10} className={isDropdownOpen ? 'text-[#060606]' : 'text-gray-400'} />
             </div>
           </button>
 
           {/* 드롭다운 메뉴 */}
           {isDropdownOpen && (
-            <div className="absolute right-0 top-full mt-4 w-56 bg-white rounded-[8px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 p-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
-              <div className="px-4 py-3 border-b border-gray-50 mb-1">
-                <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">계정 계층</p>
-                <p className="text-sm font-bold text-black">{session?.user?.name || '관리자'}</p>
+            <div className="absolute right-0 top-full mt-4 w-56 bg-white rounded-[8px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-[#D1D5DB] p-2 animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+              <div className="px-4 py-3 border-b border-[#D1D5DB] mb-1">
+                <p className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest">계정 계층</p>
+                <p className="text-sm font-bold text-[#060606]">{session?.user?.name || '관리자'}</p>
               </div>
               
               <Link 
                 href="/settings"
                 onClick={() => setIsDropdownOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-500 hover:text-black hover:bg-gray-50 rounded-[8px] transition-all group"
+                className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-500 hover:text-[#060606] hover:bg-gray-50 rounded-[8px] transition-all group"
               >
                 <div className="p-2 bg-gray-50 rounded-[8px] group-hover:bg-white transition-colors">
                   <Settings size={16} />

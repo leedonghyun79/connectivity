@@ -16,7 +16,7 @@ import { uploadImage } from '../editor/uploadImage';
 const ColumnEditor = dynamic(() => import('../editor/ColumnEditor'), {
   ssr: false,
   loading: () => (
-    <div className="mt-2 flex h-[460px] items-center justify-center rounded-[8px] border border-gray-200 bg-gray-50 text-sm text-gray-400">
+    <div className="mt-2 flex h-[460px] items-center justify-center rounded-[8px] border border-[#D1D5DB] bg-gray-50 text-sm text-gray-400">
       에디터를 불러오는 중입니다...
     </div>
   ),
@@ -179,8 +179,10 @@ export default function ColumnForm({ mode, id }: Props) {
 
   if (loading) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <Loader2 className="animate-spin text-gray-400" />
+      <div className="space-y-6 py-6 animate-pulse">
+        <div className="h-10 w-1/2 bg-gray-100 rounded-[8px]" />
+        <div className="h-12 w-full bg-gray-50 rounded-[8px]" />
+        <div className="h-64 w-full bg-gray-50 rounded-[8px]" />
       </div>
     );
   }
@@ -188,18 +190,18 @@ export default function ColumnForm({ mode, id }: Props) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <Link href="/columns" className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-black">
+        <Link href="/columns" className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-[#060606]">
           <ArrowLeft size={16} /> 칼럼 목록
         </Link>
         <div className="flex items-center gap-2">
           {mode === 'edit' && status === 'published' && (
             <button onClick={handleUnpublish} disabled={saving}
-              className="inline-flex items-center gap-1.5 rounded-[8px] border border-gray-200 bg-white px-3.5 py-2 text-sm font-semibold text-gray-600 disabled:opacity-50">
+              className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#D1D5DB] bg-white px-3.5 py-2 text-sm font-semibold text-gray-600 disabled:opacity-50">
               <Undo2 size={15} /> 발행 취소
             </button>
           )}
           <button onClick={handleSave} disabled={saving || !isDirty}
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-gray-200 bg-white px-3.5 py-2 text-sm font-semibold text-gray-700 disabled:opacity-50">
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#D1D5DB] bg-white px-3.5 py-2 text-sm font-semibold text-gray-700 disabled:opacity-50">
             {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
             {mode === 'create' ? '임시저장' : '저장'}
           </button>
@@ -211,9 +213,9 @@ export default function ColumnForm({ mode, id }: Props) {
         </div>
       </div>
 
-      <div className="rounded-[8px] border border-gray-100 bg-white p-8 shadow-sm">
+      <div className="rounded-[8px] border border-[#D1D5DB] bg-white p-8 shadow-sm">
         <div className="mb-2 flex items-center gap-2">
-          <h1 className="text-xl font-black tracking-tight text-black">
+          <h1 className="text-xl font-black tracking-tight text-[#060606]">
             {mode === 'create' ? '새 칼럼 작성' : '칼럼 수정'}
           </h1>
           <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
@@ -231,7 +233,7 @@ export default function ColumnForm({ mode, id }: Props) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="칼럼 제목"
-              className="rounded-[8px] border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
+              className="rounded-[8px] border border-[#D1D5DB] px-4 py-3 text-[15px] outline-none focus:border-black"
             />
           </div>
 
@@ -240,7 +242,7 @@ export default function ColumnForm({ mode, id }: Props) {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="rounded-[8px] border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
+              className="rounded-[8px] border border-[#D1D5DB] px-4 py-3 text-[15px] outline-none focus:border-black"
             >
               <option value="">카테고리를 선택하세요</option>
               {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -261,13 +263,13 @@ export default function ColumnForm({ mode, id }: Props) {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="검색결과·공유 미리보기에 노출될 요약입니다. 150~160자 권장. 비워두면 본문에서 자동으로 생성됩니다."
               rows={3}
-              className="resize-none rounded-[8px] border border-gray-200 px-4 py-3 text-[15px] outline-none focus:border-black"
+              className="resize-none rounded-[8px] border border-[#D1D5DB] px-4 py-3 text-[15px] outline-none focus:border-black"
             />
           </div>
 
           <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-800">대표 이미지</label>
-            <div className="relative h-48 w-full overflow-hidden rounded-[8px] border border-gray-200 bg-gray-50">
+            <div className="relative h-48 w-full overflow-hidden rounded-[8px] border border-[#D1D5DB] bg-gray-50">
               {effectiveThumb ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={effectiveThumb} alt="대표 이미지" className="h-full w-full object-cover" />
@@ -291,7 +293,7 @@ export default function ColumnForm({ mode, id }: Props) {
                 type="button"
                 onClick={() => thumbInputRef.current?.click()}
                 disabled={thumbUploading}
-                className="rounded-[8px] border border-gray-200 bg-white px-4 py-2 text-[13px] font-semibold text-gray-700 disabled:opacity-50"
+                className="rounded-[8px] border border-[#D1D5DB] bg-white px-4 py-2 text-[13px] font-semibold text-gray-700 disabled:opacity-50"
               >
                 {thumbUploading ? '업로드 중...' : thumbnail ? '대표 이미지 변경' : '대표 이미지 추가'}
               </button>

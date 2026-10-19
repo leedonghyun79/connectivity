@@ -70,7 +70,7 @@ export default function ConfirmModal({
       <div 
         role="dialog"
         aria-modal="true"
-        className="bg-white w-full max-w-md rounded-[8px] overflow-hidden shadow-2xl border border-gray-100 animate-in zoom-in-95 duration-300"
+        className="bg-white w-full max-w-md rounded-[8px] overflow-hidden shadow-2xl border border-[#D1D5DB] animate-in zoom-in-95 duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header (Optional Decorative) */}
@@ -101,7 +101,7 @@ export default function ConfirmModal({
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 py-4 px-6 rounded-[8px] font-black uppercase tracking-widest text-[11px] text-gray-500 bg-gray-50 hover:bg-gray-100 transition-all border border-gray-100"
+              className="flex-1 py-4 px-6 rounded-[8px] font-black uppercase tracking-widest text-[11px] text-gray-500 bg-gray-50 hover:bg-gray-100 transition-all border border-[#D1D5DB]"
             >
               {cancelText}
             </button>

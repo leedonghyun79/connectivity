@@ -23,7 +23,7 @@
 
 /* ── 기본 body ── */
 body {
-  color: rgb(var(--foreground-rgb));
+  color: #060606;
   background: white;
   word-break: keep-all;
   overflow-wrap: break-word;
@@ -114,4 +114,9 @@ table thead th {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+/* ── 비활성 · placeholder 색 ── */
+input::placeholder,
+textarea::placeholder {
+  color: #D1D5DB;
 }

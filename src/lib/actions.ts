@@ -709,6 +709,65 @@ export async function getTrafficSources(days = 30) {
   }
 }
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+const KST_MS = 9 * 60 * 60 * 1000;
+
+/**
+ * 날짜 범위 일별 통계 (KST, 'YYYY-MM-DD' 양끝 포함, 최신순). 최대 366일.
+ */
+export async function getDailyStatsRange(startDate: string, endDate: string) {
+  try {
+    const start = new Date(`${startDate}T00:00:00+09:00`);
+    const end = new Date(new Date(`${endDate}T00:00:00+09:00`).getTime() + DAY_MS - 1);
+    const days = Math.round((end.getTime() - start.getTime()) / DAY_MS);
+    if (days <= 0 || days > 366) return [];
+
+    const stats = await prisma.dailyStat.findMany({
+      where: { date: { gte: start, lte: end } },
+      orderBy: { date: 'desc' },
+    });
+    return stats.map(s => ({ ...s, revenue: s.revenue.toString() }));
+  } catch (error) {
+    console.error('Failed to fetch daily stats range:', error);
+    return [];
+  }
+}
+
+/**
+ * 월 범위 통계 (KST, 'YYYY-MM' 양끝 포함, 최신순). 최대 36개월.
+ */
+export async function getMonthlyStatsRange(startMonth: string, endMonth: string) {
+  try {
+    const [sy, sm] = startMonth.split('-').map(Number);
+    const [ey, em] = endMonth.split('-').map(Number);
+    const start = new Date(Date.UTC(sy, sm - 1, 1) - KST_MS);
+    const end = new Date(Date.UTC(ey, em, 1) - KST_MS - 1);
+    const months = (ey - sy) * 12 + (em - sm) + 1;
+    if (months <= 0 || months > 36) return [];
+
+    const rows = await prisma.dailyStat.findMany({
+      where: { date: { gte: start, lte: end } },
+      orderBy: { date: 'desc' },
+    });
+
+    const byMonth = new Map<string, { month: string; pageViews: number; visitors: number; signups: number; inquiries: number; revenue: number }>();
+    for (const s of rows) {
+      const month = new Date(s.date.getTime() + KST_MS).toISOString().slice(0, 7);
+      const m = byMonth.get(month) ?? { month, pageViews: 0, visitors: 0, signups: 0, inquiries: 0, revenue: 0 };
+      m.pageViews += s.pageViews;
+      m.visitors += s.visitors;
+      m.signups += s.signups;
+      m.inquiries += s.inquiries;
+      m.revenue += Number(s.revenue);
+      byMonth.set(month, m);
+    }
+    return Array.from(byMonth.values()).map(m => ({ ...m, revenue: m.revenue.toString() }));
+  } catch (error) {
+    console.error('Failed to fetch monthly stats range:', error);
+    return [];
+  }
+}
+
 export async function resetAllData() {
   try {
     // 주의: 실제 운영 환경에서는 매우 위험한 작업입니다.
@@ -762,51 +821,47 @@ export async function getTodayStats() {
 }
 
 /**
- * 대시보드: 최근 활동 통합 피드 (비즈니스 활동 + 시스템 로그)
+ * 대시보드: 최근 작업 피드 (견적서 발행, 문의 접수, 신규 고객 등록)
+ * 시스템 로그는 제외 — 업무 기록만 보여준다.
  */
-export async function getRecentActivityFeed() {
+export async function getRecentWorkFeed() {
   try {
-    const [inquiries, estimates, customers, logs] = await Promise.all([
-      prisma.inquiry.findMany({ take: 3, orderBy: { createdAt: 'desc' }, include: { customer: true } }),
-      prisma.estimate.findMany({ take: 3, orderBy: { createdAt: 'desc' }, include: { customer: true } }),
-      prisma.customer.findMany({ take: 3, orderBy: { createdAt: 'desc' } }),
-      prisma.systemLog.findMany({ take: 3, orderBy: { createdAt: 'desc' } }),
+    const [inquiries, estimates, customers] = await Promise.all([
+      prisma.inquiry.findMany({ take: 4, orderBy: { createdAt: 'desc' }, include: { customer: true } }),
+      prisma.estimate.findMany({ take: 4, orderBy: { createdAt: 'desc' }, include: { customer: true } }),
+      prisma.customer.findMany({ take: 4, orderBy: { createdAt: 'desc' } }),
     ]);
 
     const feed = [
       ...inquiries.map(item => ({
         id: `inquiry-${item.id}`,
-        type: 'ESTIMATE',
+        type: 'INQUIRY' as const,
         title: `문의 접수: ${item.title}`,
         client: item.authorName || item.customer?.name || '익명 고객',
+        href: '/inquiries',
         createdAt: item.createdAt,
       })),
       ...estimates.map(item => ({
         id: `estimate-${item.id}`,
-        type: 'ESTIMATE',
+        type: 'ESTIMATE' as const,
         title: `견적서 발행: ${item.title}`,
         client: item.customer?.name || '알 수 없음',
+        href: '/estimates',
         createdAt: item.createdAt,
       })),
       ...customers.map(item => ({
         id: `customer-${item.id}`,
-        type: 'CLIENT',
+        type: 'CLIENT' as const,
         title: `신규 고객 등록: ${item.name}`,
         client: item.company || '개인',
+        href: '/customers/page/1',
         createdAt: item.createdAt,
-      })),
-      ...logs.map(log => ({
-        id: `log-${log.id}`,
-        type: 'INFO',
-        title: log.message,
-        client: log.user || '시스템 관리자',
-        createdAt: log.createdAt,
       })),
     ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 8);
 
     return feed;
   } catch (error) {
-    console.error('Error fetching activity feed:', error);
+    console.error('Error fetching recent work feed:', error);
     return [];
   }
 }
@@ -841,8 +896,14 @@ export async function getDashboardStats() {
       })
     ]);
 
+    // 오늘(KST) 날짜의 GA4 순 방문자 — 동기화 전이면 0
+    const kstToday = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const todayStat = await prisma.dailyStat.findUnique({
+      where: { date: new Date(`${kstToday}T00:00:00+09:00`) },
+    });
+
     return {
-      todayVisitors: 124, 
+      todayVisitors: todayStat?.visitors ?? 0, 
       pendingInquiries,
       pendingEstimates,
       totalRevenue: totalRevenue._sum.amount || 0

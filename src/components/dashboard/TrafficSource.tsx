@@ -14,19 +14,19 @@ const STYLE: Record<string, { color: string; bg: string }> = {
 };
 
 export default function TrafficSource() {
-  const [total, setTotal] = useState(0);
-  const [items, setItems] = useState<{ label: string; value: number }[]>(
-    Object.keys(STYLE).map(label => ({ label, value: 0 }))
-  );
+  const [total, setTotal] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [items, setItems] = useState<{ label: string; value: number }[] | null>(null);
 
   useEffect(() => {
     getTrafficSources(30).then(data => {
       setTotal(data.total);
-      if (data.items.length > 0) setItems(data.items);
+      setItems(data.items);
+      setIsLoading(false);
     });
   }, []);
 
-  const data = items.map(item => ({ ...item, ...STYLE[item.label] }));
+  const data = (items ?? []).map(item => ({ ...item, ...STYLE[item.label] }));
 
   let currentPercent = 0;
   const gradientParts = data.map(item => {
@@ -34,27 +34,51 @@ export default function TrafficSource() {
     currentPercent += item.value;
     return `${item.color} ${start}% ${currentPercent}%`;
   });
-  const gradientString = total > 0 ? `conic-gradient(${gradientParts.join(', ')})` : '#f8fafc';
+  const gradientString = (total ?? 0) > 0 ? `conic-gradient(${gradientParts.join(', ')})` : '#f8fafc';
 
-  const totalLabel = total >= 1000 ? `${(total / 1000).toFixed(1)}K` : total.toLocaleString();
+  const shownTotal = total ?? 0;
+  const totalLabel = shownTotal >= 1000 ? `${(shownTotal / 1000).toFixed(1)}K` : shownTotal.toLocaleString();
+
+  // 데이터 도착 전에는 도넛과 막대 모양의 스켈레톤 표시
+  if (isLoading) {
+    return (
+      <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-full flex flex-col animate-pulse">
+        <div className="space-y-2 mb-10">
+          <div className="h-2.5 w-20 bg-gray-50 rounded" />
+          <div className="h-6 w-40 bg-gray-100 rounded" />
+        </div>
+        <div className="flex flex-col items-center gap-10">
+          <div className="w-48 h-48 rounded-full border-[24px] border-gray-100" />
+          <div className="w-full space-y-5 px-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex items-center justify-between">
+                <div className="h-3 w-24 bg-gray-100 rounded" />
+                <div className="h-1 w-20 bg-gray-50 rounded" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white p-10 rounded-[8px] border border-gray-100 h-full flex flex-col group">
+    <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-full flex flex-col group">
       <div className="flex justify-between items-start mb-10">
         <div>
-          <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">유입 로그</div>
-          <h3 className="text-2xl font-black text-black uppercase tracking-tighter">유입 경로 분석</h3>
+          <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">유입 로그</div>
+          <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">유입 경로 분석</h3>
         </div>
-        <div className="p-3 bg-gray-50 rounded-[8px] text-gray-300 group-hover:text-black transition-all">
+        <div className="p-3 bg-gray-50 rounded-[8px] text-[#4B5563] group-hover:text-[#060606] transition-all">
           <PieChart size={20} />
         </div>
       </div>
 
       <div className="flex flex-col items-center gap-10">
         <div className="relative w-48 h-48 rounded-full flex-shrink-0" style={{ background: gradientString }}>
-          <div className="absolute inset-5 bg-white rounded-full flex items-center justify-center flex-col border border-gray-50">
-            <span className="text-[10px] text-gray-300 font-black uppercase tracking-widest mb-1">전체 방문</span>
-            <span className="text-3xl font-black text-black tracking-tighter">{totalLabel}</span>
+          <div className="absolute inset-5 bg-white rounded-full flex items-center justify-center flex-col border border-[#D1D5DB]">
+            <span className="text-[10px] text-[#4B5563] font-black uppercase tracking-widest mb-1">전체 방문</span>
+            <span className="text-3xl font-black text-[#060606] tracking-tighter">{totalLabel}</span>
             <div className="w-8 h-1 bg-black rounded-full mt-2"></div>
           </div>
         </div>
@@ -64,13 +88,13 @@ export default function TrafficSource() {
             <div key={item.label} className="flex items-center justify-between group/item">
               <div className="flex items-center gap-3 min-w-0">
                 <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${item.bg}`}></span>
-                <span className="text-[11px] text-gray-400 group-hover/item:text-black font-black uppercase tracking-wider transition-colors">{item.label}</span>
+                <span className="text-[11px] text-gray-400 group-hover/item:text-[#060606] font-black uppercase tracking-wider transition-colors">{item.label}</span>
               </div>
               <div className="flex items-center gap-4 flex-shrink-0">
                 <div className="w-20 h-1 bg-gray-50 rounded-full overflow-hidden">
                   <div className={`h-full transition-all duration-1000 ${item.bg}`} style={{ width: `${item.value}%` }}></div>
                 </div>
-                <span className="text-sm font-black text-black w-8 text-right tabular-nums tracking-tighter">{item.value}%</span>
+                <span className="text-sm font-black text-[#060606] w-8 text-right tabular-nums tracking-tighter">{item.value}%</span>
               </div>
             </div>
           ))}

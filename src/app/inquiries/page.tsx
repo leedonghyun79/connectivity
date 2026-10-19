@@ -56,7 +56,17 @@ export default function InquiriesPage() {
     setIsModalOpen(true);
   };
 
-  if (isLoading) return <PageLoader />;
+  // 대시보드 최근 문의에서 ?id= 로 들어오면 해당 문의 상세 모달을 연다
+  useEffect(() => {
+    if (isLoading || inquiries.length === 0) return;
+    const id = new URLSearchParams(window.location.search).get('id');
+    if (!id) return;
+    const target = inquiries.find(item => item.id === id);
+    if (target) handleRowClick(target);
+    window.history.replaceState({}, '', '/inquiries');
+  }, [isLoading, inquiries]);
+
+  if (isLoading) return <PageLoader title="문의 게시판" variant="inquiries" />;
 
   return (
     <div className="space-y-10 py-10">
@@ -76,35 +86,35 @@ export default function InquiriesPage() {
         <div>
           <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">문의 게시판</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
-            <MessageSquare size={14} className="text-black" />
-            고객님들의 소중한 문의사항을 확인하고 관리합니다. <span className="text-black uppercase">지원 센터</span>
+            <MessageSquare size={14} className="text-[#060606]" />
+            고객님들의 소중한 문의사항을 확인하고 관리합니다. <span className="text-[#060606] uppercase">지원 센터</span>
           </p>
         </div>
       </div>
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-8 rounded-[8px] border border-gray-100 group hover:bg-black hover:text-white transition-all duration-500">
+        <div className="bg-white p-8 rounded-[8px] border border-[#D1D5DB] group hover:bg-black hover:text-white transition-all duration-500">
           <div className="flex justify-between items-start mb-6">
-            <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest group-hover:text-gray-500">답변 대기 중</p>
+            <p className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest group-hover:text-gray-500">답변 대기 중</p>
             <div className="p-2 bg-gray-50 rounded-[8px] group-hover:bg-white/10 transition-colors">
-              <AlertCircle size={20} className="text-gray-300 group-hover:text-white" />
+              <AlertCircle size={20} className="text-[#4B5563] group-hover:text-white" />
             </div>
           </div>
           <p className="text-4xl font-black tracking-tighter">
-            {stats.pending}<span className="text-[10px] font-bold text-gray-300 ml-2 uppercase group-hover:text-gray-500 tracking-widest">건</span>
+            {stats.pending}<span className="text-[10px] font-bold text-[#4B5563] ml-2 uppercase group-hover:text-gray-500 tracking-widest">건</span>
           </p>
         </div>
 
-        <div className="bg-white p-8 rounded-[8px] border border-gray-100 group hover:bg-black hover:text-white transition-all duration-500">
+        <div className="bg-white p-8 rounded-[8px] border border-[#D1D5DB] group hover:bg-black hover:text-white transition-all duration-500">
           <div className="flex justify-between items-start mb-6">
-            <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest group-hover:text-gray-500">해결 완료</p>
+            <p className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest group-hover:text-gray-500">해결 완료</p>
             <div className="p-2 bg-gray-50 rounded-[8px] group-hover:bg-white/10 transition-colors">
-              <CheckCircle2 size={20} className="text-gray-300 group-hover:text-white" />
+              <CheckCircle2 size={20} className="text-[#4B5563] group-hover:text-white" />
             </div>
           </div>
           <p className="text-4xl font-black tracking-tighter">
-            {stats.answered}<span className="text-[10px] font-bold text-gray-300 ml-2 uppercase group-hover:text-gray-500 tracking-widest">건 완료</span>
+            {stats.answered}<span className="text-[10px] font-bold text-[#4B5563] ml-2 uppercase group-hover:text-gray-500 tracking-widest">건 완료</span>
           </p>
         </div>
 
@@ -134,7 +144,7 @@ export default function InquiriesPage() {
               className={`px-6 py-2.5 rounded-[8px] text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'bg-black text-white'
-                  : 'bg-white border border-gray-100 text-gray-300 hover:text-black'
+                  : 'bg-white border border-[#D1D5DB] text-[#4B5563] hover:text-[#060606]'
               }`}
             >
               {tab.label}
@@ -144,23 +154,23 @@ export default function InquiriesPage() {
 
         {/* 검색 */}
         <div className="relative w-full sm:w-96 group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-black transition-all" size={20} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4B5563] group-focus-within:text-[#060606] transition-all" size={20} />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="제목, 문의자 이름으로 검색..."
-            className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
+            className="w-full pl-12 pr-6 py-4 bg-white border border-[#D1D5DB] rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
           />
         </div>
       </div>
 
       {/* 문의 목록 테이블 */}
-      <div className="bg-white border border-gray-100 rounded-[8px] overflow-hidden">
+      <div className="bg-white border border-[#D1D5DB] rounded-[8px] overflow-hidden">
         <div className="min-h-[600px] overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50/30 border-b border-gray-100">
+              <tr className="bg-gray-50/30 border-b border-[#D1D5DB]">
                 <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-24">번호</th>
                 <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 w-32 text-center">유형</th>
                 <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">문의 제목 및 내용</th>
@@ -169,7 +179,7 @@ export default function InquiriesPage() {
                 <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center w-40">상태</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-[#D1D5DB]">
               {filteredInquiries.length > 0 ? (
                 filteredInquiries.map((inquiry, index) => (
                   <tr
@@ -177,9 +187,9 @@ export default function InquiriesPage() {
                     onClick={() => handleRowClick(inquiry)}
                     className="hover:bg-gray-50/50 transition-all cursor-pointer group"
                   >
-                    <td className="px-10 py-8 text-center text-xs font-mono font-bold text-gray-300 group-hover:text-black transition-colors">{index + 1}</td>
+                    <td className="px-10 py-8 text-center text-xs font-mono font-bold text-[#4B5563] group-hover:text-[#060606] transition-colors">{index + 1}</td>
                     <td className="px-10 py-8 text-center">
-                      <span className="inline-block whitespace-nowrap px-3 py-1 rounded-[8px] bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-widest border border-gray-100">
+                      <span className="inline-block whitespace-nowrap px-3 py-1 rounded-[8px] bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-widest border border-[#D1D5DB]">
                         {inquiry.type || '일반'}
                       </span>
                     </td>
@@ -187,7 +197,7 @@ export default function InquiriesPage() {
                       <div className="font-black text-gray-900 group-hover:translate-x-1 transition-transform mb-1">{inquiry.title}</div>
                       <div className="text-gray-400 text-[10px] font-bold uppercase tracking-tight truncate max-w-sm">{inquiry.content}</div>
                     </td>
-                    <td className="px-10 py-8 text-center text-xs font-black text-black uppercase tracking-tight">
+                    <td className="px-10 py-8 text-center text-xs font-black text-[#060606] uppercase tracking-tight">
                       {inquiry.authorName || inquiry.customer?.name || '익명'}
                     </td>
                     <td className="px-10 py-8 text-center text-gray-400 font-mono text-[10px] font-bold uppercase tracking-widest">
@@ -209,7 +219,7 @@ export default function InquiriesPage() {
               ) : (
                 <tr>
                   <td colSpan={6} className="px-10 py-32 text-center">
-                    <div className="flex flex-col items-center gap-4 opacity-10">
+                    <div className="flex flex-col items-center gap-4 text-[#D1D5DB]">
                       <MessageSquare size={64} />
                       <p className="text-sm font-black uppercase tracking-[0.3em]">
                         {searchTerm || activeTab !== 'all' ? '검색 결과가 없습니다.' : '등록된 문의 내역이 없습니다.'}
@@ -223,9 +233,9 @@ export default function InquiriesPage() {
         </div>
 
         {/* 푸터 */}
-        <div className="px-10 py-8 border-t border-gray-50 bg-gray-50/30 flex items-center justify-between">
+        <div className="px-10 py-8 border-t border-[#D1D5DB] bg-gray-50/30 flex items-center justify-between">
           <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-            총 <span className="text-black">{filteredInquiries.length}개</span>의 문의 내역이 있습니다.
+            총 <span className="text-[#060606]">{filteredInquiries.length}개</span>의 문의 내역이 있습니다.
           </span>
         </div>
       </div>

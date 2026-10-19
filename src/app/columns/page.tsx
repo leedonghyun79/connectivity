@@ -61,7 +61,7 @@ export default function ColumnsPage() {
     <div className="space-y-6 py-10">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-5xl font-black tracking-tight text-black">칼럼 관리</h1>
+          <h1 className="text-5xl font-black tracking-tight text-[#060606]">칼럼 관리</h1>
           <p className="mt-1 text-sm text-gray-400">픽셀커넥트 공개 사이트에 발행하는 칼럼</p>
         </div>
         <Link
@@ -72,10 +72,18 @@ export default function ColumnsPage() {
         </Link>
       </div>
 
-      <div className="overflow-hidden rounded-[8px] border border-gray-100 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-[8px] border border-[#D1D5DB] bg-white shadow-sm">
         {loading ? (
-          <div className="flex h-48 items-center justify-center">
-            <Loader2 className="animate-spin text-gray-300" />
+          <div className="p-8 space-y-5 animate-pulse">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center justify-between gap-6">
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-1/3 bg-gray-100 rounded" />
+                  <div className="h-2.5 w-1/5 bg-gray-50 rounded" />
+                </div>
+                <div className="h-6 w-16 bg-gray-100 rounded-[8px]" />
+              </div>
+            ))}
           </div>
         ) : rows.length === 0 ? (
           <div className="flex h-48 flex-col items-center justify-center gap-2 text-gray-400">
@@ -85,7 +93,7 @@ export default function ColumnsPage() {
         ) : (
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-gray-100 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+              <tr className="border-b border-[#D1D5DB] text-[11px] font-bold uppercase tracking-wider text-gray-400">
                 <th className="px-6 py-4">제목</th>
                 <th className="px-4 py-4">카테고리</th>
                 <th className="px-4 py-4">상태</th>
@@ -99,9 +107,9 @@ export default function ColumnsPage() {
                 const published = r.status === 'published';
                 const rowBusy = busyId === r.id;
                 return (
-                  <tr key={r.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/60">
+                  <tr key={r.id} className="border-b border-[#D1D5DB] last:border-0 hover:bg-gray-50/60">
                     <td className="px-6 py-4">
-                      <Link href={`/columns/${r.id}/edit`} className="font-semibold text-black hover:underline">
+                      <Link href={`/columns/${r.id}/edit`} className="font-semibold text-[#060606] hover:underline">
                         {r.title || '(제목 없음)'}
                       </Link>
                     </td>
@@ -119,7 +127,7 @@ export default function ColumnsPage() {
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => router.push(`/columns/${r.id}/edit`)}
-                          className="rounded-[8px] p-1.5 text-gray-400 hover:bg-gray-100 hover:text-black"
+                          className="rounded-[8px] p-1.5 text-gray-400 hover:bg-gray-100 hover:text-[#060606]"
                           title="수정"
                         >
                           <Pencil size={15} />
@@ -127,7 +135,7 @@ export default function ColumnsPage() {
                         {published ? (
                           <button
                             onClick={() => doUnpublish(r.id)} disabled={rowBusy}
-                            className="rounded-[8px] p-1.5 text-gray-400 hover:bg-gray-100 hover:text-black disabled:opacity-40"
+                            className="rounded-[8px] p-1.5 text-gray-400 hover:bg-gray-100 hover:text-[#060606] disabled:opacity-40"
                             title="발행 취소"
                           >
                             {rowBusy ? <Loader2 size={15} className="animate-spin" /> : <Undo2 size={15} />}

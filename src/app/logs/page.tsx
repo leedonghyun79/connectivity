@@ -7,7 +7,6 @@ import {
   getLogsByDate
 } from '@/lib/actions';
 import {
-  Calendar as CalendarIcon,
   Users,
   CheckCircle2,
   MessageSquare,
@@ -66,40 +65,22 @@ function LogsContent() {
     handleDateChange(d.toISOString().split('T')[0]);
   };
 
-  const formatFullDate = (dateStr: string) => {
-    const d = new Date(`${dateStr}T00:00:00+09:00`);
-    return d.toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      weekday: 'long',
-      timeZone: 'Asia/Seoul'
-    });
-  };
-
-  if (isLoading && !stats) return <PageLoader />;
-
-  const statCards = [
-    { label: '신규 가입자', count: stats?.newCustomers || 0, icon: Users },
-    { label: '완료된 작업', count: stats?.closedProjects || 0, icon: CheckCircle2 },
-    { label: '시스템 문의', count: stats?.newInquiries || 0, icon: MessageSquare },
-    { label: '매출 발생건', count: stats?.newTransactions || 0, icon: TrendingUp },
-  ];
+  if (isLoading && !stats) return <PageLoader title="일일 활동 내역" />;
 
   return (
     <div className="w-full animate-in fade-in duration-700 py-10 space-y-10">
       {/* 상단 네비게이션 및 헤더 */}
       <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
         <div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">활동 로그</h1>
+          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">일일 활동 내역</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
-            <CalendarIcon size={14} className="text-black" />
-            {formatFullDate(selectedDate)}의 활동 로그 기록입니다.
+            <Activity size={14} className="text-[#060606]" />
+            하루 동안 진행된 업무와 기록을 확인합니다.
           </p>
         </div>
 
         {/* 날짜 컨트롤러 */}
-        <div className="flex items-center bg-gray-50 p-2 rounded-[8px] border border-gray-100 shadow-sm">
+        <div className="flex items-center bg-gray-50 p-2 rounded-[8px] border border-[#D1D5DB] shadow-sm">
           <button
             onClick={() => moveDate(-1)}
             className="p-3 hover:bg-white hover:shadow-md rounded-[8px] transition-all"
@@ -126,50 +107,13 @@ function LogsContent() {
         </div>
       </div>
 
-      {/* 통계 요약 섹션 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((stat, idx) => (
-          <div key={idx} className="bg-white p-8 rounded-[8px] border border-gray-100 hover:border-black hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)] transition-all group relative overflow-hidden">
-            {/* 배경 아이콘 효과 */}
-            <div className={`absolute -right-4 -bottom-6 text-gray-100 group-hover:text-gray-200 opacity-20 group-hover:opacity-40 transition-all duration-500 group-hover:scale-110`}>
-              <stat.icon size={120} strokeWidth={1} />
-            </div>
-
-            <div className="relative z-10">
-              <div className="flex justify-between items-start mb-6">
-                <div className={`w-12 h-12 rounded-[8px] flex items-center justify-center transition-all duration-300 bg-gray-50 text-gray-300 group-hover:bg-black group-hover:text-white`}>
-                  <stat.icon size={24} />
-                </div>
-                <div className="text-[10px] font-black text-gray-200 uppercase tracking-widest group-hover:text-black transition-colors">SUMMARY</div>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[11px] font-black text-gray-300 uppercase tracking-widest group-hover:text-black transition-colors">{stat.label}</p>
-                <h4 className="text-4xl font-black text-black tracking-tighter">
-                  {stat.count}
-                  <span className="text-sm ml-1 text-gray-300 uppercase">건</span>
-                </h4>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* 상세 활동 로그 섹션 */}
+      {/* 최근 활동 내역 섹션 */}
       <div className="grid grid-cols-1 gap-8">
-        <div className="bg-white p-10 rounded-[8px] border border-gray-100 min-h-[500px]">
-          <div className="flex justify-between items-center mb-10 pb-6 border-b border-gray-50">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-black rounded-[8px] flex items-center justify-center text-white">
-                <Activity size={24} />
-              </div>
-              <div>
-                <h3 className="text-xl font-black text-black uppercase tracking-tighter">상세 활동 내역</h3>
-                <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Operational Audit Logs</p>
-              </div>
-            </div>
+        <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] min-h-[500px]">
+          <div className="flex justify-end items-center mb-10">
             <div className="text-right">
-              <span className="text-2xl font-black text-black tracking-tighter">{logs.length}</span>
-              <span className="text-[10px] font-black text-gray-300 uppercase ml-2">Total Events</span>
+              <span className="text-lg font-black text-[#060606] tracking-tighter">{logs.length}</span>
+              <span className="text-[9px] font-black text-[#4B5563] uppercase ml-2">Total Events</span>
             </div>
           </div>
 
@@ -179,10 +123,10 @@ function LogsContent() {
                 <div key={i} className="h-16 bg-gray-50 rounded-[8px] animate-pulse mb-3" />
               ))
             ) : logs.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-32 gap-6 opacity-20">
+              <div className="flex flex-col items-center justify-center py-32 gap-6 text-[#D1D5DB]">
                 <Search size={60} />
                 <div className="text-center">
-                  <p className="text-xl font-black uppercase tracking-widest mb-1">데이터가 없습니다</p>
+                  <p className="text-[#D1D5DB] text-xl font-black uppercase tracking-widest mb-1">데이터가 없습니다</p>
                   <p className="text-sm font-bold">해당 날짜에는 기록된 활동 내역이 존재하지 않습니다.</p>
                 </div>
               </div>
@@ -190,14 +134,14 @@ function LogsContent() {
               <div className="overflow-hidden">
                 <table className="w-full">
                   <thead>
-                    <tr className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-50">
+                    <tr className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-[#D1D5DB]">
                       <th className="px-6 py-4 text-left font-black">시간</th>
                       <th className="px-6 py-4 text-left font-black">유형</th>
                       <th className="px-6 py-4 text-left font-black">메시지</th>
                       <th className="px-6 py-4 text-right font-black">수행자</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-50">
+                  <tbody className="divide-y divide-[#D1D5DB]">
                     {logs.map((log) => (
                       <tr key={log.id} className="hover:bg-gray-50/50 transition-colors group">
                         <td className="px-6 py-6 text-[11px] font-bold text-gray-400">
@@ -206,16 +150,16 @@ function LogsContent() {
                         <td className="px-6 py-6">
                           <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border
                             ${log.action === 'LOGIN' ? 'bg-black text-white border-black' :
-                              'bg-white text-black border-gray-200'}`}>
+                              'bg-white text-[#060606] border-[#D1D5DB]'}`}>
                             {log.action}
                           </span>
                         </td>
-                        <td className="px-6 py-6 text-sm font-bold text-gray-700 group-hover:text-black transition-colors">
+                        <td className="px-6 py-6 text-sm font-bold text-gray-700 group-hover:text-[#060606] transition-colors">
                           {log.message}
                         </td>
                         <td className="px-6 py-6 text-right">
                           <div className="flex items-center justify-end gap-2">
-                            <span className="text-[11px] font-black text-black uppercase tracking-widest">{log.user || 'SYSTEM'}</span>
+                            <span className="text-[11px] font-black text-[#060606] uppercase tracking-widest">{log.user || 'SYSTEM'}</span>
                             <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
                               <Users size={12} className="text-gray-400" />
                             </div>
@@ -236,7 +180,7 @@ function LogsContent() {
 
 export default function LogsPage() {
   return (
-    <Suspense fallback={<PageLoader />}>
+    <Suspense fallback={<PageLoader title="일일 활동 내역" />}>
       <LogsContent />
     </Suspense>
   );

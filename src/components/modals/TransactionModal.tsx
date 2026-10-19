@@ -76,13 +76,13 @@ export default function TransactionModal({ isOpen, onClose, onSuccess }: Transac
       />
       <div className="relative w-full max-w-xl bg-white rounded-[8px] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-10 duration-500">
         {/* 헤더 */}
-        <div className="px-10 py-8 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
+        <div className="px-10 py-8 border-b border-[#D1D5DB] flex justify-between items-center bg-gray-50/50">
           <div>
             <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Financial Entry</div>
-            <h2 className="text-2xl font-black text-black uppercase tracking-tighter">새 거래 내역 등록</h2>
+            <h2 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">새 거래 내역 등록</h2>
           </div>
           <button onClick={onClose} className="p-3 hover:bg-white rounded-[8px] transition-all group">
-            <X size={20} className="text-gray-300 group-hover:text-black" />
+            <X size={20} className="text-[#4B5563] group-hover:text-[#060606]" />
           </button>
         </div>
 
@@ -179,7 +179,7 @@ export default function TransactionModal({ isOpen, onClose, onSuccess }: Transac
                     className={`flex-1 py-4 rounded-[8px] text-[11px] font-black uppercase tracking-widest transition-all
                       ${formData.status === s 
                         ? 'bg-black text-white' 
-                        : 'bg-gray-50 text-gray-300 hover:text-gray-500'}`}
+                        : 'bg-gray-50 text-[#4B5563] hover:text-gray-500'}`}
                   >
                     {s === 'completed' ? '정산 완료' : '입금 대기'}
                   </button>

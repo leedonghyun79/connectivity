@@ -80,10 +80,10 @@ export default function SignaturePad({ onApply, onClose }: SignaturePadProps) {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-[8px] shadow-2xl border border-gray-200 w-full max-w-lg text-black"
+        className="bg-white rounded-[8px] shadow-2xl border border-[#D1D5DB] w-full max-w-lg text-[#060606]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-[#D1D5DB] flex items-center justify-between">
           <h4 className="text-base font-black tracking-tight">직접 서명하기</h4>
           <button
             type="button"
@@ -104,16 +104,16 @@ export default function SignaturePad({ onApply, onClose }: SignaturePadProps) {
             onPointerUp={handleUp}
             onPointerCancel={handleUp}
             style={{ cursor: PEN_CURSOR }}
-            className="w-full bg-gray-50 border-b-2 border-gray-200 rounded-[8px] touch-none"
+            className="w-full bg-gray-50 border-b-2 border-[#D1D5DB] rounded-[8px] touch-none"
           />
           <p className="text-[15px] text-gray-700 mt-3">위 칸에 마우스나 터치로 서명해주세요.</p>
         </div>
 
-        <div className="px-6 py-4 border-t border-gray-100 flex justify-between items-center">
+        <div className="px-6 py-4 border-t border-[#D1D5DB] flex justify-between items-center">
           <button
             type="button"
             onClick={handleClear}
-            className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-black transition-all"
+            className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-[#060606] transition-all"
           >
             지우기
           </button>
@@ -121,7 +121,7 @@ export default function SignaturePad({ onApply, onClose }: SignaturePadProps) {
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2 border border-gray-200 rounded-[8px] text-sm font-bold text-gray-600 hover:bg-gray-50 transition-all"
+              className="px-5 py-2 border border-[#D1D5DB] rounded-[8px] text-sm font-bold text-gray-600 hover:bg-gray-50 transition-all"
             >
               취소
             </button>
