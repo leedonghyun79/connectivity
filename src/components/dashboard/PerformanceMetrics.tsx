@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getDailyStats, getDailyStatsRange, getMonthlyStatsRange, syncAllStats } from '@/lib/actions';
+import { getDailyStats, getDailyStatsRange, getMonthlyStatsRange, getRealtimeNow, syncAllStats } from '@/lib/actions';
 import {
   AreaChart,
   Area,
@@ -59,6 +59,7 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
   const thisMonth = today.slice(0, 7);
 
   const [stats, setStats] = useState<any[]>([]);
+  const [realtime, setRealtime] = useState<{ activeUsers: number } | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isDetail, setIsDetail] = useState(initialDetail);
   const [detailView, setDetailView] = useState<DetailView>('daily');
@@ -81,6 +82,7 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
     setStats(data);
     setDataMonthly(isDetail && detailView === 'monthly');
     setIsLoaded(true);
+    if (!isDetail) setRealtime(await getRealtimeNow());
   };
 
   useEffect(() => {
@@ -156,7 +158,7 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
             onClick={() => setIsDetail(v => !v)}
             className="px-3 py-2 rounded-[8px] text-[10px] font-black uppercase tracking-widest text-[#4B5563] hover:text-[#060606] hover:bg-gray-50 transition-all"
           >
-            {isDetail ? '접기' : '자세히 보기'}
+            {isDetail ? '요약' : '자세히 보기'}
           </button>
           <button
             onClick={handleSync}
@@ -183,6 +185,7 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
             <>
               <p className="text-sm font-bold text-gray-400 mb-2">
                 페이지뷰 <span className="text-[#060606]">{totals.pageViews.toLocaleString()}</span> · 순 방문자 <span className="text-[#060606]">{totals.visitors.toLocaleString()}</span> (최근 7일)
+                {realtime && <> · 지금 접속 <span className="text-[#060606]">{realtime.activeUsers.toLocaleString()}</span> (최근 30분)</>}
               </p>
               <div className="flex-1 min-h-0 w-full">
                 <ResponsiveContainer width="100%" height="100%">

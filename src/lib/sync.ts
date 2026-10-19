@@ -23,7 +23,7 @@ function recentKstDays(days: number): string[] {
  * GA4 호출이 실패하면 아무것도 쓰지 않고 throw → 기존 값이 0으로 덮어써지지 않음.
  */
 export async function syncRecentStats(days = 30) {
-  const traffic = await fetchGA4DailyTraffic(days);
+  const traffic = await fetchGA4DailyTraffic(`${days - 1}daysAgo`);
 
   const dayKeys = recentKstDays(days);
   await Promise.all(

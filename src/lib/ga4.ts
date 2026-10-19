@@ -34,13 +34,14 @@ function getPropertyPath() {
 }
 
 /**
- * 최근 `days`일(오늘 포함)의 일별 페이지뷰·활성 사용자를 가져온다.
+ * 날짜 범위의 일별 페이지뷰·활성 사용자를 가져온다.
+ * startDate/endDate는 'YYYY-MM-DD' 또는 '7daysAgo' 같은 GA4 표기 모두 가능.
  * 키는 GA4 날짜 형식 'YYYYMMDD' (속성 시간대 기준 — 속성 시간대를 Asia/Seoul로 맞출 것)
  */
-export async function fetchGA4DailyTraffic(days: number): Promise<Map<string, GA4DailyTraffic>> {
+export async function fetchGA4DailyTraffic(startDate: string, endDate = 'today'): Promise<Map<string, GA4DailyTraffic>> {
   const [response] = await getClient().runReport({
     property: getPropertyPath(),
-    dateRanges: [{ startDate: `${days - 1}daysAgo`, endDate: 'today' }],
+    dateRanges: [{ startDate, endDate }],
     dimensions: [{ name: 'date' }],
     metrics: [{ name: 'screenPageViews' }, { name: 'activeUsers' }],
   });
@@ -57,7 +58,21 @@ export async function fetchGA4DailyTraffic(days: number): Promise<Map<string, GA
   return result;
 }
 
-const SOCIAL_SOURCES = ['facebook', 'instagram', 'youtube', 'twitter', 't.co', 'kakao', 'threads', 'linkedin', 'tiktok'];
+/**
+ * 지금 접속 중인 사용자 (최근 30분 기준 — 실시간 리포트는 하루 전체 합계를 주지 않음)
+ */
+export async function fetchGA4RealtimeNow(): Promise<{ activeUsers: number; pageViews: number }> {
+  const [response] = await getClient().runRealtimeReport({
+    property: getPropertyPath(),
+    metrics: [{ name: 'activeUsers' }, { name: 'screenPageViews' }],
+  });
+  return {
+    activeUsers: Number(response.rows?.[0]?.metricValues?.[0]?.value ?? 0),
+    pageViews: Number(response.rows?.[0]?.metricValues?.[1]?.value ?? 0),
+  };
+}
+
+const SOCIAL_SOURCES =['facebook', 'instagram', 'youtube', 'twitter', 't.co', 'kakao', 'threads', 'linkedin', 'tiktok'];
 
 /** GA4 source/medium 조합을 대시보드 채널로 분류 */
 function classifyChannel(source: string, medium: string): TrafficChannel {
@@ -96,4 +111,55 @@ export async function fetchGA4TrafficSources(days: number): Promise<Record<Traff
     totals[classifyChannel(source, medium)] += Number(row.metricValues?.[0]?.value ?? 0);
   }
   return totals;
+}
+
+export interface GA4SourceRow {
+  source: string;
+  medium: string;
+  sessions: number;
+}
+
+export interface GA4KeywordRow {
+  keyword: string;
+  sessions: number;
+}
+
+/**
+ * 최근 `days`일 유입 소스(source/medium)별 세션 수, 세션 많은 순 상위 `limit`개.
+ */
+export async function fetchGA4TopSources(days: number, limit = 30): Promise<GA4SourceRow[]> {
+  const [response] = await getClient().runReport({
+    property: getPropertyPath(),
+    dateRanges: [{ startDate: `${days - 1}daysAgo`, endDate: 'today' }],
+    dimensions: [{ name: 'sessionSource' }, { name: 'sessionMedium' }],
+    metrics: [{ name: 'sessions' }],
+    orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+    limit,
+  });
+
+  return (response.rows ?? []).map(row => ({
+    source: row.dimensionValues?.[0]?.value ?? '(not set)',
+    medium: row.dimensionValues?.[1]?.value ?? '(not set)',
+    sessions: Number(row.metricValues?.[0]?.value ?? 0),
+  }));
+}
+
+/**
+ * 최근 `days`일 검색 키워드(sessionManualTerm, UTM term)별 세션 수, 세션 많은 순 상위 `limit`개.
+ * 구글 자연검색 키워드는 GA4에서 대부분 '(not provided)'로 들어오므로 Search Console 연동이 없으면 비어 보일 수 있다.
+ */
+export async function fetchGA4TopKeywords(days: number, limit = 30): Promise<GA4KeywordRow[]> {
+  const [response] = await getClient().runReport({
+    property: getPropertyPath(),
+    dateRanges: [{ startDate: `${days - 1}daysAgo`, endDate: 'today' }],
+    dimensions: [{ name: 'sessionManualTerm' }],
+    metrics: [{ name: 'sessions' }],
+    orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+    limit,
+  });
+
+  return (response.rows ?? []).map(row => ({
+    keyword: row.dimensionValues?.[0]?.value || '(not set)',
+    sessions: Number(row.metricValues?.[0]?.value ?? 0),
+  }));
 }

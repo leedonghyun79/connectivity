@@ -14,7 +14,10 @@ import {
   Newspaper,
   Briefcase,
   Layers,
-  Eye
+  Eye,
+  CalendarDays,
+  Globe,
+  Search
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -25,7 +28,14 @@ const menuItems = [
   { name: '대시보드', path: '/', icon: LayoutDashboard, label: '통계 요약' },
   { name: '고객 관리', path: '/customers/page/1', icon: Users, label: '고객 데이터베이스' },
   { name: '견적서 관리', path: '/estimates', icon: FileText, label: '견적 및 발행' },
-  { name: '방문자 분석', path: '/visitors', icon: Eye, label: '트래픽 지표' },
+  {
+    name: '방문자 통계', icon: Eye, label: '트래픽 지표',
+    children: [
+      { name: '기간별 분석', path: '/visitors', icon: CalendarDays, label: '일별·월별 방문 추이' },
+      { name: '유입 사이트 분석', path: '/visitors/sites', icon: Globe, label: '유입 소스별 세션' },
+      { name: '유입 검색어 분석', path: '/visitors/keywords', icon: Search, label: '검색어별 세션' },
+    ],
+  },
   { name: '매출 분석', path: '/sales', icon: Banknote, label: '재무 지표' },
   { name: '문의 게시판', path: '/inquiries', icon: MessageSquare, label: '고객 지원' },
   {
@@ -48,7 +58,11 @@ export default function Sidebar() {
   useEffect(() => {
     for (const item of menuItems) {
       if ('children' in item) {
-        const child = item.children.find(c => pathname === c.path || pathname.startsWith(c.path));
+        // 가장 긴 경로가 우선 매칭되도록 (/visitors 와 /visitors/sites 구분)
+        const child = item.children
+          .filter(c => pathname === c.path || pathname.startsWith(c.path + '/'))
+          .sort((a, b) => b.path.length - a.path.length)[0]
+          ?? item.children.find(c => pathname === c.path);
         if (child) { setActiveMenu(child.name); return; }
         continue;
       }

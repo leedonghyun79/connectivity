@@ -1,11 +1,112 @@
 'use server';
 
 import prisma from './prisma';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { generateUniqueSlug } from './slug';
 import { revalidateSite } from './revalidate-site';
 import { syncRecentStats } from './sync';
-import { fetchGA4TrafficSources } from './ga4';
+import { fetchGA4TrafficSources, fetchGA4TopSources, fetchGA4TopKeywords, fetchGA4DailyTraffic, fetchGA4RealtimeNow } from './ga4';
+
+// 방문자 지표(GA4) 캐시 태그 — syncAllStats에서 무효화
+const GA4_TRAFFIC_TAG = 'ga4-traffic';
+const GA4_TRAFFIC_TTL_SEC = 300;
+
+type DailyTraffic = { pageViews: number; visitors: number };
+
+/**
+ * GA4에서 날짜 범위의 방문자 지표를 'YYYY-MM-DD' 키로 가져온다. 5분 캐시.
+ * 실패하면 throw — 호출부에서 DB 값으로 대체한다.
+ */
+async function getGA4DailyTraffic(startKey: string, endKey: string): Promise<Record<string, DailyTraffic>> {
+  return unstable_cache(
+    async () => {
+      const map = await fetchGA4DailyTraffic(startKey, endKey);
+      const out: Record<string, DailyTraffic> = {};
+      for (const [ymd, value] of map) {
+        out[`${ymd.slice(0, 4)}-${ymd.slice(4, 6)}-${ymd.slice(6, 8)}`] = value;
+      }
+      return out;
+    },
+    ['ga4-daily-traffic', startKey, endKey],
+    { revalidate: GA4_TRAFFIC_TTL_SEC, tags: [GA4_TRAFFIC_TAG] }
+  )();
+}
+
+/** Date → KST 기준 'YYYY-MM-DD' */
+function kstKey(date: Date) {
+  return new Date(date.getTime() + KST_MS).toISOString().slice(0, 10);
+}
+
+/** 'YYYY-MM-DD' 를 n일 밀기 */
+function shiftKey(key: string, n: number) {
+  return new Date(Date.parse(`${key}T00:00:00Z`) + n * DAY_MS).toISOString().slice(0, 10);
+}
+
+/** 시작~끝(양끝 포함) 날짜 키 목록, 오름차순 */
+function dayKeysBetween(startKey: string, endKey: string) {
+  const keys: string[] = [];
+  for (let k = startKey; k <= endKey; k = shiftKey(k, 1)) keys.push(k);
+  return keys;
+}
+
+type DBDaily = { date: Date; pageViews: number; visitors: number; signups: number; inquiries: number; revenue: unknown };
+
+/**
+ * 날짜별 행 조립: 방문자(pageViews/visitors)는 GA4 값, 가입·문의·매출은 DB 값.
+ * GA4 조회가 실패(null)하면 방문자도 DB 값을 쓴다.
+ */
+function mergeDaily(keys: string[], dbRows: DBDaily[], ga: Record<string, DailyTraffic> | null) {
+  const dbByKey = new Map(dbRows.map(r => [kstKey(r.date), r]));
+  return keys.map(key => {
+    const row = dbByKey.get(key);
+    const traffic = ga
+      ? (ga[key] ?? { pageViews: 0, visitors: 0 })
+      : { pageViews: row?.pageViews ?? 0, visitors: row?.visitors ?? 0 };
+    return {
+      date: new Date(`${key}T00:00:00+09:00`),
+      pageViews: traffic.pageViews,
+      visitors: traffic.visitors,
+      signups: row?.signups ?? 0,
+      inquiries: row?.inquiries ?? 0,
+      revenue: row ? String(row.revenue) : '0',
+    };
+  });
+}
+
+/** 날짜 범위 일별 행 (오름차순) — DB 조회 + GA4 방문자 */
+async function loadDailyRows(startKey: string, endKey: string) {
+  const start = new Date(`${startKey}T00:00:00+09:00`);
+  const end = new Date(new Date(`${endKey}T00:00:00+09:00`).getTime() + DAY_MS - 1);
+  const dbRows = await prisma.dailyStat.findMany({
+    where: { date: { gte: start, lte: end } },
+  });
+  const ga = await getGA4DailyTraffic(startKey, endKey).catch(error => {
+    console.error('GA4 traffic fetch failed, falling back to DB:', error);
+    return null;
+  });
+  return mergeDaily(dayKeysBetween(startKey, endKey), dbRows, ga);
+}
+
+export async function getDailyStats(days = 7) {
+  try {
+    const endKey = kstKey(new Date());
+    const rows = await loadDailyRows(shiftKey(endKey, -(days - 1)), endKey);
+    return rows.reverse();
+  } catch (error) {
+    console.error('Failed to fetch daily stats:', error);
+    return [];
+  }
+}
+
+/** 지금 접속 중 사용자 (최근 30분, 캐시 없이 실시간) */
+export async function getRealtimeNow() {
+  try {
+    return await fetchGA4RealtimeNow();
+  } catch (error) {
+    console.error('Failed to fetch realtime stats:', error);
+    return null;
+  }
+}
 
 /**
  * 고객 관련 액션
@@ -636,22 +737,6 @@ export async function getTransactions() {
   }
 }
 
-export async function getDailyStats(days = 7) {
-  try {
-    const stats = await prisma.dailyStat.findMany({
-      orderBy: { date: 'desc' },
-      take: days
-    });
-    return stats.map(s => ({
-      ...s,
-      revenue: s.revenue.toString()
-    }));
-  } catch (error) {
-    console.error('Failed to fetch daily stats:', error);
-    return [];
-  }
-}
-
 /**
  * 최근 `months`개월의 월별 합계 (KST 기준 월 구분).
  * 방문자는 일별 값의 합이라 같은 사람이 여러 날 방문하면 중복 집계됨.
@@ -709,6 +794,26 @@ export async function getTrafficSources(days = 30) {
   }
 }
 
+// 유입 사이트(소스/매체)별 세션 상위 목록
+export async function getTopSources(days = 30) {
+  try {
+    return { items: await fetchGA4TopSources(days) };
+  } catch (error) {
+    console.error('Failed to fetch top sources:', error);
+    return { items: [] as { source: string; medium: string; sessions: number }[] };
+  }
+}
+
+// 유입 검색어별 세션 상위 목록
+export async function getTopKeywords(days = 30) {
+  try {
+    return { items: await fetchGA4TopKeywords(days) };
+  } catch (error) {
+    console.error('Failed to fetch top keywords:', error);
+    return { items: [] as { keyword: string; sessions: number }[] };
+  }
+}
+
 const DAY_MS = 24 * 60 * 60 * 1000;
 const KST_MS = 9 * 60 * 60 * 1000;
 
@@ -722,11 +827,8 @@ export async function getDailyStatsRange(startDate: string, endDate: string) {
     const days = Math.round((end.getTime() - start.getTime()) / DAY_MS);
     if (days <= 0 || days > 366) return [];
 
-    const stats = await prisma.dailyStat.findMany({
-      where: { date: { gte: start, lte: end } },
-      orderBy: { date: 'desc' },
-    });
-    return stats.map(s => ({ ...s, revenue: s.revenue.toString() }));
+    const rows = await loadDailyRows(startDate, endDate);
+    return rows.reverse();
   } catch (error) {
     console.error('Failed to fetch daily stats range:', error);
     return [];
@@ -740,19 +842,16 @@ export async function getMonthlyStatsRange(startMonth: string, endMonth: string)
   try {
     const [sy, sm] = startMonth.split('-').map(Number);
     const [ey, em] = endMonth.split('-').map(Number);
-    const start = new Date(Date.UTC(sy, sm - 1, 1) - KST_MS);
-    const end = new Date(Date.UTC(ey, em, 1) - KST_MS - 1);
     const months = (ey - sy) * 12 + (em - sm) + 1;
     if (months <= 0 || months > 36) return [];
 
-    const rows = await prisma.dailyStat.findMany({
-      where: { date: { gte: start, lte: end } },
-      orderBy: { date: 'desc' },
-    });
+    const startKey = `${startMonth}-01`;
+    const endKey = new Date(Date.UTC(ey, em, 0)).toISOString().slice(0, 10);
+    const rows = await loadDailyRows(startKey, endKey);
 
     const byMonth = new Map<string, { month: string; pageViews: number; visitors: number; signups: number; inquiries: number; revenue: number }>();
     for (const s of rows) {
-      const month = new Date(s.date.getTime() + KST_MS).toISOString().slice(0, 7);
+      const month = kstKey(s.date).slice(0, 7);
       const m = byMonth.get(month) ?? { month, pageViews: 0, visitors: 0, signups: 0, inquiries: 0, revenue: 0 };
       m.pageViews += s.pageViews;
       m.visitors += s.visitors;
@@ -761,7 +860,7 @@ export async function getMonthlyStatsRange(startMonth: string, endMonth: string)
       m.revenue += Number(s.revenue);
       byMonth.set(month, m);
     }
-    return Array.from(byMonth.values()).map(m => ({ ...m, revenue: m.revenue.toString() }));
+    return Array.from(byMonth.values()).reverse().map(m => ({ ...m, revenue: m.revenue.toString() }));
   } catch (error) {
     console.error('Failed to fetch monthly stats range:', error);
     return [];
@@ -1127,6 +1226,8 @@ export async function updateSystemConfig(data: any) {
 export async function syncAllStats() {
   try {
     await syncRecentStats(30);
+    // 방문자 캐시를 비워서 다음 조회에 GA4 최신값을 가져오게 함
+    revalidateTag(GA4_TRAFFIC_TAG);
     revalidatePath('/');
     return { success: true };
   } catch (error) {

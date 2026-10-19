@@ -49,9 +49,9 @@ export default function VisitorTrendCard() {
         </div>
         <Link
           href="/visitors"
-          className="px-3 py-2 rounded-[8px] text-[10px] font-black uppercase tracking-widest text-[#4B5563] hover:text-[#060606] hover:bg-gray-50 transition-all flex items-center gap-1"
+          className="p-3 bg-gray-50 rounded-[8px] text-[#D1D5DB] group-hover:bg-black group-hover:text-white transition-all duration-300"
         >
-          자세히 보기 <ArrowUpRight size={14} />
+          <ArrowUpRight size={20} />
         </Link>
       </div>
 
