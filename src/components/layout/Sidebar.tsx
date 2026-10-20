@@ -29,10 +29,10 @@ const menuItems = [
   { name: '고객 관리', path: '/customers/page/1', icon: Users, label: '고객 데이터베이스' },
   { name: '견적서 관리', path: '/estimates', icon: FileText, label: '견적 및 발행' },
   {
-    name: '방문자 통계', icon: Eye, label: '트래픽 지표',
+    name: '유입 경로 분석', icon: Eye, label: '트래픽 지표',
     children: [
       { name: '기간별 분석', path: '/visitors', icon: CalendarDays, label: '일별·월별 방문 추이' },
-      { name: '유입 사이트 분석', path: '/visitors/sites', icon: Globe, label: '유입 소스별 세션' },
+      { name: '유입 경로 분석', path: '/visitors/sites', icon: Globe, label: '유입 소스별 세션' },
       { name: '유입 검색어 분석', path: '/visitors/keywords', icon: Search, label: '검색어별 세션' },
     ],
   },

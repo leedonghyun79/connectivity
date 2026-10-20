@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { getTrafficSources } from '@/lib/actions';
-import { PieChart } from 'lucide-react';
+import Link from 'next/link';
+import { PieChart, ArrowUpRight } from 'lucide-react';
 
 const STYLE: Record<string, { color: string; bg: string }> = {
   '구글 검색': { color: '#000000', bg: 'bg-black' },
@@ -71,9 +72,12 @@ export default function TrafficSource() {
           <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">유입 로그</div>
           <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">유입 경로 분석</h3>
         </div>
-        <div className="p-3 bg-gray-50 rounded-[8px] text-[#4B5563] group-hover:text-[#060606] transition-all">
-          <PieChart size={20} />
-        </div>
+        <Link
+          href="/visitors/sites"
+          className="p-3 bg-gray-50 rounded-[8px] text-[#D1D5DB] group-hover:bg-black group-hover:text-white transition-all duration-300"
+        >
+          <ArrowUpRight size={20} />
+        </Link>
       </div>
 
       <div className="relative flex-1">
