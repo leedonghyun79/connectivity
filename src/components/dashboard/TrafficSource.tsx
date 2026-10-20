@@ -98,7 +98,7 @@ export default function TrafficSource() {
                 <div className="w-20 h-1 bg-gray-50 rounded-full overflow-hidden">
                   <div className={`h-full transition-all duration-1000 ${item.bg}`} style={{ width: `${item.value}%` }}></div>
                 </div>
-                <span className="text-sm font-black text-[#060606] w-8 text-right tabular-nums tracking-tighter">{item.value}%</span>
+                <span className="text-sm font-black text-[#060606] min-w-[2rem] whitespace-nowrap text-right tabular-nums tracking-tighter">{item.value}%</span>
               </div>
             </div>
           ))}
