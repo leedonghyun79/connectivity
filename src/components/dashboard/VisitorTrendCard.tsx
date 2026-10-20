@@ -137,7 +137,7 @@ export default function VisitorTrendCard() {
               stroke="#94a3b8"
               strokeWidth={3}
               fill="none"
-              activeDot={{ r: 6, strokeWidth: 0, fill: '#000' }}
+              activeDot={{ r: 4, strokeWidth: 0, fill: '#000' }}
             />
             <Area
               isAnimationActive={false}
@@ -147,7 +147,7 @@ export default function VisitorTrendCard() {
               stroke="#000"
               strokeWidth={3}
               fill="none"
-              activeDot={{ r: 8, strokeWidth: 4, stroke: '#fff', fill: '#000' }}
+              activeDot={{ r: 6, strokeWidth: 0, fill: '#000' }}
             />
           </AreaChart>
             </div>
