@@ -10,11 +10,21 @@ export type TrafficChannel = '구글 검색' | '네이버 검색' | '소셜 미�
 
 let client: BetaAnalyticsDataClient | null = null;
 
+/**
+ * 배포 환경변수에 붙어 들어온 키 형식을 정리한다.
+ * 양끝 따옴표 제거, 문자 그대로의 `\n`(이중 이스케이프 포함)을 실제 줄바꿈으로 변환.
+ * 이게 안 되면 OpenSSL이 PEM을 못 읽어 `DECODER routines::unsupported` 에러가 난다.
+ */
+function normalizePrivateKey(raw: string) {
+  return raw.trim().replace(/^"([\s\S]*)"$/, '$1').replace(/\\+n/g, '\n');
+}
+
 function getClient() {
   if (client) return client;
 
   const clientEmail = process.env.GA4_CLIENT_EMAIL;
-  const privateKey = process.env.GA4_PRIVATE_KEY?.replace(/\\n/g, '\n');
+  const rawKey = process.env.GA4_PRIVATE_KEY;
+  const privateKey = rawKey ? normalizePrivateKey(rawKey) : undefined;
   if (!clientEmail || !privateKey) {
     throw new Error('GA4_CLIENT_EMAIL / GA4_PRIVATE_KEY 환경변수가 없습니다.');
   }

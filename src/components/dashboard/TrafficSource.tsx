@@ -84,7 +84,6 @@ export default function TrafficSource() {
           <div className="absolute inset-5 bg-white rounded-full flex items-center justify-center flex-col border border-[#D1D5DB]">
             <span className="text-[10px] text-[#4B5563] font-black uppercase tracking-widest mb-1">전체 방문</span>
             <span className="text-3xl font-black text-[#060606] tracking-tighter">{totalLabel}</span>
-            <div className="w-8 h-1 bg-black rounded-full mt-2"></div>
           </div>
         </div>
 
