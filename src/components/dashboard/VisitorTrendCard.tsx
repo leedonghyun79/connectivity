@@ -109,8 +109,10 @@ export default function VisitorTrendCard() {
               axisLine={false}
               tickLine={false}
               tickCount={5}
+              tickFormatter={(v: number) => (v >= 1000 ? `${Number((v / 1000).toFixed(1))}k` : String(v))}
             />
             <Tooltip
+              cursor={{ stroke: '#000', strokeWidth: 1, strokeDasharray: '4 4' }}
               contentStyle={{
                 backgroundColor: '#000',
                 borderRadius: '16px',
