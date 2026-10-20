@@ -136,8 +136,7 @@ export default function VisitorTrendCard() {
               name="페이지뷰"
               stroke="#94a3b8"
               strokeWidth={3}
-              fillOpacity={1}
-              fill="url(#dashColorPv)"
+              fill="none"
               activeDot={{ r: 6, strokeWidth: 0, fill: '#000' }}
             />
             <Area
@@ -147,8 +146,7 @@ export default function VisitorTrendCard() {
               name="방문자"
               stroke="#000"
               strokeWidth={3}
-              fillOpacity={1}
-              fill="url(#dashColorVisitor)"
+              fill="none"
               activeDot={{ r: 8, strokeWidth: 4, stroke: '#fff', fill: '#000' }}
             />
           </AreaChart>
