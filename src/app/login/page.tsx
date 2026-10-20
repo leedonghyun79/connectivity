@@ -61,7 +61,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-md bg-white rounded-[8px] p-12 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+      <div className="w-full max-w-md bg-white rounded-[8px] p-12 border border-[#D1D5DB] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         {/* 헤더 */}
         <div className="mb-12 text-center">
           <div className="w-16 h-16 bg-black rounded-[8px] flex items-center justify-center mx-auto mb-6">
@@ -78,43 +78,43 @@ export default function LoginPage() {
         {/* 폼 */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2 group">
-            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 group-focus-within:text-black transition-colors block ml-1">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 group-focus-within:text-[#060606] transition-colors block ml-1">
               아이디 (ID)
             </label>
             <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4B5563]" size={18} />
               <input
                 type="text"
                 placeholder="아이디 입력"
                 value={formData.username}
                 onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
                 className={`w-full pl-12 pr-4 py-4 bg-gray-50 border rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none font-bold text-sm transition-all text-gray-900 placeholder:text-gray-400
-                  ${errors.username ? 'border-red-300 focus:border-red-500' : 'border-transparent focus:border-gray-200'}`}
+                  ${errors.username ? 'border-red-300 focus:border-red-500' : 'border-transparent focus:border-[#D1D5DB]'}`}
               />
             </div>
             {errors.username && <p className="text-xs text-red-500 font-bold ml-1 mt-1">{errors.username}</p>}
           </div>
 
           <div className="space-y-2 group">
-            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 group-focus-within:text-black transition-colors block ml-1">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 group-focus-within:text-[#060606] transition-colors block ml-1">
               비밀번호 (PASSWORD)
             </label>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={18} />
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4B5563]" size={18} />
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="비밀번호 입력"
                 value={formData.password}
                 onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                 className={`w-full pl-12 pr-12 py-4 bg-gray-50 border rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none font-bold text-sm transition-all text-gray-900 placeholder:text-gray-400
-                  ${errors.password ? 'border-red-300 focus:border-red-500' : 'border-transparent focus:border-gray-200'}`}
+                  ${errors.password ? 'border-red-300 focus:border-red-500' : 'border-transparent focus:border-[#D1D5DB]'}`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#4B5563] hover:text-gray-500 transition-colors"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
               </button>
             </div>
             {errors.password && <p className="text-xs text-red-500 font-bold ml-1 mt-1">{errors.password}</p>}

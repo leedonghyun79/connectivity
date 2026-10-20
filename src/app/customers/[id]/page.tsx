@@ -21,7 +21,7 @@ const statusLabel: Record<string, string> = {
 const statusStyle: Record<string, string> = {
   pending: 'bg-orange-50 text-orange-600 border-orange-100',
   processing: 'bg-black text-white border-black',
-  closed: 'bg-gray-50 text-gray-400 border-gray-200',
+  closed: 'bg-gray-50 text-gray-400 border-[#D1D5DB]',
 };
 const projectStatusLabel: Record<string, string> = {
   PENDING: '대기', PROGRESS: '진행', REST: '일시정지', COMPLETED: '완료',
@@ -29,8 +29,8 @@ const projectStatusLabel: Record<string, string> = {
 const projectStatusStyle: Record<string, string> = {
   PENDING: 'bg-orange-50 text-orange-600 border-orange-100',
   PROGRESS: 'bg-black text-white border-black',
-  REST: 'bg-gray-50 text-gray-400 border-gray-200',
-  COMPLETED: 'bg-gray-100 text-gray-500 border-gray-200',
+  REST: 'bg-gray-50 text-gray-400 border-[#D1D5DB]',
+  COMPLETED: 'bg-gray-100 text-gray-500 border-[#D1D5DB]',
 };
 
 export default function CustomerDetailPage() {
@@ -73,7 +73,7 @@ export default function CustomerDetailPage() {
     }
   };
 
-  if (isLoading) return <PageLoader />;
+  if (isLoading) return <PageLoader variant="generic" />;
   if (!customer) return null;
 
   const tabs = [
@@ -105,7 +105,7 @@ export default function CustomerDetailPage() {
       />
 
       {/* 헤더 섹션 - 데코 추가 */}
-      <div className="relative group overflow-hidden bg-white p-10 rounded-[8px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.02)]">
+      <div className="relative group overflow-hidden bg-white p-10 rounded-[8px] border border-[#D1D5DB] shadow-[0_40px_100px_rgba(0,0,0,0.02)]">
         <div className="absolute top-0 right-0 p-12 opacity-[0.02] pointer-events-none select-none">
           <div className="text-[120px] font-black italic tracking-tighter leading-none uppercase">IDENTITY</div>
         </div>
@@ -114,7 +114,7 @@ export default function CustomerDetailPage() {
           <div>
             <Link
               href="/customers/page/1"
-              className="inline-flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-black transition-all mb-6 group/back"
+              className="inline-flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-[#060606] transition-all mb-6 group/back"
             >
               <ArrowLeft size={12} className="group-hover/back:-translate-x-1 transition-transform" />
               목록으로 복귀
@@ -122,8 +122,8 @@ export default function CustomerDetailPage() {
             <h1 className="text-6xl font-black text-gray-900 tracking-tighter uppercase leading-none">{customer.name}</h1>
             <div className="flex flex-wrap items-center gap-4 mt-6">
               {customer.company && (
-                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-[8px] border border-gray-100 text-[11px] font-bold text-gray-500">
-                  <Building2 size={13} className="text-black" />
+                <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-[8px] border border-[#D1D5DB] text-[11px] font-bold text-gray-500">
+                  <Building2 size={13} className="text-[#060606]" />
                   {customer.company}
                 </div>
               )}
@@ -155,13 +155,13 @@ export default function CustomerDetailPage() {
       {/* 정보 메트릭스 그리드 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* 연락처 & 채널 */}
-        <div className="md:col-span-1 bg-white p-10 rounded-[8px] border border-gray-100 relative overflow-hidden group">
+        <div className="md:col-span-1 bg-white p-10 rounded-[8px] border border-[#D1D5DB] relative overflow-hidden group">
           <Phone className="absolute -bottom-6 -right-6 text-gray-50 opacity-[0.05] group-hover:scale-110 transition-transform duration-700" size={140} />
-          <h3 className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-8 border-b pb-4">커뮤니케이션 채널</h3>
+          <h3 className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-8 border-b pb-4">커뮤니케이션 채널</h3>
           <div className="space-y-6 relative z-10">
             <div>
               <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">대표 연락처</label>
-              <div className="flex items-center gap-3 text-lg font-black text-black">
+              <div className="flex items-center gap-3 text-lg font-black text-[#060606]">
                 <div className="w-8 h-8 bg-gray-50 rounded-[8px] flex items-center justify-center">
                   <Phone size={14} />
                 </div>
@@ -170,7 +170,7 @@ export default function CustomerDetailPage() {
             </div>
             <div>
               <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">이메일 주소</label>
-              <div className="flex items-center gap-3 text-sm font-black text-black truncate">
+              <div className="flex items-center gap-3 text-sm font-black text-[#060606] truncate">
                 <div className="w-8 h-8 bg-gray-50 rounded-[8px] flex items-center justify-center">
                   <Mail size={14} />
                 </div>
@@ -206,20 +206,20 @@ export default function CustomerDetailPage() {
         </div>
 
         {/* 라이프사이클 */}
-        <div className="md:col-span-1 bg-white p-10 rounded-[8px] border border-gray-100 relative overflow-hidden group">
+        <div className="md:col-span-1 bg-white p-10 rounded-[8px] border border-[#D1D5DB] relative overflow-hidden group">
           <Clock className="absolute -bottom-6 -right-6 text-gray-50 opacity-[0.05] group-hover:scale-110 transition-transform duration-700" size={140} />
-          <h3 className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-8 border-b pb-4">파트너십 타임라인</h3>
+          <h3 className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-8 border-b pb-4">파트너십 타임라인</h3>
           <div className="space-y-6 relative z-10">
             <div>
               <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">최초 등록일</label>
-              <div className="text-2xl font-black text-black font-mono tracking-tighter">
+              <div className="text-2xl font-black text-[#060606] font-mono tracking-tighter">
                 {fmt(customer.createdAt)}
               </div>
             </div>
             <div className="flex items-center gap-4 pt-4">
               <div className="flex-1">
                 <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">협력 기간</div>
-                <div className="text-sm font-black text-black">
+                <div className="text-sm font-black text-[#060606]">
                   {Math.floor((Date.now() - new Date(customer.createdAt).getTime()) / (1000 * 60 * 60 * 24))}일째
                 </div>
               </div>
@@ -238,7 +238,7 @@ export default function CustomerDetailPage() {
 
       {/* 메인 콘텐츠 영역 (탭) */}
       <div className="space-y-6">
-        <div className="flex items-center gap-8 border-b border-gray-100 px-6">
+        <div className="flex items-center gap-8 border-b border-[#D1D5DB] px-6">
           {tabs.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -247,13 +247,13 @@ export default function CustomerDetailPage() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`relative py-6 flex items-center gap-3 transition-all group
-                  ${isActive ? 'text-black' : 'text-gray-300 hover:text-gray-500'}`}
+                  ${isActive ? 'text-[#060606]' : 'text-[#4B5563] hover:text-gray-500'}`}
               >
-                <Icon size={16} className={isActive ? 'text-black' : 'text-gray-200 group-hover:text-gray-400'} />
+                <Icon size={16} className={isActive ? 'text-[#060606]' : 'text-gray-200 group-hover:text-gray-400'} />
                 <span className="text-[12px] font-black uppercase tracking-widest">{tab.label}</span>
                 {tab.count > 0 && (
                   <span className={`text-[9px] font-black px-2 py-0.5 rounded-full transition-colors
-                    ${isActive ? 'bg-black text-white' : 'bg-gray-50 text-gray-300 group-hover:bg-gray-100'}`}>
+                    ${isActive ? 'bg-black text-white' : 'bg-gray-50 text-[#4B5563] group-hover:bg-gray-100'}`}>
                     {tab.count}
                   </span>
                 )}
@@ -266,13 +266,13 @@ export default function CustomerDetailPage() {
         </div>
 
         {/* 탭 콘텐츠 */}
-        <div className="bg-white rounded-[8px] border border-gray-100 shadow-[0_20px_60px_rgba(0,0,0,0.01)] min-h-[400px]">
+        <div className="bg-white rounded-[8px] border border-[#D1D5DB] shadow-[0_20px_60px_rgba(0,0,0,0.01)] min-h-[400px]">
           {/* 프로젝트 탭 */}
           {activeTab === 'projects' && (
             (customer.projects || []).length === 0 ? (
               <EmptyState icon={<FolderOpen size={48} />} message="연결된 프로젝트 데이터가 없습니다." />
             ) : (
-              <div className="divide-y divide-gray-50 p-4">
+              <div className="divide-y divide-[#D1D5DB] p-4">
                 {(customer.projects || []).map((project: any) => (
                   <div key={project.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[8px] transition-all group">
                     <div className="flex items-center gap-6">
@@ -285,7 +285,7 @@ export default function CustomerDetailPage() {
                           <div className="text-[11px] font-bold text-gray-400 mt-1">{project.description}</div>
                         )}
                         <div className="flex items-center gap-2 mt-2">
-                          <Clock size={12} className="text-gray-300" />
+                          <Clock size={12} className="text-[#4B5563]" />
                           <span className="text-[10px] font-black text-gray-400 font-mono">
                             {project.startDate ? fmt(project.startDate) : 'N/A'}
                             {project.endDate && ` — ${fmt(project.endDate)}`}
@@ -309,7 +309,7 @@ export default function CustomerDetailPage() {
             (customer.estimates || []).length === 0 ? (
               <EmptyState icon={<FileText size={48} />} message="발행된 견적서 자산이 없습니다." />
             ) : (
-              <div className="divide-y divide-gray-50 p-4">
+              <div className="divide-y divide-[#D1D5DB] p-4">
                 {(customer.estimates || []).map((est: any) => (
                   <div key={est.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[8px] transition-all group">
                     <div className="flex items-center gap-6">
@@ -322,7 +322,7 @@ export default function CustomerDetailPage() {
                           <span className="text-[10px] font-black text-gray-400 font-mono tracking-widest bg-gray-50 px-2 py-0.5 rounded">
                             {est.estimateNum || est.id.substring(0, 8).toUpperCase()}
                           </span>
-                          <span className="text-[10px] text-gray-300">|</span>
+                          <span className="text-[10px] text-[#4B5563]">|</span>
                           <span className="text-[10px] font-bold text-gray-400">
                             {est.issueDate && fmt(est.issueDate)} 발행
                           </span>
@@ -331,9 +331,9 @@ export default function CustomerDetailPage() {
                     </div>
                     <div className="flex items-center gap-8">
                       <div className="text-right">
-                        <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">Estimated Amount</div>
-                        <div className="text-2xl font-black text-black tracking-tighter">
-                          {Number(est.amount).toLocaleString()} <span className="text-xs text-gray-300 font-normal ml-1">₩</span>
+                        <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">Estimated Amount</div>
+                        <div className="text-2xl font-black text-[#060606] tracking-tighter">
+                          {Number(est.amount).toLocaleString()} <span className="text-xs text-[#4B5563] font-normal ml-1">₩</span>
                         </div>
                       </div>
                       <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-[8px] border ${
@@ -356,7 +356,7 @@ export default function CustomerDetailPage() {
             (customer.transactions || []).length === 0 ? (
               <EmptyState icon={<Banknote size={48} />} message="확인된 거래 내역이 없습니다." />
             ) : (
-              <div className="divide-y divide-gray-50 p-4">
+              <div className="divide-y divide-[#D1D5DB] p-4">
                 {(customer.transactions || []).map((tx: any) => (
                   <div key={tx.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[8px] transition-all group">
                     <div className="flex items-center gap-6">
@@ -373,13 +373,13 @@ export default function CustomerDetailPage() {
                     </div>
                     <div className="flex items-center gap-8">
                       <div className="text-right">
-                        <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">Settled Amount</div>
+                        <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">Settled Amount</div>
                         <div className="text-2xl font-black text-blue-600 tracking-tighter">
                           {Number(tx.amount).toLocaleString()} <span className="text-xs text-blue-300 font-normal ml-1">₩</span>
                         </div>
                       </div>
                       <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-[8px] border ${
-                        tx.status === 'completed' ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-400 border-gray-200'
+                        tx.status === 'completed' ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-400 border-[#D1D5DB]'
                       }`}>
                         {tx.status === 'completed' ? '정산 완료' : '진행 중'}
                       </span>
@@ -395,7 +395,7 @@ export default function CustomerDetailPage() {
             (customer.inquiries || []).length === 0 ? (
               <EmptyState icon={<MessageSquare size={48} />} message="등록된 CS 인콰이어리가 없습니다." />
             ) : (
-              <div className="divide-y divide-gray-50 p-4">
+              <div className="divide-y divide-[#D1D5DB] p-4">
                 {(customer.inquiries || []).map((inq: any) => (
                   <div key={inq.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[8px] transition-all group">
                     <div className="flex-1 min-w-0 pr-8">
@@ -404,7 +404,7 @@ export default function CustomerDetailPage() {
                         <div className="text-lg font-black text-gray-900 truncate">{inq.title}</div>
                       </div>
                       <div className="text-[11px] text-gray-400 font-bold line-clamp-1">{inq.content}</div>
-                      <div className="text-[10px] font-black text-gray-300 mt-2 uppercase tracking-widest">
+                      <div className="text-[10px] font-black text-[#4B5563] mt-2 uppercase tracking-widest">
                         Received at {fmt(inq.createdAt, true)}
                       </div>
                     </div>
@@ -448,7 +448,7 @@ function EmptyState({ icon, message }: { icon: React.ReactNode; message: string 
       <div className="w-20 h-20 bg-gray-50 rounded-[8px] flex items-center justify-center text-gray-200 mb-6 group-hover:scale-110 transition-transform">
         {icon}
       </div>
-      <p className="text-[11px] font-black uppercase tracking-[0.3em] text-gray-300">{message}</p>
+      <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#4B5563]">{message}</p>
     </div>
   );
 }

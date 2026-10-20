@@ -105,11 +105,11 @@ export default function InquiryDetailModal({
       {/* 모달 */}
       <div className="relative bg-white rounded-[8px] w-full max-w-2xl shadow-[0_60px_120px_rgba(0,0,0,0.25)] animate-in fade-in zoom-in-95 duration-300 overflow-hidden flex flex-col max-h-[90vh]">
         {/* 헤더 */}
-        <div className="px-10 pt-10 pb-6 border-b border-gray-50 flex-shrink-0">
+        <div className="px-10 pt-10 pb-6 border-b border-[#D1D5DB] flex-shrink-0">
           <div className="flex justify-between items-start gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3 mb-3">
-                <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-gray-50 text-gray-400 rounded-[8px] border border-gray-100">
+                <span className="text-[9px] font-black uppercase tracking-widest px-3 py-1 bg-gray-50 text-gray-400 rounded-[8px] border border-[#D1D5DB]">
                   {inquiry.type || '일반'}
                 </span>
                 <span className={`inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${
@@ -128,7 +128,7 @@ export default function InquiryDetailModal({
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-[8px] text-gray-300 hover:text-black hover:bg-gray-100 transition-all flex-shrink-0"
+              className="p-2 rounded-[8px] text-[#4B5563] hover:text-[#060606] hover:bg-gray-100 transition-all flex-shrink-0"
             >
               <X size={20} />
             </button>
@@ -141,13 +141,13 @@ export default function InquiryDetailModal({
           <div className="grid grid-cols-2 gap-4">
             <div className="p-5 bg-gray-50 rounded-[8px]">
               <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">문의자</div>
-              <div className="text-sm font-black text-black">
+              <div className="text-sm font-black text-[#060606]">
                 {inquiry.authorName || inquiry.customer?.name || '익명'}
               </div>
             </div>
             <div className="p-5 bg-gray-50 rounded-[8px]">
               <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">접수 일시</div>
-              <div className="text-sm font-black text-black font-mono">
+              <div className="text-sm font-black text-[#060606] font-mono">
                 {fmt(inquiry.createdAt)}
               </div>
             </div>
@@ -156,7 +156,7 @@ export default function InquiryDetailModal({
                 <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">이메일</div>
                 <a
                   href={`mailto:${inquiry.authorEmail}`}
-                  className="text-sm font-black text-black underline break-all"
+                  className="text-sm font-black text-[#060606] underline break-all"
                 >
                   {inquiry.authorEmail}
                 </a>
@@ -165,7 +165,7 @@ export default function InquiryDetailModal({
             {inquiry.authorPhone && (
               <div className="p-5 bg-gray-50 rounded-[8px]">
                 <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">연락처</div>
-                <div className="text-sm font-black text-black font-mono">
+                <div className="text-sm font-black text-[#060606] font-mono">
                   {inquiry.authorPhone}
                 </div>
               </div>
@@ -178,13 +178,13 @@ export default function InquiryDetailModal({
               <div className="w-1.5 h-4 bg-gray-200 rounded-full"></div>
               <div className="text-[10px] font-black text-gray-900 uppercase tracking-widest">문의 상세 내용</div>
             </div>
-            <div className="p-6 bg-white border border-gray-100 rounded-[8px] text-sm font-medium text-gray-700 leading-relaxed whitespace-pre-wrap">
+            <div className="p-6 bg-white border border-[#D1D5DB] rounded-[8px] text-sm font-medium text-gray-700 leading-relaxed whitespace-pre-wrap">
               {inquiry.content}
             </div>
           </div>
 
           {/* 답변 작성 영역 */}
-          <div className="pt-4 border-t border-gray-50">
+          <div className="pt-4 border-t border-[#D1D5DB]">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <div className="w-1.5 h-4 bg-black rounded-full"></div>
@@ -203,7 +203,7 @@ export default function InquiryDetailModal({
                 placeholder="고객님의 문의에 대한 답변을 입력해주세요..."
                 className="w-full min-h-[160px] p-6 bg-gray-50 border border-transparent rounded-[8px] focus:bg-white focus:border-black/10 focus:ring-4 focus:ring-black/5 outline-none text-sm font-medium text-gray-800 transition-all resize-none leading-relaxed"
               />
-              <div className="absolute bottom-4 right-4 text-[9px] font-black text-gray-300 uppercase tracking-widest">
+              <div className="absolute bottom-4 right-4 text-[9px] font-black text-[#4B5563] uppercase tracking-widest">
                 {answer.length} characters
               </div>
             </div>
@@ -211,7 +211,7 @@ export default function InquiryDetailModal({
         </div>
 
         {/* 액션 버튼 */}
-        <div className="px-10 py-8 border-t border-gray-50 flex items-center justify-between gap-4 flex-shrink-0">
+        <div className="px-10 py-8 border-t border-[#D1D5DB] flex items-center justify-between gap-4 flex-shrink-0">
           <button
             onClick={handleDelete}
             disabled={isUpdating}
@@ -224,7 +224,7 @@ export default function InquiryDetailModal({
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="px-6 py-3 text-[11px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 rounded-[8px] hover:bg-gray-50 transition-all"
+              className="px-6 py-3 text-[11px] font-black uppercase tracking-widest text-gray-400 border border-[#D1D5DB] rounded-[8px] hover:bg-gray-50 transition-all"
             >
               닫기
             </button>

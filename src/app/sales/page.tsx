@@ -8,6 +8,7 @@ import { DollarSign, TrendingUp, CreditCard, Download, Activity, Calendar, Arrow
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import PageLoader from '@/components/common/PageLoader';
+import Pagination, { PAGE_SIZE } from '@/components/common/Pagination';
 import { getTransactions, getSalesStats } from '@/lib/actions';
 import TransactionModal from '@/components/modals/TransactionModal';
 import { Plus } from 'lucide-react';
@@ -19,6 +20,7 @@ export default function SalesPage() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'pending'>('all');
+  const [txPage, setTxPage] = useState(1);
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
 
   const fetchData = useCallback(async () => {
@@ -36,7 +38,16 @@ export default function SalesPage() {
     fetchData();
   }, [fetchData]);
 
-  if (isLoading || !stats) return <PageLoader />;
+  // 필터가 바뀌면 첫 페이지로
+  useEffect(() => {
+    setTxPage(1);
+  }, [filterStatus]);
+
+  const filteredTx = transactions.filter(tx => filterStatus === 'all' || tx.status === filterStatus);
+  const txTotalPages = Math.max(1, Math.ceil(filteredTx.length / PAGE_SIZE));
+  const pageTx = filteredTx.slice((txPage - 1) * PAGE_SIZE, txPage * PAGE_SIZE);
+
+  if (isLoading || !stats) return <PageLoader title="매출 통계 분석" variant="sales" />;
 
   const COLORS = ['#000000', '#333333', '#666666', '#999999', '#CCCCCC', '#E5E5E5'];
   
@@ -79,14 +90,14 @@ export default function SalesPage() {
         <div>
           <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">매출 통계 분석</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
-            <TrendingUp size={14} className="text-black" />
-            실시간 재무 지표 및 매출 흐름을 모니터링합니다. <span className="text-black uppercase">2026 회계연도 </span>
+            <TrendingUp size={14} className="text-[#060606]" />
+            실시간 재무 지표 및 매출 흐름을 모니터링합니다. <span className="text-[#060606] uppercase">2026 회계연도 </span>
           </p>
         </div>
         <div className="flex gap-4">
           <button 
             onClick={downloadCSV}
-            className="px-6 py-3 bg-white border border-gray-100 rounded-[8px] text-[11px] font-black text-black uppercase tracking-widest hover:bg-black hover:text-white transition-all flex items-center gap-2 active:scale-95">
+            className="px-6 py-3 bg-white border border-[#D1D5DB] rounded-[8px] text-[11px] font-black text-[#060606] uppercase tracking-widest hover:bg-black hover:text-white transition-all flex items-center gap-2 active:scale-95">
             <Download size={16} />
             리포트 추출
           </button>
@@ -128,21 +139,28 @@ export default function SalesPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* 월별 매출 그래프 */}
-        <div className="lg:col-span-2 bg-white p-10 rounded-[8px] border border-gray-100 h-[480px] flex flex-col group">
+        <div className="lg:col-span-2 bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-[480px] flex flex-col group">
           <div className="flex justify-between items-start mb-8">
             <div>
-              <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">기간별 성장</div>
-              <h3 className="text-2xl font-black text-black uppercase tracking-tighter">월별 매출 흐름</h3>
+              <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">기간별 성장</div>
+              <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">월별 매출 흐름</h3>
             </div>
-            <button className="p-3 bg-gray-50 rounded-[8px] text-gray-300 group-hover:text-black group-hover:bg-black group-hover:text-white transition-all">
+            <button className="p-3 bg-gray-50 rounded-[8px] text-[#D1D5DB] group-hover:bg-black group-hover:text-white transition-all">
               <ArrowUpRight size={20} />
             </button>
           </div>
           <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center">
             {!stats.monthlySales || stats.monthlySales.every((m: any) => m.amount === 0) ? (
-              <div className="flex flex-col items-center gap-2 opacity-20">
-                <Activity size={40} />
-                <span className="text-[10px] font-black uppercase tracking-widest">수집된 성장 데이터가 없습니다</span>
+              <div className="relative w-full h-[220px]">
+                <div className="h-full flex items-end gap-2 pb-4 blur-[5px] opacity-60">
+                  {[45, 70, 55, 85, 60, 75].map((height, i) => (
+                    <div key={i} className="flex-1 bg-gray-100 rounded-t-lg" style={{ height: `${height}%` }} />
+                  ))}
+                </div>
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-[#D1D5DB]">
+                  <Activity size={40} />
+                  <span className="text-[10px] font-black uppercase tracking-widest">수집된 성장 데이터가 없습니다</span>
+                </div>
               </div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
@@ -156,7 +174,7 @@ export default function SalesPage() {
                     itemStyle={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase' }}
                     labelStyle={{ display: 'none' }}
                   />
-                  <Bar dataKey="amount" fill="#000000" radius={[12, 12, 0, 0]} barSize={40} />
+                  <Bar dataKey="amount" fill="#000000" radius={[12, 12, 0, 0]} barSize={40} isAnimationActive={false} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -164,13 +182,13 @@ export default function SalesPage() {
         </div>
 
         {/* 서비스 비중 차트 */}
-        <div className="bg-white p-10 rounded-[8px] border border-gray-100 h-[480px] flex flex-col group">
+        <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-[480px] flex flex-col group">
           <div className="flex justify-between items-start mb-10">
             <div>
-              <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">자산 구성</div>
-              <h3 className="text-2xl font-black text-black uppercase tracking-tighter">서비스 비중</h3>
+              <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">자산 구성</div>
+              <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">서비스 비중</h3>
             </div>
-            <div className="p-3 bg-gray-50 rounded-[8px] text-gray-300 group-hover:text-black transition-all">
+            <div className="p-3 bg-gray-50 rounded-[8px] text-[#4B5563] group-hover:text-[#060606] transition-all">
               <PieIcon size={20} />
             </div>
           </div>
@@ -208,11 +226,11 @@ export default function SalesPage() {
       </div>
 
       {/* 최근 거래 목록 */}
-      <div className="bg-white rounded-[8px] border border-gray-100 overflow-hidden">
-        <div className="px-10 py-8 border-b border-gray-50 flex justify-between items-end">
+      <div className="bg-white rounded-[8px] border border-[#D1D5DB] overflow-hidden">
+        <div className="px-10 py-8 border-b border-[#D1D5DB] flex justify-between items-end">
           <div>
             <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">거래 히스토리</div>
-            <h3 className="text-2xl font-black text-black uppercase tracking-tighter">전체 거래 내역</h3>
+            <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">전체 거래 내역</h3>
           </div>
           <div className="flex gap-4">
             <button 
@@ -239,46 +257,45 @@ export default function SalesPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50/30">
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">거래 참조 번호</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">책임 당사자</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-right">거래 금액</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">상태</th>
-                <th className="px-10 py-6 uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-center">프로토콜 날짜</th>
+              <tr className="bg-gray-50/30 h-[84px]">
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">거래 참조 번호</th>
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">책임 당사자</th>
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left">거래 금액</th>
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left">상태</th>
+                <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left">프로토콜 날짜</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-[#D1D5DB]">
               {transactions && transactions.length > 0 ? (
-                transactions
-                  .filter(tx => filterStatus === 'all' || tx.status === filterStatus)
+                pageTx
                   .map((tx) => (
                   <tr key={tx.id} className="hover:bg-gray-50/50 transition-all group">
-                    <td className="px-10 py-8 font-mono font-bold text-gray-300 group-hover:text-black transition-colors">
+                    <td className="px-10 py-8 font-mono font-bold text-[#4B5563] group-hover:text-[#060606] transition-colors">
                       #{tx.id.substring(0, 8).toUpperCase()}
                     </td>
                     <td className="px-10 py-8">
                       <div className="font-black text-gray-900 uppercase tracking-tight">{tx.customerName || tx.customer?.name}</div>
                     </td>
-                    <td className="px-10 py-8 text-right font-black text-black text-lg">
-                      {Number(tx.amount).toLocaleString()} <span className="text-xs text-gray-300">₩</span>
+                    <td className="px-10 py-8 text-left font-black text-[#060606] text-lg">
+                      {Number(tx.amount).toLocaleString()} <span className="text-xs text-[#4B5563]">₩</span>
                     </td>
-                    <td className="px-10 py-8 text-center">
+                    <td className="px-10 py-8 text-left">
                       <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border
-                        ${tx.status === 'completed' ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-400 border-gray-200'}`}>
+                        ${tx.status === 'completed' ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-400 border-[#D1D5DB]'}`}>
                         {tx.status === 'completed' ? '정산 완료' : '대기 중'}
                       </span>
                     </td>
-                    <td className="px-10 py-8 text-center text-gray-400 font-mono text-xs font-bold">
+                    <td className="px-10 py-8 text-left text-gray-400 font-mono text-xs font-bold">
                       {fmt(tx.date)}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="py-32 text-center">
-                    <div className="flex flex-col items-center gap-4 opacity-10">
+                  <td colSpan={5} className="py-32 text-left">
+                    <div className="flex flex-col items-center gap-4 text-[#D1D5DB]">
                       <CreditCard size={40} />
-                      <span className="text-[10px] font-black uppercase tracking-[0.3em]">수집된 거래 데이터가 없습니다</span>
+                      <span className="text-[#D1D5DB] text-[10px] font-black uppercase tracking-[0.3em]">수집된 거래 데이터가 없습니다</span>
                     </div>
                   </td>
                 </tr>
@@ -286,6 +303,11 @@ export default function SalesPage() {
             </tbody>
           </table>
         </div>
+        {txTotalPages > 1 && (
+          <div className="px-10 py-6 border-t border-[#D1D5DB]">
+            <Pagination page={txPage} totalPages={txTotalPages} onPageChange={setTxPage} />
+          </div>
+        )}
       </div>
 
       <TransactionModal
@@ -301,21 +323,21 @@ export default function SalesPage() {
 function MetricCard({ title, value, unit, trend, icon: Icon, black, highlight }: any) {
   return (
     <div className={`p-8 rounded-[8px] border transition-all duration-500 relative overflow-hidden group
-        ${black ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-100'}
+        ${black ? 'bg-black text-white border-black' : 'bg-white text-[#060606] border-[#D1D5DB]'}
         ${highlight ? 'border-l-4 border-l-black' : ''}`}>
 
       <div className="flex justify-between items-start mb-6">
-        <div className={`text-[10px] font-black uppercase tracking-widest group-hover:tracking-[0.2em] transition-all ${black ? 'text-gray-500' : 'text-gray-300'}`}>
+        <div className={`text-[10px] font-black uppercase tracking-widest group-hover:tracking-[0.2em] transition-all ${black ? 'text-gray-500' : 'text-[#4B5563]'}`}>
           {title}
         </div>
-        <div className={`p-2 rounded-[8px] transition-colors ${black ? 'bg-white/10 text-white' : 'bg-gray-50 text-gray-300 group-hover:text-black'}`}>
+        <div className={`p-2 rounded-[8px] transition-colors ${black ? 'bg-white/10 text-white' : 'bg-gray-50 text-[#4B5563] group-hover:text-[#060606]'}`}>
           <Icon size={18} />
         </div>
       </div>
 
       <div className="flex items-end gap-2">
         <div className="text-3xl font-black tracking-tighter">{value}</div>
-        <div className={`text-[10px] font-bold mb-1.5 uppercase tracking-widest ${black ? 'text-gray-500' : 'text-gray-300'}`}>
+        <div className={`text-[10px] font-bold mb-1.5 uppercase tracking-widest ${black ? 'text-gray-500' : 'text-[#4B5563]'}`}>
           {unit}
         </div>
       </div>

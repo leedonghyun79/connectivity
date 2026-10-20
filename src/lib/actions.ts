@@ -1,9 +1,102 @@
 'use server';
 
 import prisma from './prisma';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { generateUniqueSlug } from './slug';
 import { revalidateSite } from './revalidate-site';
+import { syncRecentStats } from './sync';
+import { fetchGA4TrafficSources, fetchGA4TopSources, fetchGA4TopKeywords, fetchGA4DailyTraffic } from './ga4';
+
+// 방문자 지표(GA4) 캐시 태그 — syncAllStats에서 무효화
+const GA4_TRAFFIC_TAG = 'ga4-traffic';
+const GA4_TRAFFIC_TTL_SEC = 300;
+
+type DailyTraffic = { pageViews: number; visitors: number };
+
+/**
+ * GA4에서 날짜 범위의 방문자 지표를 'YYYY-MM-DD' 키로 가져온다. 5분 캐시.
+ * 실패하면 throw — 호출부에서 DB 값으로 대체한다.
+ */
+async function getGA4DailyTraffic(startKey: string, endKey: string): Promise<Record<string, DailyTraffic>> {
+  return unstable_cache(
+    async () => {
+      const map = await fetchGA4DailyTraffic(startKey, endKey);
+      const out: Record<string, DailyTraffic> = {};
+      for (const [ymd, value] of map) {
+        out[`${ymd.slice(0, 4)}-${ymd.slice(4, 6)}-${ymd.slice(6, 8)}`] = value;
+      }
+      return out;
+    },
+    ['ga4-daily-traffic', startKey, endKey],
+    { revalidate: GA4_TRAFFIC_TTL_SEC, tags: [GA4_TRAFFIC_TAG] }
+  )();
+}
+
+/** Date → KST 기준 'YYYY-MM-DD' */
+function kstKey(date: Date) {
+  return new Date(date.getTime() + KST_MS).toISOString().slice(0, 10);
+}
+
+/** 'YYYY-MM-DD' 를 n일 밀기 */
+function shiftKey(key: string, n: number) {
+  return new Date(Date.parse(`${key}T00:00:00Z`) + n * DAY_MS).toISOString().slice(0, 10);
+}
+
+/** 시작~끝(양끝 포함) 날짜 키 목록, 오름차순 */
+function dayKeysBetween(startKey: string, endKey: string) {
+  const keys: string[] = [];
+  for (let k = startKey; k <= endKey; k = shiftKey(k, 1)) keys.push(k);
+  return keys;
+}
+
+type DBDaily = { date: Date; pageViews: number; visitors: number; signups: number; inquiries: number; revenue: unknown };
+
+/**
+ * 날짜별 행 조립: 방문자(pageViews/visitors)는 GA4 값, 가입·문의·매출은 DB 값.
+ * GA4 조회가 실패(null)하면 방문자도 DB 값을 쓴다.
+ */
+function mergeDaily(keys: string[], dbRows: DBDaily[], ga: Record<string, DailyTraffic> | null) {
+  const dbByKey = new Map(dbRows.map(r => [kstKey(r.date), r]));
+  return keys.map(key => {
+    const row = dbByKey.get(key);
+    const traffic = ga
+      ? (ga[key] ?? { pageViews: 0, visitors: 0 })
+      : { pageViews: row?.pageViews ?? 0, visitors: row?.visitors ?? 0 };
+    return {
+      date: new Date(`${key}T00:00:00+09:00`),
+      pageViews: traffic.pageViews,
+      visitors: traffic.visitors,
+      signups: row?.signups ?? 0,
+      inquiries: row?.inquiries ?? 0,
+      revenue: row ? String(row.revenue) : '0',
+    };
+  });
+}
+
+/** 날짜 범위 일별 행 (오름차순) — DB 조회 + GA4 방문자 */
+async function loadDailyRows(startKey: string, endKey: string) {
+  const start = new Date(`${startKey}T00:00:00+09:00`);
+  const end = new Date(new Date(`${endKey}T00:00:00+09:00`).getTime() + DAY_MS - 1);
+  const dbRows = await prisma.dailyStat.findMany({
+    where: { date: { gte: start, lte: end } },
+  });
+  const ga = await getGA4DailyTraffic(startKey, endKey).catch(error => {
+    console.error('GA4 traffic fetch failed, falling back to DB:', error);
+    return null;
+  });
+  return mergeDaily(dayKeysBetween(startKey, endKey), dbRows, ga);
+}
+
+export async function getDailyStats(days = 7) {
+  try {
+    const endKey = kstKey(new Date());
+    const rows = await loadDailyRows(shiftKey(endKey, -(days - 1)), endKey);
+    return rows.reverse();
+  } catch (error) {
+    console.error('Failed to fetch daily stats:', error);
+    return [];
+  }
+}
 
 /**
  * 고객 관련 액션
@@ -634,18 +727,132 @@ export async function getTransactions() {
   }
 }
 
-export async function getDailyStats() {
+/**
+ * 최근 `months`개월의 월별 합계 (KST 기준 월 구분).
+ * 방문자는 일별 값의 합이라 같은 사람이 여러 날 방문하면 중복 집계됨.
+ */
+export async function getMonthlyStats(months = 12) {
   try {
-    const stats = await prisma.dailyStat.findMany({
+    const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+    const kstNow = new Date(Date.now() + KST_OFFSET_MS);
+    const start = new Date(
+      Date.UTC(kstNow.getUTCFullYear(), kstNow.getUTCMonth() - (months - 1), 1) - KST_OFFSET_MS
+    );
+
+    const rows = await prisma.dailyStat.findMany({
+      where: { date: { gte: start } },
       orderBy: { date: 'desc' },
-      take: 7
     });
-    return stats.map(s => ({
-      ...s,
-      revenue: s.revenue.toString()
-    }));
+
+    const byMonth = new Map<string, { month: string; pageViews: number; visitors: number; signups: number; inquiries: number; revenue: number }>();
+    for (const s of rows) {
+      const month = new Date(s.date.getTime() + KST_OFFSET_MS).toISOString().slice(0, 7);
+      const m = byMonth.get(month) ?? { month, pageViews: 0, visitors: 0, signups: 0, inquiries: 0, revenue: 0 };
+      m.pageViews += s.pageViews;
+      m.visitors += s.visitors;
+      m.signups += s.signups;
+      m.inquiries += s.inquiries;
+      m.revenue += Number(s.revenue);
+      byMonth.set(month, m);
+    }
+
+    return Array.from(byMonth.values()).map(m => ({ ...m, revenue: m.revenue.toString() }));
   } catch (error) {
-    console.error('Failed to fetch daily stats:', error);
+    console.error('Failed to fetch monthly stats:', error);
+    return [];
+  }
+}
+
+/**
+ * 최근 `days`일 유입 채널 비율 (GA4 세션 기준). 실패하면 빈 값.
+ */
+export async function getTrafficSources(days = 30) {
+  try {
+    const totals = await fetchGA4TrafficSources(days);
+    const total = Object.values(totals).reduce((a, b) => a + b, 0);
+    const order = ['구글 검색', '네이버 검색', '소셜 미디어', '직접 유입', '참조 링크', '기타'] as const;
+    return {
+      total,
+      items: order.map(label => ({
+        label,
+        value: total ? Math.round((totals[label] / total) * 100) : 0,
+      })),
+    };
+  } catch (error) {
+    console.error('Failed to fetch traffic sources:', error);
+    return { total: 0, items: [] as { label: string; value: number }[] };
+  }
+}
+
+// 유입 사이트(소스/매체)별 세션 상위 목록
+export async function getTopSources(days = 30) {
+  try {
+    return { items: await fetchGA4TopSources(days) };
+  } catch (error) {
+    console.error('Failed to fetch top sources:', error);
+    return { items: [] as { source: string; medium: string; sessions: number }[] };
+  }
+}
+
+// 유입 검색어별 세션 상위 목록
+export async function getTopKeywords(days = 30) {
+  try {
+    return { items: await fetchGA4TopKeywords(days) };
+  } catch (error) {
+    console.error('Failed to fetch top keywords:', error);
+    return { items: [] as { keyword: string; sessions: number }[] };
+  }
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+const KST_MS = 9 * 60 * 60 * 1000;
+
+/**
+ * 날짜 범위 일별 통계 (KST, 'YYYY-MM-DD' 양끝 포함, 최신순). 최대 366일.
+ */
+export async function getDailyStatsRange(startDate: string, endDate: string) {
+  try {
+    const start = new Date(`${startDate}T00:00:00+09:00`);
+    const end = new Date(new Date(`${endDate}T00:00:00+09:00`).getTime() + DAY_MS - 1);
+    const days = Math.round((end.getTime() - start.getTime()) / DAY_MS);
+    if (days <= 0 || days > 366) return [];
+
+    const rows = await loadDailyRows(startDate, endDate);
+    return rows.reverse();
+  } catch (error) {
+    console.error('Failed to fetch daily stats range:', error);
+    return [];
+  }
+}
+
+/**
+ * 월 범위 통계 (KST, 'YYYY-MM' 양끝 포함, 최신순). 최대 36개월.
+ */
+export async function getMonthlyStatsRange(startMonth: string, endMonth: string) {
+  try {
+    const [sy, sm] = startMonth.split('-').map(Number);
+    const [ey, em] = endMonth.split('-').map(Number);
+    const months = (ey - sy) * 12 + (em - sm) + 1;
+    if (months <= 0 || months > 36) return [];
+
+    const startKey = `${startMonth}-01`;
+    const endKey = new Date(Date.UTC(ey, em, 0)).toISOString().slice(0, 10);
+    const rows = await loadDailyRows(startKey, endKey);
+
+    const byMonth = new Map<string, { month: string; pageViews: number; visitors: number; signups: number; inquiries: number; revenue: number }>();
+    for (const s of rows) {
+      const month = kstKey(s.date).slice(0, 7);
+      const m = byMonth.get(month) ?? { month, pageViews: 0, visitors: 0, signups: 0, inquiries: 0, revenue: 0 };
+      m.pageViews += s.pageViews;
+      m.visitors += s.visitors;
+      m.signups += s.signups;
+      m.inquiries += s.inquiries;
+      m.revenue += Number(s.revenue);
+      byMonth.set(month, m);
+    }
+    return Array.from(byMonth.values()).reverse().map(m => ({ ...m, revenue: m.revenue.toString() }));
+  } catch (error) {
+    console.error('Failed to fetch monthly stats range:', error);
     return [];
   }
 }
@@ -703,51 +910,47 @@ export async function getTodayStats() {
 }
 
 /**
- * 대시보드: 최근 활동 통합 피드 (비즈니스 활동 + 시스템 로그)
+ * 대시보드: 최근 작업 피드 (견적서 발행, 문의 접수, 신규 고객 등록)
+ * 시스템 로그는 제외 — 업무 기록만 보여준다.
  */
-export async function getRecentActivityFeed() {
+export async function getRecentWorkFeed() {
   try {
-    const [inquiries, estimates, customers, logs] = await Promise.all([
-      prisma.inquiry.findMany({ take: 3, orderBy: { createdAt: 'desc' }, include: { customer: true } }),
-      prisma.estimate.findMany({ take: 3, orderBy: { createdAt: 'desc' }, include: { customer: true } }),
-      prisma.customer.findMany({ take: 3, orderBy: { createdAt: 'desc' } }),
-      prisma.systemLog.findMany({ take: 3, orderBy: { createdAt: 'desc' } }),
+    const [inquiries, estimates, customers] = await Promise.all([
+      prisma.inquiry.findMany({ take: 4, orderBy: { createdAt: 'desc' }, include: { customer: true } }),
+      prisma.estimate.findMany({ take: 4, orderBy: { createdAt: 'desc' }, include: { customer: true } }),
+      prisma.customer.findMany({ take: 4, orderBy: { createdAt: 'desc' } }),
     ]);
 
     const feed = [
       ...inquiries.map(item => ({
         id: `inquiry-${item.id}`,
-        type: 'ESTIMATE',
+        type: 'INQUIRY' as const,
         title: `문의 접수: ${item.title}`,
         client: item.authorName || item.customer?.name || '익명 고객',
+        href: '/inquiries',
         createdAt: item.createdAt,
       })),
       ...estimates.map(item => ({
         id: `estimate-${item.id}`,
-        type: 'ESTIMATE',
+        type: 'ESTIMATE' as const,
         title: `견적서 발행: ${item.title}`,
         client: item.customer?.name || '알 수 없음',
+        href: '/estimates',
         createdAt: item.createdAt,
       })),
       ...customers.map(item => ({
         id: `customer-${item.id}`,
-        type: 'CLIENT',
+        type: 'CLIENT' as const,
         title: `신규 고객 등록: ${item.name}`,
         client: item.company || '개인',
+        href: '/customers/page/1',
         createdAt: item.createdAt,
-      })),
-      ...logs.map(log => ({
-        id: `log-${log.id}`,
-        type: 'INFO',
-        title: log.message,
-        client: log.user || '시스템 관리자',
-        createdAt: log.createdAt,
       })),
     ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 8);
 
     return feed;
   } catch (error) {
-    console.error('Error fetching activity feed:', error);
+    console.error('Error fetching recent work feed:', error);
     return [];
   }
 }
@@ -782,8 +985,14 @@ export async function getDashboardStats() {
       })
     ]);
 
+    // 오늘(KST) 날짜의 GA4 순 방문자 — 동기화 전이면 0
+    const kstToday = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const todayStat = await prisma.dailyStat.findUnique({
+      where: { date: new Date(`${kstToday}T00:00:00+09:00`) },
+    });
+
     return {
-      todayVisitors: 124, 
+      todayVisitors: todayStat?.visitors ?? 0, 
       pendingInquiries,
       pendingEstimates,
       totalRevenue: totalRevenue._sum.amount || 0
@@ -1006,11 +1215,14 @@ export async function updateSystemConfig(data: any) {
  */
 export async function syncAllStats() {
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await syncRecentStats(30);
+    // 방문자 캐시를 비워서 다음 조회에 GA4 최신값을 가져오게 함
+    revalidateTag(GA4_TRAFFIC_TAG);
     revalidatePath('/');
     return { success: true };
   } catch (error) {
-    return { success: false, error: '동기화에 실패했습니다.' };
+    console.error('GA4 sync failed:', error);
+    return { success: false, error: 'GA4 동기화에 실패했습니다.' };
   }
 }
 
@@ -1141,5 +1353,28 @@ export async function deleteColumn(id: string) {
   } catch (error) {
     console.error('Failed to delete column:', error);
     return { success: false, error: '칼럼 삭제에 실패했습니다.' };
+  }
+}
+
+// 사이드바 뱃지·알림 센터용: 답변 대기 문의 요약
+export async function getPendingInquirySummary() {
+  try {
+    const where = { status: 'pending' };
+    const [count, recent] = await Promise.all([
+      prisma.inquiry.count({ where }),
+      prisma.inquiry.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+        select: { id: true, title: true, authorName: true, type: true, createdAt: true },
+      }),
+    ]);
+    return {
+      count,
+      recent: recent.map((i) => ({ ...i, createdAt: i.createdAt.toISOString() })),
+    };
+  } catch (error) {
+    console.error('Failed to fetch pending inquiry summary:', error);
+    return { count: 0, recent: [] };
   }
 }

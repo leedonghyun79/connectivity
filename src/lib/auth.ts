@@ -81,6 +81,9 @@ export const authOptions: NextAuthOptions = {
       return session;
     }
   },
-  secret: process.env.NEXTAUTH_SECRET || "connectivity_super_secret_dev_key",
+  // 프로덕션에서는 NEXTAUTH_SECRET 필수 (없으면 next-auth가 에러). 개발 환경에서만 기본 키 허용.
+  secret:
+    process.env.NEXTAUTH_SECRET ||
+    (process.env.NODE_ENV === "development" ? "connectivity_dev_only_secret" : undefined),
 };
 

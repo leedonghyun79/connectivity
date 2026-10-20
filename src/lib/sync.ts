@@ -1,71 +1,59 @@
 import prisma from './prisma';
+import { fetchGA4DailyTraffic } from './ga4';
 
-// 임시 GA4 데이터 가져오기 함수 (실제 GA4 API 키가 있으면 여기서 호출)
-async function getGA4Data(date: Date) {
-  // 실제 GA4 API 연동 시 구글 라이브러리 사용
-  // return await ga4Client.runReport({...});
+// 날짜 기준은 모두 KST(UTC+9). 서버(Vercel)는 UTC라 로컬 시간에 기대면 하루씩 어긋남.
+const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
-  // 지금은 랜덤 데이터를 반환하도록 구현
-  return {
-    pageViews: Math.floor(Math.random() * 500) + 100,
-    visitors: Math.floor(Math.random() * 300) + 50,
-  };
+/** KST 기준 오늘부터 과거 `days`일의 'YYYY-MM-DD' 목록 (최신 → 과거 순) */
+function recentKstDays(days: number): string[] {
+  const kstNow = new Date(Date.now() + KST_OFFSET_MS);
+  const list: string[] = [];
+  for (let i = 0; i < days; i++) {
+    const d = new Date(kstNow.getTime() - i * DAY_MS);
+    list.push(d.toISOString().slice(0, 10));
+  }
+  return list;
 }
 
-// 특정 날짜의 데이터를 동기화하는 핵심 함수
-export async function syncDailyStats(date: Date) {
-  const startOfDay = new Date(date);
-  startOfDay.setHours(0, 0, 0, 0);
+/**
+ * 최근 `days`일 통계를 동기화한다.
+ * - GA4: 페이지뷰·순 방문자 (GA4 Data API)
+ * - DB: 가입·문의·매출 (Customer / Inquiry / Transaction)
+ * GA4 호출이 실패하면 아무것도 쓰지 않고 throw → 기존 값이 0으로 덮어써지지 않음.
+ */
+export async function syncRecentStats(days = 30) {
+  const traffic = await fetchGA4DailyTraffic(`${days - 1}daysAgo`);
 
-  const endOfDay = new Date(date);
-  endOfDay.setHours(23, 59, 59, 999);
+  const dayKeys = recentKstDays(days);
+  await Promise.all(
+    dayKeys.map(async (day) => {
+      const start = new Date(`${day}T00:00:00+09:00`);
+      const end = new Date(start.getTime() + DAY_MS - 1);
+      const ga = traffic.get(day.replaceAll('-', '')) ?? { pageViews: 0, visitors: 0 };
 
-  // 1. GA4 데이터 가져오기
-  const ga4Data = await getGA4Data(date);
+      const [signupCount, inquiryCount, revenue] = await Promise.all([
+        prisma.customer.count({ where: { createdAt: { gte: start, lte: end } } }),
+        prisma.inquiry.count({ where: { createdAt: { gte: start, lte: end } } }),
+        prisma.transaction.aggregate({
+          _sum: { amount: true },
+          where: { date: { gte: start, lte: end }, status: 'completed' },
+        }),
+      ]);
 
-  // 2. 내부 DB에서 지표 계산하기
-  // (1) 회원가입 수 (Customer 테이블)
-  const signupCount = await prisma.customer.count({
-    where: {
-      createdAt: { gte: startOfDay, lte: endOfDay }
-    }
-  });
+      const data = {
+        pageViews: ga.pageViews,
+        visitors: ga.visitors,
+        signups: signupCount,
+        inquiries: inquiryCount,
+        revenue: revenue._sum.amount ?? 0,
+      };
 
-  // (2) 문의 수 (Inquiry 테이블)
-  const inquiryCount = await prisma.inquiry.count({
-    where: {
-      createdAt: { gte: startOfDay, lte: endOfDay }
-    }
-  });
-
-  // (3) 매출액 (Transaction 테이블)
-  const transactions = await prisma.transaction.findMany({
-    where: {
-      date: { gte: startOfDay, lte: endOfDay },
-      status: 'completed'
-    }
-  });
-  const totalRevenue = transactions.reduce((acc, tr) => acc + Number(tr.amount), 0);
-
-  // 3. DailyStat 테이블에 저장 (이미 있으면 업데이트, 없으면 생성)
-  await prisma.dailyStat.upsert({
-    where: { date: startOfDay },
-    update: {
-      pageViews: ga4Data.pageViews,
-      visitors: ga4Data.visitors,
-      signups: signupCount,
-      inquiries: inquiryCount,
-      revenue: totalRevenue,
-    },
-    create: {
-      date: startOfDay,
-      pageViews: ga4Data.pageViews,
-      visitors: ga4Data.visitors,
-      signups: signupCount,
-      inquiries: inquiryCount,
-      revenue: totalRevenue,
-    }
-  });
-
-  console.log(`✅ Synced stats for ${startOfDay.toLocaleDateString()}`);
+      await prisma.dailyStat.upsert({
+        where: { date: start },
+        update: data,
+        create: { date: start, ...data },
+      });
+    })
+  );
 }

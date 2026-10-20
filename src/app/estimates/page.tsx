@@ -8,6 +8,7 @@ import EstimateModal from '@/components/modals/EstimateModal';
 import EstimateDetailModal from '@/components/modals/EstimateDetailModal';
 import { toast } from 'sonner';
 import DataTable from '@/components/common/DataTable';
+import { PAGE_SIZE } from '@/components/common/Pagination';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import { useFormatDate } from '@/lib/SystemConfigContext';
 
@@ -27,6 +28,7 @@ export default function EstimatesPage() {
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState(1);
 
   // 메뉴 및 필터 외부 클릭 감지
   useEffect(() => {
@@ -107,7 +109,15 @@ export default function EstimatesPage() {
     setActiveMenuId(activeMenuId === id ? null : id);
   };
 
-  if (isLoading) return <PageLoader />;
+  // 검색·필터가 바뀌면 첫 페이지로
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, statusFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredEstimates.length / PAGE_SIZE));
+  const pageEstimates = filteredEstimates.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  if (isLoading) return <PageLoader title="견적서 관리" variant="estimates" />;
   if (!estimates) return <div>데이터를 불러오지 못했습니다.</div>;
 
   return (
@@ -160,26 +170,26 @@ export default function EstimatesPage() {
 
       {/* 요약 카드 */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-8 rounded-[8px] border border-gray-100">
+        <div className="bg-white p-8 rounded-[8px] border border-[#D1D5DB]">
           <div className="flex items-center justify-between mb-6">
-            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">총 가치 평가</span>
-            <FileText size={20} className="text-gray-300" />
+            <span className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest">총 가치 평가</span>
+            <FileText size={20} className="text-[#4B5563]" />
           </div>
           <p className="text-3xl font-black text-gray-900 tracking-tighter">
             {Number(stats.totalAmount).toLocaleString()} <span className="text-[10px] text-gray-400">KRW</span>
           </p>
         </div>
-        <div className="bg-white p-8 rounded-[8px] border border-gray-100">
+        <div className="bg-white p-8 rounded-[8px] border border-[#D1D5DB]">
           <div className="flex items-center justify-between mb-6">
-            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">승인 대기</span>
-            <Clock size={20} className="text-gray-300" />
+            <span className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest">승인 대기</span>
+            <Clock size={20} className="text-[#4B5563]" />
           </div>
           <p className="text-3xl font-black text-gray-900 tracking-tighter">{stats.pending} <span className="text-[10px] text-gray-400">건</span></p>
         </div>
-        <div className="bg-white p-8 rounded-[8px] border border-gray-100">
+        <div className="bg-white p-8 rounded-[8px] border border-[#D1D5DB]">
           <div className="flex items-center justify-between mb-6">
-            <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">최종 승인</span>
-            <CheckCircle size={20} className="text-gray-300" />
+            <span className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest">최종 승인</span>
+            <CheckCircle size={20} className="text-[#4B5563]" />
           </div>
           <p className="text-3xl font-black text-gray-900 tracking-tighter">{stats.approved} <span className="text-[10px] text-gray-400">건</span></p>
         </div>
@@ -199,13 +209,13 @@ export default function EstimatesPage() {
       {/* 검색 및 필터 */}
       <div className="flex flex-col sm:flex-row gap-6 items-center justify-between">
         <div className="relative w-full sm:w-[480px] group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black transition-all" size={20} />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#060606] transition-all" size={20} />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="견적서 번호, 고객명 또는 프로젝트명 검색..."
-            className="w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
+            className="w-full pl-12 pr-6 py-4 bg-white border border-[#D1D5DB] rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
           />
         </div>
 
@@ -213,7 +223,7 @@ export default function EstimatesPage() {
           <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
             className={`flex items-center gap-3 px-8 py-4 rounded-[8px] text-[11px] font-black uppercase tracking-widest transition-all border
-              ${isFilterOpen || statusFilter !== 'all' ? 'bg-black text-white border-black' : 'bg-white text-gray-400 border-gray-100 hover:text-black hover:border-black'}`}
+              ${isFilterOpen || statusFilter !== 'all' ? 'bg-black text-white border-black' : 'bg-white text-gray-400 border-[#D1D5DB] hover:text-[#060606] hover:border-black'}`}
           >
             <Filter size={18} />
             {statusFilter === 'all' ? '상세 검색 필터' :
@@ -226,10 +236,10 @@ export default function EstimatesPage() {
           {/* 필터 드롭다운 */}
           {isFilterOpen && (
             <div
-              className="absolute right-0 top-full mt-4 w-64 bg-white border border-gray-100 rounded-[8px] shadow-[0_40px_80px_rgba(0,0,0,0.12)] z-40 p-6 animate-in fade-in slide-in-from-top-4 duration-300"
+              className="absolute right-0 top-full mt-4 w-64 bg-white border border-[#D1D5DB] rounded-[8px] shadow-[0_40px_80px_rgba(0,0,0,0.12)] z-40 p-6 animate-in fade-in slide-in-from-top-4 duration-300"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-4">상태별 보기</div>
+              <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-4">상태별 보기</div>
               <div className="space-y-2">
                 {[
                   { id: 'all', label: '전체 견적서 보기' },
@@ -245,7 +255,7 @@ export default function EstimatesPage() {
                       setIsFilterOpen(false);
                     }}
                     className={`w-full px-5 py-3 text-left rounded-[8px] text-[11px] font-black uppercase tracking-wider transition-all
-                      ${statusFilter === option.id ? 'bg-black text-white' : 'text-gray-500 hover:bg-gray-50 hover:text-black'}`}
+                      ${statusFilter === option.id ? 'bg-black text-white' : 'text-gray-500 hover:bg-gray-50 hover:text-[#060606]'}`}
                   >
                     {option.label}
                   </button>
@@ -268,16 +278,12 @@ export default function EstimatesPage() {
       </div>
 
       <DataTable
-        data={filteredEstimates}
+        data={pageEstimates}
+        pagination={{ page, totalPages, onPageChange: setPage }}
         noDataIcon={<FileText size={64} />}
         noDataMessage="등록된 견적서가 없습니다."
         onRowClick={handleRowClick}
         columns={[
-          {
-            header: '참조번호',
-            className: 'px-10 py-8 font-mono font-bold text-gray-400 group-hover:text-black transition-colors',
-            cell: (estimate) => estimate.estimateNum || estimate.id.substring(0, 8).toUpperCase()
-          },
           {
             header: '프로젝트 / 고객사',
             className: 'px-10 py-8',
@@ -292,16 +298,16 @@ export default function EstimatesPage() {
           },
           {
             header: '금액',
-            className: 'px-10 py-8 text-right font-black text-gray-900 text-2xl tracking-tighter',
+            className: 'px-10 py-8 text-left font-black text-gray-900 text-2xl tracking-tighter',
             cell: (estimate) => (
               <>
-                {Number(estimate.amount).toLocaleString()} <span className="text-sm text-gray-300">₩</span>
+                {Number(estimate.amount).toLocaleString()} <span className="text-sm text-[#4B5563]">₩</span>
               </>
             )
           },
           {
             header: '상태',
-            className: 'px-10 py-8 text-center',
+            className: 'px-10 py-8 text-left',
             cell: (estimate) => (
               <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border
                 ${estimate.status === 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' :
@@ -316,7 +322,7 @@ export default function EstimatesPage() {
           },
           {
             header: '발행일',
-            className: 'px-10 py-8 text-center text-gray-400 font-mono text-xs font-bold',
+            className: 'px-10 py-8 text-left text-gray-400 font-mono text-xs font-bold',
             cell: (estimate) => estimate.issueDate ? fmt(estimate.issueDate) : '-'
           },
           {
@@ -326,16 +332,16 @@ export default function EstimatesPage() {
               <>
                 <button
                   onClick={(e) => toggleMenu(e, estimate.id)}
-                  className={`p-3 rounded-[8px] transition-all ${activeMenuId === estimate.id ? 'bg-black text-white' : 'text-gray-300 hover:text-black hover:bg-gray-100'}`}
+                  className={`p-3 rounded-[8px] transition-all ${activeMenuId === estimate.id ? 'bg-black text-white' : 'text-[#4B5563] hover:text-[#060606] hover:bg-gray-100'}`}
                 >
                   <MoreHorizontal size={20} />
                 </button>
 
                 {activeMenuId === estimate.id && (
-                  <div className="absolute right-10 top-16 w-36 bg-white rounded-[8px] shadow-xl border border-gray-100 overflow-hidden z-20 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="absolute right-10 top-16 w-36 bg-white rounded-[8px] shadow-xl border border-[#D1D5DB] overflow-hidden z-20 animate-in fade-in zoom-in-95 duration-200">
                     <button
                       onClick={(e) => handleEdit(e, estimate)}
-                      className="w-full px-4 py-3 text-left text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-black flex items-center gap-2"
+                      className="w-full px-4 py-3 text-left text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-[#060606] flex items-center gap-2"
                     >
                       <Edit size={14} /> 수정하기
                     </button>

@@ -112,7 +112,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
       <div
         role="dialog"
         aria-modal="true"
-        className="bg-white rounded-[8px] shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all scale-100 border border-gray-100 flex flex-col md:flex-row"
+        className="bg-white rounded-[8px] shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all scale-100 border border-[#D1D5DB] flex flex-col md:flex-row"
         onClick={(e) => e.stopPropagation()}
       >
 
@@ -141,8 +141,8 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
         {/* 폼 영역 */}
         <div className="flex-1 p-12 bg-[#fcfcfc]">
           <div className="flex justify-between items-center mb-10">
-            <div className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">데이터 입력 폼</div>
-            <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-black">
+            <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-[0.3em]">데이터 입력 폼</div>
+            <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-[#060606]">
               <X size={20} />
             </button>
           </div>
@@ -150,25 +150,25 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="grid grid-cols-1 gap-8">
               <div className="group">
-                <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">고객 성함 *</label>
+                <label className="text-[10px] font-black text-[#060606] uppercase tracking-widest block mb-2 px-1">고객 성함 *</label>
                 <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-black transition-colors" size={18} />
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-[#060606] transition-colors" size={18} />
                   <input
                     required
                     readOnly={isReadOnly}
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className={`w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-black placeholder:text-gray-200 ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                    className={`w-full pl-12 pr-6 py-4 bg-white border border-[#D1D5DB] rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-[#060606] placeholder:text-gray-200 ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                     placeholder="고객 성함을 입력하세요"
                   />
                 </div>
               </div>
 
               <div className="group">
-                <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">보안 이메일</label>
+                <label className="text-[10px] font-black text-[#060606] uppercase tracking-widest block mb-2 px-1">보안 이메일</label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-black transition-colors" size={18} />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-[#060606] transition-colors" size={18} />
                   <input
                     type="email"
                     value={formData.email}
@@ -176,7 +176,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                       setFormData({ ...formData, email: e.target.value });
                       if (errors.email) setErrors({ ...errors, email: '' });
                     }}
-                    className={`w-full pl-12 pr-6 py-4 bg-white border rounded-[8px] outline-none transition-all font-bold text-black placeholder:text-gray-200 ${errors.email ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-gray-100 focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                    className={`w-full pl-12 pr-6 py-4 bg-white border rounded-[8px] outline-none transition-all font-bold text-[#060606] placeholder:text-gray-200 ${errors.email ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-[#D1D5DB] focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                     placeholder="example@vault.com"
                     readOnly={isReadOnly}
                   />
@@ -186,23 +186,23 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="group">
-                  <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">소속 회사</label>
+                  <label className="text-[10px] font-black text-[#060606] uppercase tracking-widest block mb-2 px-1">소속 회사</label>
                   <div className="relative">
-                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-black transition-colors" size={18} />
+                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-[#060606] transition-colors" size={18} />
                     <input
                       type="text"
                       value={formData.company}
                       onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      className={`w-full pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-black placeholder:text-gray-200 ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                      className={`w-full pl-12 pr-6 py-4 bg-white border border-[#D1D5DB] rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-[#060606] placeholder:text-gray-200 ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                       placeholder="회사명을 입력하세요"
                       readOnly={isReadOnly}
                     />
                   </div>
                 </div>
                 <div className="group">
-                  <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">연락처</label>
+                  <label className="text-[10px] font-black text-[#060606] uppercase tracking-widest block mb-2 px-1">연락처</label>
                   <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-black transition-colors" size={18} />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-200 group-focus-within:text-[#060606] transition-colors" size={18} />
                     <input
                       type="tel"
                       value={formData.phone}
@@ -211,7 +211,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                         setFormData({ ...formData, phone: val });
                         if (errors.phone) setErrors({ ...errors, phone: '' });
                       }}
-                      className={`w-full pl-12 pr-6 py-4 bg-white border rounded-[8px] outline-none transition-all font-bold text-black placeholder:text-gray-200 ${errors.phone ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-gray-100 focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                      className={`w-full pl-12 pr-6 py-4 bg-white border rounded-[8px] outline-none transition-all font-bold text-[#060606] placeholder:text-gray-200 ${errors.phone ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-[#D1D5DB] focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                       placeholder="숫자만 입력"
                       readOnly={isReadOnly}
                     />
@@ -222,15 +222,15 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
 
               {customer && (
                 <div className="group" ref={statusRef}>
-                  <label className="text-[10px] font-black text-black uppercase tracking-widest block mb-2 px-1">프로젝트 상태</label>
+                  <label className="text-[10px] font-black text-[#060606] uppercase tracking-widest block mb-2 px-1">프로젝트 상태</label>
                   <div className="relative">
                     <button
                       type="button"
                       disabled={isReadOnly}
                       onClick={() => !isReadOnly && setIsStatusOpen(!isStatusOpen)}
-                      className={`w-full px-6 py-4 bg-white border border-gray-100 rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-left flex items-center justify-between ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : 'group-hover:border-gray-200'}`}
+                      className={`w-full px-6 py-4 bg-white border border-[#D1D5DB] rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none transition-all font-bold text-left flex items-center justify-between ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : 'group-hover:border-[#D1D5DB]'}`}
                     >
-                      <span className="text-black">
+                      <span className="text-[#060606]">
                         {formData.status === 'pending' ? '대기 (Waiting)' :
                           formData.status === 'processing' ? '진행 (Active)' : '완료 (Completed)'}
                       </span>
@@ -238,7 +238,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                     </button>
 
                     {isStatusOpen && (
-                      <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-[8px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden z-20 animate-in fade-in slide-in-from-top-2 duration-200">
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#D1D5DB] rounded-[8px] shadow-[0_20px_40px_rgba(0,0,0,0.1)] overflow-hidden z-20 animate-in fade-in slide-in-from-top-2 duration-200">
                         {[
                           { value: 'pending', label: '대기 (Waiting)' },
                           { value: 'processing', label: '진행 (Active)' },
@@ -252,10 +252,10 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                               setIsStatusOpen(false);
                             }}
                             className={`w-full px-6 py-3 text-left text-sm font-bold flex items-center justify-between hover:bg-gray-50 transition-colors
-                              ${formData.status === option.value ? 'bg-black/5 text-black' : 'text-gray-500'}`}
+                              ${formData.status === option.value ? 'bg-black/5 text-[#060606]' : 'text-gray-500'}`}
                           >
                             {option.label}
-                            {formData.status === option.value && <Check size={14} className="text-black" />}
+                            {formData.status === option.value && <Check size={14} className="text-[#060606]" />}
                           </button>
                         ))}
                       </div>
@@ -269,7 +269,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
               <button
                 type="button"
                 onClick={onClose}
-                className={`flex-1 px-8 py-4 border border-gray-200 rounded-[8px] text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-black hover:bg-gray-50 transition-all active:scale-95 ${isReadOnly ? 'w-full' : ''}`}
+                className={`flex-1 px-8 py-4 border border-[#D1D5DB] rounded-[8px] text-[11px] font-black uppercase tracking-widest text-gray-400 hover:text-[#060606] hover:bg-gray-50 transition-all active:scale-95 ${isReadOnly ? 'w-full' : ''}`}
               >
                 {isReadOnly ? '닫기' : '취소'}
               </button>

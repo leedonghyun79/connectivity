@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { getRecentInquiries } from '@/lib/actions';
-import { MessageSquare, AlertCircle, CheckCircle2, ArrowUpRight } from 'lucide-react';
+import { AlertCircle, CheckCircle2, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { useFormatDate } from '@/lib/SystemConfigContext';
 
@@ -19,20 +19,20 @@ export default function RecentInquiryList() {
   }, []);
 
   return (
-    <div className="bg-white p-10 rounded-[8px] border border-gray-100 flex flex-col gap-6 group">
+    <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] flex flex-col gap-6 group">
       {/* 헤더 */}
       <div className="flex justify-between items-start">
         <div>
-          <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">
+          <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">
             지원 인박스
           </div>
-          <h3 className="text-2xl font-black text-black tracking-tighter uppercase">
+          <h3 className="text-2xl font-black text-[#060606] tracking-tighter uppercase">
             최근 문의
           </h3>
         </div>
         <Link
           href="/inquiries"
-          className="p-3 bg-gray-50 rounded-[8px] text-gray-200 group-hover:bg-black group-hover:text-white transition-all duration-300"
+          className="p-3 bg-gray-50 rounded-[8px] text-[#D1D5DB] group-hover:bg-black group-hover:text-white transition-all duration-300"
         >
           <ArrowUpRight size={20} />
         </Link>
@@ -53,16 +53,14 @@ export default function RecentInquiryList() {
           ))
         ) : inquiries.length === 0 ? (
           // 빈 상태
-          <div className="flex flex-col items-center justify-center py-8 gap-3 opacity-20">
-            <MessageSquare size={32} />
-            <p className="text-xs font-black uppercase tracking-[0.2em]">
-              접수된 문의 없음
-            </p>
-          </div>
+          <p className="py-8 text-center text-[#D1D5DB] text-xs font-black uppercase tracking-[0.2em]">
+            접수된 문의 없음
+          </p>
         ) : (
           inquiries.map((inquiry) => (
-            <div
+            <Link
               key={inquiry.id}
+              href={`/inquiries?id=${inquiry.id}`}
               className="flex items-center gap-3 p-3 rounded-[8px] hover:bg-gray-50 transition-all group cursor-pointer"
             >
               {/* 상태 아이콘 */}
@@ -94,7 +92,7 @@ export default function RecentInquiryList() {
               }`}>
                 {inquiry.status === 'pending' ? '대기' : '완료'}
               </span>
-            </div>
+            </Link>
           ))
         )}
       </div>
@@ -103,7 +101,7 @@ export default function RecentInquiryList() {
       {!isLoading && inquiries.length > 0 && (
         <Link
           href="/inquiries"
-          className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-black transition-colors flex items-center gap-1.5 self-end"
+          className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-[#060606] transition-colors flex items-center gap-1.5 self-end"
         >
           전체 보기 <ArrowUpRight size={11} />
         </Link>

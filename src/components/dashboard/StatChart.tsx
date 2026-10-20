@@ -9,6 +9,9 @@ import {
 import { TrendingUp, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 
+// 스켈레톤 막대 높이 — 서버/클라이언트 렌더 결과가 같아야 하므로 고정값 사용
+const SKELETON_HEIGHTS = [45, 70, 55, 85, 60, 75];
+
 export default function StatChart() {
   const [data, setData] = useState<{ name: string; amount: number }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,20 +26,20 @@ export default function StatChart() {
   const total = data.reduce((sum, d) => sum + d.amount, 0);
 
   return (
-    <div className="bg-white p-10 rounded-[8px] border border-gray-100 flex flex-col gap-6 h-full group">
+    <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] flex flex-col gap-6 h-full group">
       {/* 헤더 */}
       <div className="flex justify-between items-start">
         <div>
-          <div className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1">
+          <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">
             월별 수익 흐름
           </div>
-          <h3 className="text-2xl font-black text-black tracking-tighter uppercase">
+          <h3 className="text-2xl font-black text-[#060606] tracking-tighter uppercase">
             매출 통계
           </h3>
         </div>
         <Link
           href="/sales"
-          className="p-3 bg-gray-50 rounded-[8px] text-gray-200 group-hover:bg-black group-hover:text-white transition-all duration-300"
+          className="p-3 bg-gray-50 rounded-[8px] text-[#D1D5DB] group-hover:bg-black group-hover:text-white transition-all duration-300"
         >
           <ArrowUpRight size={20} />
         </Link>
@@ -59,21 +62,26 @@ export default function StatChart() {
         {isLoading ? (
           // 스켈레톤
           <div className="h-full flex items-end gap-2 pb-4">
-            {Array.from({ length: 6 }).map((_, i) => (
+            {SKELETON_HEIGHTS.map((height, i) => (
               <div
                 key={i}
                 className="flex-1 bg-gray-100 rounded-t-lg animate-pulse"
-                style={{ height: `${30 + Math.random() * 60}%` }}
+                style={{ height: `${height}%` }}
               />
             ))}
           </div>
-        ) : data.length === 0 ? (
-          // 빈 상태
-          <div className="h-full flex flex-col items-center justify-center gap-3 opacity-20">
-            <TrendingUp size={32} />
-            <p className="text-xs font-black uppercase tracking-[0.2em]">
-              거래 데이터 없음
-            </p>
+        ) : data.length === 0 || total === 0 ? (
+          // 빈 상태 — 막대 모양을 흐리게 두고 빈값 안내를 올림
+          <div className="relative h-[180px]">
+            <div className="h-full flex items-end gap-2 pb-4 blur-[5px] opacity-60">
+              {SKELETON_HEIGHTS.map((height, i) => (
+                <div key={i} className="flex-1 bg-gray-100 rounded-t-lg" style={{ height: `${height}%` }} />
+              ))}
+            </div>
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-[#D1D5DB]">
+              <TrendingUp size={32} />
+              <p className="text-xs font-black uppercase tracking-[0.2em]">거래 데이터 없음</p>
+            </div>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
@@ -106,7 +114,7 @@ export default function StatChart() {
                 formatter={(value: number) => [`${value.toLocaleString()} ₩`, '매출']}
                 labelStyle={{ display: 'none' }}
               />
-              <Bar dataKey="amount" fill="#000000" radius={[8, 8, 0, 0]} barSize={28} />
+              <Bar dataKey="amount" fill="#000000" radius={[8, 8, 0, 0]} barSize={28} isAnimationActive={false} />
             </BarChart>
           </ResponsiveContainer>
         )}

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
 import PageLoader from "@/components/common/PageLoader";
+import Pagination, { PAGE_SIZE } from "@/components/common/Pagination";
 import { Settings, Shield, User, Bell, Globe, Database, Save, ArrowRight, Eye, EyeOff, Check, Loader2 } from "lucide-react";
 import { 
   updateAdminProfile, 
@@ -36,17 +37,14 @@ export default function SettingsPage() {
       const data = await getSystemConfig();
       if (data) setConfig(data);
     };
-    fetchConfig();
-
-    const timer = setTimeout(() => setIsLoading(false), 400);
-    return () => clearTimeout(timer);
+    fetchConfig().finally(() => setIsLoading(false));
   }, []);
 
   const handleSave = async () => {
     toast.info("우측 하단의 개별 섹션 저장 버튼을 이용해주세요.");
   };
 
-  if (isLoading || !config) return <PageLoader />;
+  if (isLoading || !config) return <PageLoader title="환경 설정" variant="settings" />;
 
   return (
     <div className="space-y-10 py-10 max-w-6xl">
@@ -55,11 +53,11 @@ export default function SettingsPage() {
         <div>
           <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">환경 설정</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
-            <Settings size={14} className="text-black" />
-            핵심 플랫폼 환경설정 및 보안 프로토콜을 관리합니다. <span className="text-black uppercase">v2.4.0 안정화 버전</span>
+            <Settings size={14} className="text-[#060606]" />
+            핵심 플랫폼 환경설정 및 보안 프로토콜을 관리합니다. <span className="text-[#060606] uppercase">v2.4.0 안정화 버전</span>
           </p>
         </div>
-        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
+        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 px-4 py-2 rounded-full border border-[#D1D5DB]">
           마지막 동기화: {new Date(config.updatedAt || Date.now()).toLocaleTimeString('ko-KR', { timeZone: 'Asia/Seoul' })}
         </div>
       </div>
@@ -75,10 +73,10 @@ export default function SettingsPage() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`w-full flex items-center justify-between px-6 py-4 rounded-[8px] transition-all duration-300 group
-                  ${isActive ? 'bg-black text-white shadow-xl shadow-black/10' : 'text-gray-400 hover:bg-gray-50 hover:text-black'}`}
+                  ${isActive ? 'bg-black text-white shadow-xl shadow-black/10' : 'text-gray-400 hover:bg-gray-50 hover:text-[#060606]'}`}
               >
                 <div className="flex items-center gap-3">
-                  <Icon size={18} className={isActive ? 'text-white' : 'text-gray-300 group-hover:text-black'} />
+                  <Icon size={18} className={isActive ? 'text-white' : 'text-[#4B5563] group-hover:text-[#060606]'} />
                   <span className="text-[11px] font-black uppercase tracking-widest">{tab.label}</span>
                 </div>
                 {isActive && <ArrowRight size={14} className="text-gray-500" />}
@@ -103,8 +101,8 @@ export default function SettingsPage() {
 
 function SettingSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white p-10 rounded-[8px] border border-gray-100 shadow-[0_40px_100px_rgba(0,0,0,0.02)] space-y-8">
-      <h3 className="text-[10px] font-black text-black uppercase tracking-[0.3em] border-b pb-3">{title}</h3>
+    <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] shadow-[0_40px_100px_rgba(0,0,0,0.02)] space-y-8">
+      <h3 className="text-[10px] font-black text-[#060606] uppercase tracking-[0.3em] border-b pb-3">{title}</h3>
       {children}
     </div>
   );
@@ -124,7 +122,7 @@ function SettingInput({ label, ...props }: { label: string } & React.InputHTMLAt
 
 function ToggleRow({ label, description, isOn, onToggle }: { label: string; description: string; isOn: boolean; onToggle: () => void }) {
   return (
-    <div className="flex items-center justify-between py-4 border-b border-gray-50 last:border-0">
+    <div className="flex items-center justify-between py-4 border-b border-[#D1D5DB] last:border-0">
       <div>
         <div className="text-sm font-black text-gray-900">{label}</div>
         <div className="text-[11px] font-bold text-gray-400 mt-0.5">{description}</div>
@@ -258,7 +256,7 @@ function ProfileTab({ session, update }: { session: any, update: any }) {
                 onChange={(e) => setPasswords(prev => ({ ...prev, current: e.target.value }))}
                 className="w-full px-6 py-4 pr-14 bg-gray-50 border border-transparent rounded-[8px] focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all"
               />
-              <button onClick={() => setShowCurrent(!showCurrent)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors">
+              <button onClick={() => setShowCurrent(!showCurrent)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#060606] transition-colors">
                 {showCurrent ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
@@ -273,7 +271,7 @@ function ProfileTab({ session, update }: { session: any, update: any }) {
                 onChange={(e) => setPasswords(prev => ({ ...prev, new: e.target.value }))}
                 className="w-full px-6 py-4 pr-14 bg-gray-50 border border-transparent rounded-[8px] focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all"
               />
-              <button onClick={() => setShowNew(!showNew)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors">
+              <button onClick={() => setShowNew(!showNew)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#060606] transition-colors">
                 {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
@@ -288,7 +286,7 @@ function ProfileTab({ session, update }: { session: any, update: any }) {
                 onChange={(e) => setPasswords(prev => ({ ...prev, confirm: e.target.value }))}
                 className="w-full px-6 py-4 pr-14 bg-gray-50 border border-transparent rounded-[8px] focus:bg-white focus:ring-4 focus:ring-black/5 outline-none font-bold transition-all"
               />
-              <button onClick={() => setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors">
+              <button onClick={() => setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#060606] transition-colors">
                 {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
@@ -308,7 +306,7 @@ function ProfileTab({ session, update }: { session: any, update: any }) {
           <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3">2단계 인증 (2FA)</div>
           <div className="flex items-center justify-between">
             <p className="text-sm font-bold text-gray-500">Google Authenticator 앱과 연동합니다.</p>
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3 py-1.5 bg-white border border-gray-200 rounded-[8px]">준비 중</span>
+            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3 py-1.5 bg-white border border-[#D1D5DB] rounded-[8px]">준비 중</span>
           </div>
         </div>
       </SettingSection>
@@ -455,6 +453,9 @@ function LocaleTab({ initialConfig, onSave }: { initialConfig: any; onSave: () =
 function StorageTab() {
   const [stats, setStats] = useState({ dbSizeMB: 0, totalRecords: 0 });
   const [logs, setLogs] = useState<any[]>([]);
+  const [logPage, setLogPage] = useState(1);
+  const logTotalPages = Math.max(1, Math.ceil(logs.length / PAGE_SIZE));
+  const pageLogs = logs.slice((logPage - 1) * PAGE_SIZE, logPage * PAGE_SIZE);
   const [isLoading, setIsLoading] = useState(true);
   const [isResetting, setIsResetting] = useState(false);
 
@@ -527,7 +528,7 @@ function StorageTab() {
       <div>
         <div className="flex justify-between items-center mb-4">
           <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest">최근 시스템 로그</div>
-          <button onClick={loadData} className="text-[9px] font-black text-gray-400 hover:text-black transition-colors uppercase tracking-widest">새로고침</button>
+          <button onClick={loadData} className="text-[9px] font-black text-gray-400 hover:text-[#060606] transition-colors uppercase tracking-widest">새로고침</button>
         </div>
         <div className="space-y-2">
           {isLoading ? (
@@ -535,7 +536,8 @@ function StorageTab() {
               <Loader2 className="animate-spin text-gray-200" size={24} />
             </div>
           ) : logs.length > 0 ? (
-            logs.map((log) => (
+            <>
+            {pageLogs.map((log) => (
               <div key={log.id} className="flex items-center justify-between px-5 py-3 bg-gray-50 rounded-[8px]">
                 <div className="flex items-center gap-3">
                   <div className={`w-1.5 h-1.5 rounded-full ${log.action === 'LOGIN' ? 'bg-blue-400' : 'bg-black'}`} />
@@ -543,9 +545,11 @@ function StorageTab() {
                 </div>
                 <span className="text-[10px] font-black text-gray-400 font-mono">{formatTime(log.createdAt)}</span>
               </div>
-            ))
+            ))}
+            <Pagination page={logPage} totalPages={logTotalPages} onPageChange={setLogPage} />
+            </>
           ) : (
-            <div className="text-center py-8 text-[11px] font-bold text-gray-300">기록된 로그가 없습니다.</div>
+            <div className="text-center py-8 text-[11px] font-bold text-[#D1D5DB]">기록된 로그가 없습니다.</div>
           )}
         </div>
       </div>
