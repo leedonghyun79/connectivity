@@ -121,12 +121,12 @@ export interface GA4KeywordRow {
 }
 
 /**
- * 최근 `days`일 유입 소스(source/medium)별 세션 수, 세션 많은 순 상위 `limit`개.
+ * `startDate`~`endDate` ('YYYY-MM-DD', 양끝 포함) 유입 소스(source/medium)별 세션 수, 세션 많은 순 상위 `limit`개.
  */
-export async function fetchGA4TopSources(days: number, limit = 30): Promise<GA4SourceRow[]> {
+export async function fetchGA4TopSources(startDate: string, endDate: string, limit = 30): Promise<GA4SourceRow[]> {
   const [response] = await getClient().runReport({
     property: getPropertyPath(),
-    dateRanges: [{ startDate: `${days - 1}daysAgo`, endDate: 'today' }],
+    dateRanges: [{ startDate, endDate }],
     dimensions: [{ name: 'sessionSource' }, { name: 'sessionMedium' }],
     metrics: [{ name: 'sessions' }],
     orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],

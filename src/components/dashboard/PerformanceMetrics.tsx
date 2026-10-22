@@ -118,9 +118,8 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
       visitors: acc.visitors + row.visitors,
       signups: acc.signups + row.signups,
       inquiries: acc.inquiries + row.inquiries,
-      revenue: acc.revenue + Number(row.revenue),
     }),
-    { pageViews: 0, visitors: 0, signups: 0, inquiries: 0, revenue: 0 }
+    { pageViews: 0, visitors: 0, signups: 0, inquiries: 0 }
   );
 
   const totalPages = Math.max(1, Math.ceil(stats.length / PAGE_SIZE));
@@ -321,14 +320,13 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
                   <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">페이지 뷰</th>
                   <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">순 방문자수</th>
                   <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">가입</th>
-                  <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">문의</th>
-                  <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">매출액 (KRW)</th>
+                  <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">리드</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#D1D5DB]">
                 {!isLoaded ? (
                   <tr>
-                    <td colSpan={6} className="py-6">
+                    <td colSpan={5} className="py-6">
                       <div className="space-y-3 animate-pulse">
                         {Array.from({ length: 6 }).map((_, i) => (
                           <div key={i} className="h-10 bg-gray-50 rounded-[8px]" />
@@ -339,7 +337,7 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
                 ) : pageRows.length > 0 ? (
                   pageRows.map((row) => (
                     <tr key={isMonthly ? row.month : row.date.toString()} className="hover:bg-gray-50/50 transition-colors group/row">
-                      <td className="py-3 text-xs font-black text-gray-400 group-hover/row:text-[#060606] transition-colors">
+                      <td className="py-3 text-xs font-black text-[#060606]">
                         {isMonthly
                           ? row.month
                           : new Date(row.date).toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })}
@@ -349,15 +347,12 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
                       <td className="py-3 text-left text-xs font-black text-[#060606]">
                         <span className={row.signups > 0 ? 'bg-black text-white px-2 py-0.5 rounded-[8px]' : 'text-[#4B5563]'}>{row.signups}</span>
                       </td>
-                      <td className="py-3 text-left text-xs font-bold text-gray-400">{row.inquiries}</td>
-                      <td className="py-3 text-left font-black text-[#060606] text-sm">
-                        {Number(row.revenue).toLocaleString()}
-                      </td>
+                      <td className="py-3 text-left text-xs font-bold text-gray-900">{row.inquiries}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="py-20 text-left">
+                    <td colSpan={5} className="py-20 text-left">
                       <div className="flex flex-col items-center gap-2 text-[#D1D5DB]">
                         <Database size={40} />
                         <span className="text-[#D1D5DB] text-[10px] font-black uppercase tracking-widest">수집된 통계 데이터가 없습니다</span>
@@ -376,7 +371,6 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
                     <td className="py-3 text-left text-xs font-black text-[#060606]">{totals.visitors.toLocaleString()}</td>
                     <td className="py-3 text-left text-xs font-black text-[#060606]">{totals.signups}</td>
                     <td className="py-3 text-left text-xs font-black text-[#060606]">{totals.inquiries}</td>
-                    <td className="py-3 text-left font-black text-[#060606] text-sm">{totals.revenue.toLocaleString()}</td>
                   </tr>
                 </tfoot>
               )}

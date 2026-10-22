@@ -784,10 +784,17 @@ export async function getTrafficSources(days = 30) {
   }
 }
 
-// 유입 사이트(소스/매체)별 세션 상위 목록
-export async function getTopSources(days = 30) {
+// 유입 사이트(소스/매체)별 세션 상위 목록 (기간: 'YYYY-MM-DD' 양끝 포함, 최대 366일)
+export async function getTopSources(startDate: string, endDate: string) {
   try {
-    return { items: await fetchGA4TopSources(days) };
+    const start = new Date(`${startDate}T00:00:00Z`).getTime();
+    const end = new Date(`${endDate}T00:00:00Z`).getTime();
+    const days = Math.round((end - start) / (24 * 60 * 60 * 1000)) + 1;
+    if (Number.isNaN(days) || days <= 0 || days > 366) {
+      return { items: [] as { source: string; medium: string; sessions: number }[] };
+    }
+
+    return { items: await fetchGA4TopSources(startDate, endDate) };
   } catch (error) {
     console.error('Failed to fetch top sources:', error);
     return { items: [] as { source: string; medium: string; sessions: number }[] };
