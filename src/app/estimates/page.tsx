@@ -49,7 +49,6 @@ export default function EstimatesPage() {
     const matchesSearch =
       (estimate.title?.toLowerCase() || '').includes(term) ||
       (estimate.customer?.name?.toLowerCase() || '').includes(term) ||
-      (estimate.estimateNum?.toLowerCase() || '').includes(term) ||
       (estimate.id?.toLowerCase() || '').includes(term);
 
     const matchesStatus = statusFilter === 'all' || estimate.status === statusFilter;
@@ -214,7 +213,7 @@ export default function EstimatesPage() {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="견적서 번호, 고객명 또는 프로젝트명 검색..."
+            placeholder="고객명 또는 프로젝트명 검색..."
             className="w-full pl-12 pr-6 py-4 bg-white border border-[#D1D5DB] rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
           />
         </div>
