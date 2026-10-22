@@ -15,7 +15,7 @@ let client: BetaAnalyticsDataClient | null = null;
  * 양끝 따옴표 제거, 문자 그대로의 `\n`(이중 이스케이프 포함)을 실제 줄바꿈으로 변환.
  * 이게 안 되면 OpenSSL이 PEM을 못 읽어 `DECODER routines::unsupported` 에러가 난다.
  */
-function normalizePrivateKey(raw: string) {
+export function normalizePrivateKey(raw: string) {
   return raw.trim().replace(/^"([\s\S]*)"$/, '$1').replace(/\\+n/g, '\n');
 }
 
@@ -115,11 +115,6 @@ export interface GA4SourceRow {
   sessions: number;
 }
 
-export interface GA4KeywordRow {
-  keyword: string;
-  sessions: number;
-}
-
 /**
  * `startDate`~`endDate` ('YYYY-MM-DD', 양끝 포함) 유입 소스(source/medium)별 세션 수, 세션 많은 순 상위 `limit`개.
  */
@@ -136,26 +131,6 @@ export async function fetchGA4TopSources(startDate: string, endDate: string, lim
   return (response.rows ?? []).map(row => ({
     source: row.dimensionValues?.[0]?.value ?? '(not set)',
     medium: row.dimensionValues?.[1]?.value ?? '(not set)',
-    sessions: Number(row.metricValues?.[0]?.value ?? 0),
-  }));
-}
-
-/**
- * 최근 `days`일 검색 키워드(sessionManualTerm, UTM term)별 세션 수, 세션 많은 순 상위 `limit`개.
- * 구글 자연검색 키워드는 GA4에서 대부분 '(not provided)'로 들어오므로 Search Console 연동이 없으면 비어 보일 수 있다.
- */
-export async function fetchGA4TopKeywords(days: number, limit = 30): Promise<GA4KeywordRow[]> {
-  const [response] = await getClient().runReport({
-    property: getPropertyPath(),
-    dateRanges: [{ startDate: `${days - 1}daysAgo`, endDate: 'today' }],
-    dimensions: [{ name: 'sessionManualTerm' }],
-    metrics: [{ name: 'sessions' }],
-    orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
-    limit,
-  });
-
-  return (response.rows ?? []).map(row => ({
-    keyword: row.dimensionValues?.[0]?.value || '(not set)',
     sessions: Number(row.metricValues?.[0]?.value ?? 0),
   }));
 }

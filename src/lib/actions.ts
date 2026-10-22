@@ -5,7 +5,8 @@ import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { generateUniqueSlug } from './slug';
 import { revalidateSite } from './revalidate-site';
 import { syncRecentStats } from './sync';
-import { fetchGA4TrafficSources, fetchGA4TopSources, fetchGA4TopKeywords, fetchGA4DailyTraffic } from './ga4';
+import { fetchGA4TrafficSources, fetchGA4TopSources, fetchGA4DailyTraffic } from './ga4';
+import { fetchSearchConsoleQueries } from './searchConsole';
 
 // 방문자 지표(GA4) 캐시 태그 — syncAllStats에서 무효화
 const GA4_TRAFFIC_TAG = 'ga4-traffic';
@@ -801,13 +802,20 @@ export async function getTopSources(startDate: string, endDate: string) {
   }
 }
 
-// 유입 검색어별 세션 상위 목록
-export async function getTopKeywords(days = 30) {
+// 구글 자연검색 검색어별 클릭·노출 상위 목록 (기간: 'YYYY-MM-DD' 양끝 포함, 최대 366일, 서치 콘솔 기준)
+export async function getTopSearchQueries(startDate: string, endDate: string) {
   try {
-    return { items: await fetchGA4TopKeywords(days) };
+    const start = new Date(`${startDate}T00:00:00Z`).getTime();
+    const end = new Date(`${endDate}T00:00:00Z`).getTime();
+    const days = Math.round((end - start) / (24 * 60 * 60 * 1000)) + 1;
+    if (Number.isNaN(days) || days <= 0 || days > 366) {
+      return { items: [] as { query: string; clicks: number; impressions: number; ctr: number; position: number }[] };
+    }
+
+    return { items: await fetchSearchConsoleQueries(startDate, endDate) };
   } catch (error) {
-    console.error('Failed to fetch top keywords:', error);
-    return { items: [] as { keyword: string; sessions: number }[] };
+    console.error('Failed to fetch top search queries:', error);
+    return { items: [] as { query: string; clicks: number; impressions: number; ctr: number; position: number }[] };
   }
 }
 
