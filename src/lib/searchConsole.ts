@@ -10,6 +10,20 @@ export interface SearchQueryRow {
   position: number;
 }
 
+export interface SearchDailyRow {
+  date: string;
+  clicks: number;
+  impressions: number;
+}
+
+interface SearchAnalyticsRow {
+  keys: string[];
+  clicks: number;
+  impressions: number;
+  ctr: number;
+  position: number;
+}
+
 const SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly';
 
 let auth: GoogleAuth | null = null;
@@ -39,11 +53,8 @@ function getSiteUrl() {
   return siteUrl;
 }
 
-/**
- * 구글 검색 자연검색 검색어별 클릭·노출·CTR·평균 순위 (클릭 많은 순 상위 `limit`개).
- * `startDate`~`endDate`는 'YYYY-MM-DD', 양끝 포함. 서치 콘솔 데이터는 2~3일 늦게 쌓인다.
- */
-export async function fetchSearchConsoleQueries(startDate: string, endDate: string, limit = 30): Promise<SearchQueryRow[]> {
+/** 서치 콘솔 searchAnalytics/query 공통 호출. dimensions에 따라 rows의 keys가 달라진다. */
+async function querySearchAnalytics(body: Record<string, unknown>): Promise<SearchAnalyticsRow[]> {
   const token = await getAuth().getAccessToken();
   const res = await fetch(
     `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(getSiteUrl())}/searchAnalytics/query`,
@@ -53,7 +64,7 @@ export async function fetchSearchConsoleQueries(startDate: string, endDate: stri
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ startDate, endDate, dimensions: ['query'], rowLimit: limit }),
+      body: JSON.stringify(body),
       cache: 'no-store',
     }
   );
@@ -61,14 +72,36 @@ export async function fetchSearchConsoleQueries(startDate: string, endDate: stri
     throw new Error(`Search Console API ${res.status}: ${await res.text()}`);
   }
 
-  const json = (await res.json()) as {
-    rows?: { keys: string[]; clicks: number; impressions: number; ctr: number; position: number }[];
-  };
-  return (json.rows ?? []).map(row => ({
+  const json = (await res.json()) as { rows?: SearchAnalyticsRow[] };
+  return json.rows ?? [];
+}
+
+/**
+ * 구글 자연검색 검색어별 클릭·노출·CTR·평균 순위 (클릭 많은 순 상위 `limit`개).
+ * `startDate`~`endDate`는 'YYYY-MM-DD', 양끝 포함. 서치 콘솔 데이터는 2~3일 늦게 쌓인다.
+ */
+export async function fetchSearchConsoleQueries(startDate: string, endDate: string, limit = 30): Promise<SearchQueryRow[]> {
+  const rows = await querySearchAnalytics({ startDate, endDate, dimensions: ['query'], rowLimit: limit });
+  return rows.map(row => ({
     query: row.keys[0],
     clicks: row.clicks,
     impressions: row.impressions,
     ctr: row.ctr,
     position: row.position,
   }));
+}
+
+/**
+ * 구글 자연검색 일별 클릭·노출 추이 ('YYYY-MM-DD' 오름차순). 데이터가 없는 날은 빠져 있다.
+ * `query`를 주면 그 검색어만 필터링한다.
+ */
+export async function fetchSearchConsoleDaily(startDate: string, endDate: string, query?: string): Promise<SearchDailyRow[]> {
+  const body: Record<string, unknown> = { startDate, endDate, dimensions: ['date'], rowLimit: 400 };
+  if (query) {
+    body.dimensionFilterGroups = [{ filters: [{ dimension: 'query', operator: 'equals', expression: query }] }];
+  }
+  const rows = await querySearchAnalytics(body);
+  return rows
+    .map(row => ({ date: row.keys[0], clicks: row.clicks, impressions: row.impressions }))
+    .sort((a, b) => a.date.localeCompare(b.date));
 }

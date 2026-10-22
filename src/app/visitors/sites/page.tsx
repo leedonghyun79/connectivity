@@ -82,7 +82,7 @@ export default function VisitorSitesPage() {
           <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">유입 경로 분석</h1>
           <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
             <Zap size={14} className="text-[#060606]" />
-            선택한 기간 동안 어디서 방문했는지 소스별 세션을 확인하세요.
+            선택한 기간 동안 어느 사이트에서 방문했는지 도메인별 세션 수를 확인하세요.
           </p>
         </div>
 
@@ -109,7 +109,7 @@ export default function VisitorSitesPage() {
       <div className="bg-white rounded-[8px] border border-[#D1D5DB] overflow-hidden">
         <div className="grid grid-cols-[1fr_120px] gap-4 px-8 py-4 bg-gray-50 border-b border-[#D1D5DB] text-[10px] font-black uppercase tracking-widest text-gray-400">
           <span>도메인 (URL)</span>
-          <span className="text-right">클릭수</span>
+          <span className="text-right">세션</span>
         </div>
 
         {items.length === 0 ? (

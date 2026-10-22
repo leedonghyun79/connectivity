@@ -6,7 +6,7 @@ import { generateUniqueSlug } from './slug';
 import { revalidateSite } from './revalidate-site';
 import { syncRecentStats } from './sync';
 import { fetchGA4TrafficSources, fetchGA4TopSources, fetchGA4DailyTraffic } from './ga4';
-import { fetchSearchConsoleQueries } from './searchConsole';
+import { fetchSearchConsoleQueries, fetchSearchConsoleDaily } from './searchConsole';
 
 // 방문자 지표(GA4) 캐시 태그 — syncAllStats에서 무효화
 const GA4_TRAFFIC_TAG = 'ga4-traffic';
@@ -816,6 +816,23 @@ export async function getTopSearchQueries(startDate: string, endDate: string) {
   } catch (error) {
     console.error('Failed to fetch top search queries:', error);
     return { items: [] as { query: string; clicks: number; impressions: number; ctr: number; position: number }[] };
+  }
+}
+
+// 구글 자연검색 일별 클릭·노출 추이 (기간: 'YYYY-MM-DD' 양끝 포함, 최대 366일, 서치 콘솔 기준)
+export async function getSearchConsoleDaily(startDate: string, endDate: string, query?: string) {
+  try {
+    const start = new Date(`${startDate}T00:00:00Z`).getTime();
+    const end = new Date(`${endDate}T00:00:00Z`).getTime();
+    const days = Math.round((end - start) / (24 * 60 * 60 * 1000)) + 1;
+    if (Number.isNaN(days) || days <= 0 || days > 366) {
+      return { items: [] as { date: string; clicks: number; impressions: number }[] };
+    }
+
+    return { items: await fetchSearchConsoleDaily(startDate, endDate, query) };
+  } catch (error) {
+    console.error('Failed to fetch search console daily:', error);
+    return { items: [] as { date: string; clicks: number; impressions: number }[] };
   }
 }
 

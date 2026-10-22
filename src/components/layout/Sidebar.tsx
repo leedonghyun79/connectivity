@@ -38,7 +38,7 @@ const menuItems = [
     ],
   },
   {
-    name: '유입 경로 분석', icon: Eye, label: '트래픽 지표',
+    name: '방문자 통계', icon: Eye, label: '트래픽 지표',
     children: [
       { name: '기간별 분석', path: '/visitors', icon: CalendarDays, label: '일별·월별 방문 추이' },
       { name: '유입 경로 분석', path: '/visitors/sites', icon: Globe, label: '유입 소스별 세션' },
