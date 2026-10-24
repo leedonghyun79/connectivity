@@ -1,11 +1,20 @@
 import { test, expect } from '@playwright/test';
 
+// 테스트 계정은 코드에 두지 않는다. .env.local(gitignore 대상)에 설정:
+// E2E_ADMIN_USERNAME, E2E_ADMIN_PASSWORD
+const E2E_USERNAME = process.env.E2E_ADMIN_USERNAME;
+const E2E_PASSWORD = process.env.E2E_ADMIN_PASSWORD;
+
 test.describe('Modal Layering and Confirm Systems', () => {
   test.beforeEach(async ({ page }) => {
+    if (!E2E_USERNAME || !E2E_PASSWORD) {
+      throw new Error('E2E_ADMIN_USERNAME / E2E_ADMIN_PASSWORD 환경변수가 필요합니다 (.env.local)');
+    }
+
     // 1. 로그인 수행
     await page.goto('/login');
-    await page.fill('input[placeholder="아이디 입력"]', 'admin');
-    await page.fill('input[placeholder="비밀번호 입력"]', 'admin123!');
+    await page.fill('input[placeholder="아이디 입력"]', E2E_USERNAME);
+    await page.fill('input[placeholder="비밀번호 입력"]', E2E_PASSWORD);
     await page.click('button:has-text("로그인 및 인증 시작")');
     
     // 메인 페이지 로드 대기

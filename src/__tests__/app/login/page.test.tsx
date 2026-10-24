@@ -51,16 +51,16 @@ describe('LoginPage Test', () => {
     const submitButton = screen.getByRole('button', { name: /로그인 및 인증 시작/i });
     
     // 값 입력
-    await userEvent.type(idInput, 'admin');
-    await userEvent.type(pwdInput, 'admin123!');
-    
+    await userEvent.type(idInput, 'test-user');
+    await userEvent.type(pwdInput, 'test-password');
+
     fireEvent.click(submitButton);
-    
+
     await waitFor(() => {
       expect(signIn).toHaveBeenCalledWith('credentials', {
         redirect: false,
-        username: 'admin',
-        password: 'admin123!',
+        username: 'test-user',
+        password: 'test-password',
       });
     });
   });
