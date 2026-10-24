@@ -44,3 +44,14 @@
 - 코드 점검: Brotli/zlib 직접 호출 없음, express·body-parser 미사용, 외부 `fetch` 대상은 신뢰 호스트(Google, Cloudflare, R2, pixelconnect) → 직접 노출 경로 낮음
 - 남은 작업(사용자): 로컬 Node를 24.22.1 이상으로 업데이트(현재 24.20.0). Vercel Node.js 버전은 24.x 확인 완료
 - 참고: 기사 CVE 번호는 공식 nodejs.org 공지와 대조 권장
+
+## 4. 2026-10-25 Next.js 14 라인 패치 적용
+
+- `next` 14.1.0 → **14.2.35** (정확 버전 고정, 2025-12-11 배포, 14일 규칙 통과)
+- `brace-expansion` → 2.1.7 (transitive, 2026-09-14 배포, 14일 규칙 통과)
+- 보류: `zod` 4.6.6+ (high 해결 버전, 2026-10-11 배포 → 14일 경과 후 2026-10-26 이후 적용)
+- 잔존 (prod audit 기준 critical 2 / high 3):
+  - `next` critical: 14.x 라인에 패치 없음. 수정 버전은 15.5.x 이상(최신 16.x). Image Optimization RCE(GHSA-p293, Windows 서버), SSRF, cache poisoning 등 다수. 14.x 유지 시 해소 불가 → 15.x 전환 여부 결정 필요
+  - `jspdf` critical, `dompurify`, `postcss`, `uuid`, `exceljs`: 수정 버전이 메이저 업그레이드(jspdf 4.x, exceljs 4.x 등). 별도 검토
+- 빌드/린트/타입체크 통과, 테스트 실패 7건은 기존과 동일
+- Next 버전 문서 정정: CLAUDE.md "Next.js 15" → "Next.js 14 (14.2.35 고정)"
