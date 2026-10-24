@@ -3,7 +3,7 @@
 > Pixel Connect — 소규모 에이전시·프리랜서를 위한 고객 관계 관리(CRM) 어드민 시스템
 
 ## 기술 스택
-- **Next.js 14** (App Router, 14.2.35 고정) · **TypeScript** · **Tailwind CSS**
+- **Next.js 15** (App Router, 15.5.28 고정) · **React 19** · **TypeScript** · **Tailwind CSS**
 - **Prisma ORM** + **PostgreSQL** (데이터베이스)
 - **shadcn/ui** + **Recharts** (UI/차트)
 - **Zustand** (클라이언트 상태 관리)

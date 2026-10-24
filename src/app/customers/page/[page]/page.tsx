@@ -11,7 +11,7 @@ import DataTable, { Column } from '@/components/common/DataTable';
 import { PAGE_SIZE } from '@/components/common/Pagination';
 import ConfirmModal from '@/components/common/ConfirmModal';
 
-export default function CustomersPage({ params }: { params: { page: string } }) {
+export default function CustomersPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [customers, setCustomers] = useState<any[]>([]);
