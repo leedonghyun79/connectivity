@@ -35,3 +35,12 @@
 - 고위험(#4 인증/권한): 승인 후 진행
 - 완료 기준: `npm run verify` 통과
 - 두 레포는 따로 커밋. 브랜치는 둘 다 현재 main (메모리상 connectivity 작업 브랜치는 develop)
+
+## 3. 2026-10-25 Node.js Brotli 디코더 취약점 (CVE-2026-111497)
+
+- 대상: Node.js 22.x / 24.x / 26.x 내장 Brotli 디코더 (경계 밖 쓰기, CWE-787)
+- 패치: 22.23.4 · 24.22.1 · 26.12.1 (2026-10-21 배포)
+- 조치: `package.json`에 `engines.node: "24.x"` 추가, `.nvmrc` 추가(`24`)
+- 코드 점검: Brotli/zlib 직접 호출 없음, express·body-parser 미사용, 외부 `fetch` 대상은 신뢰 호스트(Google, Cloudflare, R2, pixelconnect) → 직접 노출 경로 낮음
+- 남은 작업(사용자): 로컬 Node를 24.22.1 이상으로 업데이트(현재 24.20.0). Vercel Node.js 버전은 24.x 확인 완료
+- 참고: 기사 CVE 번호는 공식 nodejs.org 공지와 대조 권장
