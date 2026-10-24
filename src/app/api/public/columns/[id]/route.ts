@@ -20,10 +20,11 @@ function stripFirstImage(html: string): string {
 // 라우트 폴더명이 [id]인 건 기존 경로 유지용이며 실제 값은 slug다.
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const row = await prisma.column.findUnique({
-    where: { slug: params.id },
+    where: { slug: id },
   });
 
   if (!row || row.status !== 'published') {

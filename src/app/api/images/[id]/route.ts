@@ -9,9 +9,10 @@ export const runtime = 'nodejs';
 // middleware 매처에서 api/images 를 제외한다.
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const img = await dbImageStore.get(params.id);
+  const { id } = await params;
+  const img = await dbImageStore.get(id);
   if (!img) {
     return new NextResponse('Not found', { status: 404 });
   }

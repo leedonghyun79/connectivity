@@ -18,9 +18,10 @@ function stripFirstImage(html: string): string {
 // pixelconnect 공개 사이트가 포트폴리오 상세를 가져가는 공개 엔드포인트 (인증 없음)
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const row = await prisma.portfolio.findUnique({ where: { id: params.id } });
+  const { id } = await params;
+  const row = await prisma.portfolio.findUnique({ where: { id } });
 
   if (!row || row.status !== 'published') {
     return NextResponse.json({ error: 'not found' }, { status: 404 });
