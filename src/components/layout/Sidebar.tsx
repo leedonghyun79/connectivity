@@ -80,7 +80,7 @@ export default function Sidebar() {
         <Link href="/" className="flex items-center gap-3 group">
           <div className="w-10 h-10 rounded-[8px] flex items-center justify-center overflow-hidden group-hover:scale-110 transition-transform">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/favicon196.png" alt="Pixel Connect" className="w-full h-full object-cover" />
+            <img src="/favicon196.png" alt="Pixel Connect" className="w-full h-full object-cover brightness-0" />
           </div>
           <span className="text-xl font-black text-[#060606] tracking-tighter">CONNECTIVITY</span>
         </Link>
