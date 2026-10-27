@@ -385,7 +385,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                         <button
                           type="button"
                           onClick={() => removeItem(index)}
-                          className="p-1.5 text-[#4B5563] hover:text-red-500 hover:bg-red-50 rounded-[8px] transition-all opacity-0 group-hover:opacity-100"
+                          className="p-1.5 text-[#4B5563] hover:text-[#060606] hover:bg-gray-100 rounded-[8px] transition-all opacity-0 group-hover:opacity-100"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -471,7 +471,7 @@ export default function EstimateModal({ isOpen, onClose, onSuccess, editData }: 
                             <button
                               type="button"
                               onClick={() => { setSignMenuOpen(false); setStamp(null); }}
-                              className="w-full px-3 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 rounded-[8px] text-left transition-all"
+                              className="w-full px-3 py-2.5 text-sm font-bold text-[#060606] hover:bg-gray-100 rounded-[8px] text-left transition-all"
                             >
                               지우기
                             </button>

@@ -76,19 +76,12 @@ function LogsContent() {
   const totalPages = Math.max(1, Math.ceil(logs.length / PAGE_SIZE));
   const pageLogs = logs.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  if (isLoading && !stats) return <PageLoader title="일일 활동 내역" />;
+  if (isLoading && !stats) return <PageLoader title="일일 활동 내역" toolbar="nav" />;
 
   return (
-    <div className="w-full animate-in fade-in duration-700 py-10 space-y-10">
+    <div className="w-full animate-in fade-in duration-700 pt-0 pb-10 space-y-4">
       {/* 상단 네비게이션 및 헤더 */}
-      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
-        <div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">일일 활동 내역</h1>
-          <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
-            <Activity size={14} className="text-[#060606]" />
-            하루 동안 진행된 업무와 기록을 확인합니다.
-          </p>
-        </div>
+      <div className="flex flex-col sm:flex-row justify-end items-end gap-6 !mt-[30px]">
 
         {/* 날짜 컨트롤러 */}
         <div className="flex items-center bg-gray-50 p-2 rounded-[8px] border border-[#D1D5DB] shadow-sm">
@@ -120,10 +113,18 @@ function LogsContent() {
 
       {/* 최근 활동 내역 섹션 */}
       {isLoading ? (
-        <div className="bg-white rounded-[8px] border border-[#D1D5DB] p-8 space-y-4 animate-pulse min-h-[500px]">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-12 bg-gray-50 rounded-[8px]" />
-          ))}
+        <div className="overflow-hidden rounded-[8px] border border-[#D1D5DB] bg-white shadow-sm min-h-[500px]">
+          <div className="p-8 space-y-5 animate-pulse">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center justify-between gap-6">
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-1/3 bg-gray-100 rounded" />
+                  <div className="h-2.5 w-1/5 bg-gray-50 rounded" />
+                </div>
+                <div className="h-6 w-16 bg-gray-100 rounded-[8px]" />
+              </div>
+            ))}
+          </div>
         </div>
       ) : (
         <DataTable

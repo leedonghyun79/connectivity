@@ -47,17 +47,10 @@ export default function SettingsPage() {
   if (isLoading || !config) return <PageLoader title="환경 설정" variant="settings" />;
 
   return (
-    <div className="space-y-10 py-10 max-w-6xl">
+    <div className="space-y-4 pt-0 pb-10 w-full">
       {/* 헤더 섹션 */}
-      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
-        <div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">환경 설정</h1>
-          <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
-            <Settings size={14} className="text-[#060606]" />
-            핵심 플랫폼 환경설정 및 보안 프로토콜을 관리합니다. <span className="text-[#060606] uppercase">v2.4.0 안정화 버전</span>
-          </p>
-        </div>
-        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 px-4 py-2 rounded-full border border-[#D1D5DB]">
+      <div className="flex flex-col sm:flex-row justify-end items-end gap-6 !mt-[30px]">
+        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
           마지막 동기화: {new Date(config.updatedAt || Date.now()).toLocaleTimeString('ko-KR', { timeZone: 'Asia/Seoul' })}
         </div>
       </div>
@@ -540,7 +533,7 @@ function StorageTab() {
             {pageLogs.map((log) => (
               <div key={log.id} className="flex items-center justify-between px-5 py-3 bg-gray-50 rounded-[8px]">
                 <div className="flex items-center gap-3">
-                  <div className={`w-1.5 h-1.5 rounded-full ${log.action === 'LOGIN' ? 'bg-blue-400' : 'bg-black'}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full ${log.action === 'LOGIN' ? 'bg-gray-400' : 'bg-black'}`} />
                   <span className="text-[11px] font-bold text-gray-700">{log.message}</span>
                 </div>
                 <span className="text-[10px] font-black text-gray-400 font-mono">{formatTime(log.createdAt)}</span>
@@ -555,14 +548,14 @@ function StorageTab() {
       </div>
 
       {/* 데이터 초기화 경고 */}
-      <div className="p-6 bg-red-50 rounded-[8px] border border-red-100">
-        <div className="text-[9px] font-black text-red-500 uppercase tracking-widest mb-2">위험 구역</div>
+      <div className="p-6 bg-gray-100 rounded-[8px] border border-[#060606]">
+        <div className="text-[9px] font-black text-[#060606] uppercase tracking-widest mb-2">위험 구역</div>
         <div className="flex items-center justify-between">
-          <p className="text-sm font-bold text-red-600">모든 데이터를 초기화합니다. 이 작업은 되돌릴 수 없습니다.</p>
+          <p className="text-sm font-bold text-[#060606]">모든 데이터를 초기화합니다. 이 작업은 되돌릴 수 없습니다.</p>
           <button 
             onClick={handleReset}
             disabled={isResetting}
-            className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-red-500 border border-red-200 rounded-[8px] hover:bg-red-100 transition-all ml-4 whitespace-nowrap disabled:opacity-50"
+            className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-[#060606] border border-[#060606] rounded-[8px] hover:bg-gray-200 transition-all ml-4 whitespace-nowrap disabled:opacity-50"
           >
             {isResetting ? '초기화 중...' : '초기화'}
           </button>

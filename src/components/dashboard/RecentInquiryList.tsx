@@ -3,11 +3,10 @@
 import { useState, useEffect } from 'react';
 import { getRecentInquiries } from '@/lib/actions';
 import { AlertCircle, CheckCircle2, ArrowUpRight } from 'lucide-react';
+import { formatDot } from '@/lib/dateFormat';
 import Link from 'next/link';
-import { useFormatDate } from '@/lib/SystemConfigContext';
 
 export default function RecentInquiryList() {
-  const fmt = useFormatDate();
   const [inquiries, setInquiries] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -19,23 +18,22 @@ export default function RecentInquiryList() {
   }, []);
 
   return (
-    <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] flex flex-col gap-6 group">
+    <div className="bg-white p-4 rounded-[8px] border border-[#D1D5DB] flex flex-col gap-6 group">
       {/* 헤더 */}
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-center">
         <div>
-          <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">
-            지원 인박스
-          </div>
-          <h3 className="text-2xl font-black text-[#060606] tracking-tighter uppercase">
+          <h4 className="my-[15px] text-[21px] font-black text-[#060606] tracking-tighter uppercase">
             최근 문의
-          </h3>
+          </h4>
         </div>
-        <Link
-          href="/inquiries"
-          className="p-3 bg-gray-50 rounded-[8px] text-[#D1D5DB] group-hover:bg-black group-hover:text-white transition-all duration-300"
-        >
-          <ArrowUpRight size={20} />
-        </Link>
+        {!isLoading && inquiries.length > 0 && (
+          <Link
+            href="/inquiries"
+            className="p-3 bg-gray-50 rounded-[8px] text-[#D1D5DB] group-hover:bg-black group-hover:text-white transition-all duration-300 shrink-0"
+          >
+            <ArrowUpRight size={20} />
+          </Link>
+        )}
       </div>
 
       {/* 목록 */}
@@ -66,7 +64,7 @@ export default function RecentInquiryList() {
               {/* 상태 아이콘 */}
               <div className={`p-2 rounded-[8px] flex-shrink-0 ${
                 inquiry.status === 'pending'
-                  ? 'bg-orange-50 text-orange-500'
+                  ? 'bg-gray-100 text-[#060606]'
                   : 'bg-gray-50 text-gray-400'
               }`}>
                 {inquiry.status === 'pending'
@@ -76,18 +74,18 @@ export default function RecentInquiryList() {
 
               {/* 내용 */}
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-black text-gray-900 truncate group-hover:translate-x-0.5 transition-transform">
+                <div className="text-base font-black text-gray-900 truncate group-hover:translate-x-0.5 transition-transform">
                   {inquiry.title}
                 </div>
                 <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">
-                  {inquiry.authorName || inquiry.customer?.name || '익명'} · {fmt(inquiry.createdAt)}
+                  {formatDot(inquiry.createdAt)}
                 </div>
               </div>
 
               {/* 상태 뱃지 */}
               <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full flex-shrink-0 ${
                 inquiry.status === 'pending'
-                  ? 'bg-orange-50 text-orange-500 border border-orange-100'
+                  ? 'bg-gray-100 text-[#060606] border border-gray-200'
                   : 'bg-black text-white'
               }`}>
                 {inquiry.status === 'pending' ? '대기' : '완료'}
@@ -96,16 +94,6 @@ export default function RecentInquiryList() {
           ))
         )}
       </div>
-
-      {/* 푸터 */}
-      {!isLoading && inquiries.length > 0 && (
-        <Link
-          href="/inquiries"
-          className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-[#060606] transition-colors flex items-center gap-1.5 self-end"
-        >
-          전체 보기 <ArrowUpRight size={11} />
-        </Link>
-      )}
     </div>
   );
 }

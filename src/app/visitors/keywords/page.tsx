@@ -123,19 +123,12 @@ export default function VisitorKeywordsPage() {
   // 데이터와 차트 너비가 둘 다 준비돼야 차트를 그린다. 그 전까지는 스켈레톤.
   const isChartReady = daily !== null && chartWidth > 0;
 
-  if (isLoading) return <PageLoader title="유입 검색어 분석" variant="table" />;
+  if (isLoading) return <PageLoader title="유입 검색어 분석" variant="table" toolbar="dates" />;
 
   return (
-    <div className="w-full animate-in fade-in duration-700 py-10 space-y-10">
+    <div className="w-full animate-in fade-in duration-700 pt-0 pb-10 space-y-4">
       {/* 프리미엄 헤더 섹션 */}
-      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
-        <div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">유입 검색어 분석</h1>
-          <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
-            <Zap size={14} className="text-[#060606]" />
-            선택한 기간 동안 구글 자연검색으로 들어온 검색어를 확인하세요. (서치 콘솔 기준, 2~3일 늦게 반영)
-          </p>
-        </div>
+      <div className="flex flex-col sm:flex-row justify-end items-end gap-6 !mt-[30px]">
 
         <div className="flex items-center gap-2">
           <input
@@ -158,7 +151,7 @@ export default function VisitorKeywordsPage() {
       </div>
 
       <div className="bg-white rounded-[8px] border border-[#D1D5DB] overflow-hidden">
-        <div className="grid grid-cols-[1fr_100px_100px_80px_100px] gap-4 px-8 py-4 bg-gray-50 border-b border-[#D1D5DB] text-[10px] font-black uppercase tracking-widest text-gray-400">
+        <div className="grid grid-cols-[1fr_100px_100px_80px_100px] gap-4 px-8 h-[65px] items-center bg-white border-b border-[#D1D5DB] text-[11px] font-bold uppercase tracking-wider text-gray-400">
           <span>검색어</span>
           <span className="text-right">클릭수</span>
           <span className="text-right">노출수</span>
@@ -167,9 +160,15 @@ export default function VisitorKeywordsPage() {
         </div>
 
         {isFetching ? (
-          <div className="p-8 space-y-3 animate-pulse">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-12 bg-gray-50 rounded-[8px]" />
+          <div className="p-8 space-y-5 animate-pulse">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center justify-between gap-6">
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-1/3 bg-gray-100 rounded" />
+                  <div className="h-2.5 w-1/5 bg-gray-50 rounded" />
+                </div>
+                <div className="h-6 w-16 bg-gray-100 rounded-[8px]" />
+              </div>
             ))}
           </div>
         ) : items.length === 0 ? (
@@ -183,7 +182,7 @@ export default function VisitorKeywordsPage() {
                 setChartWidth(0);
                 setSelected(item);
               }}
-              className="grid grid-cols-[1fr_100px_100px_80px_100px] gap-4 px-8 py-5 border-b border-[#D1D5DB] last:border-b-0 items-center cursor-pointer hover:bg-gray-50/50 transition-colors"
+              className="grid grid-cols-[1fr_100px_100px_80px_100px] gap-4 px-8 py-5 border-b border-gray-200 last:border-b-0 items-center cursor-pointer hover:bg-gray-50/50 transition-colors"
             >
               <span className="text-sm font-bold text-[#060606] truncate">{item.query}</span>
               <span className="text-sm font-black text-[#060606] text-right tabular-nums">{item.clicks.toLocaleString()}</span>
@@ -211,8 +210,7 @@ export default function VisitorKeywordsPage() {
           >
             <div className="flex justify-between items-start">
               <div>
-                <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">검색어 상세</div>
-                <h3 className="text-2xl font-black text-[#060606] tracking-tighter break-all">{selected.query}</h3>
+                <h4 className="my-[15px] text-[21px] font-black text-[#060606] tracking-tighter break-all">{selected.query}</h4>
               </div>
               <button onClick={() => setSelected(null)} className="p-2 rounded-[8px] hover:bg-gray-50 transition-colors">
                 <X size={20} />
@@ -258,8 +256,8 @@ export default function VisitorKeywordsPage() {
                 <AreaChart width={chartWidth} height={CHART_HEIGHT} data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorImpressions" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#060606" stopOpacity={0.15} />
+                      <stop offset="95%" stopColor="#060606" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#000" stopOpacity={0.3} />
@@ -306,11 +304,11 @@ export default function VisitorKeywordsPage() {
                     type="monotone"
                     dataKey="impressions"
                     name="노출수"
-                    stroke="#3b82f6"
+                    stroke="#060606"
                     strokeWidth={3}
                     fillOpacity={1}
                     fill="url(#colorImpressions)"
-                    activeDot={{ r: 6, strokeWidth: 0, fill: '#3b82f6' }}
+                    activeDot={{ r: 6, strokeWidth: 0, fill: '#060606' }}
                   />
                   <Area
                     isAnimationActive={false}

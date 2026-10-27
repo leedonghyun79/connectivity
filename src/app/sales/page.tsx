@@ -4,33 +4,38 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { DollarSign, TrendingUp, CreditCard, Download, Activity, Calendar, ArrowUpRight, Filter, PieChart as PieIcon } from 'lucide-react';
+import { DollarSign, TrendingUp, CreditCard, Download, Activity, Calendar, Filter, PieChart as PieIcon } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import PageLoader from '@/components/common/PageLoader';
 import Pagination, { PAGE_SIZE } from '@/components/common/Pagination';
-import { getTransactions, getSalesStats } from '@/lib/actions';
+import { getTransactions, getSalesStats, getMonthlySalesStats } from '@/lib/actions';
 import TransactionModal from '@/components/modals/TransactionModal';
+import StatChart from '@/components/dashboard/StatChart';
 import { Plus } from 'lucide-react';
 import { useFormatDate } from '@/lib/SystemConfigContext';
+import { formatDot } from '@/lib/dateFormat';
 
 export default function SalesPage() {
   const fmt = useFormatDate();
   const [isLoading, setIsLoading] = useState(true);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
+  const [monthlyData, setMonthlyData] = useState<{ name: string; amount: number }[]>([]);
   const [filterStatus, setFilterStatus] = useState<'all' | 'completed' | 'pending'>('all');
   const [txPage, setTxPage] = useState(1);
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
-    const [txData, statData] = await Promise.all([
+    const [txData, statData, monthData] = await Promise.all([
       getTransactions(),
-      getSalesStats()
+      getSalesStats(),
+      getMonthlySalesStats()
     ]);
     setTransactions(txData);
     setStats(statData);
+    setMonthlyData(monthData);
     setIsLoading(false);
   }, []);
 
@@ -84,28 +89,21 @@ export default function SalesPage() {
   };
 
   return (
-    <div className="space-y-10 py-10">
+    <div className="space-y-4 pt-0 pb-10">
       {/* 헤더 섹션 */}
-      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
-        <div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">매출 통계 분석</h1>
-          <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
-            <TrendingUp size={14} className="text-[#060606]" />
-            실시간 재무 지표 및 매출 흐름을 모니터링합니다. <span className="text-[#060606] uppercase">2026 회계연도 </span>
-          </p>
-        </div>
+      <div className="flex flex-col sm:flex-row justify-end items-end gap-6">
         <div className="flex gap-4">
           <button 
             onClick={downloadCSV}
-            className="px-6 py-3 bg-white border border-[#D1D5DB] rounded-[8px] text-[11px] font-black text-[#060606] uppercase tracking-widest hover:bg-black hover:text-white transition-all flex items-center gap-2 active:scale-95">
+            className="px-4 py-2.5 bg-white border border-[#D1D5DB] rounded-[8px] text-[10px] font-black text-[#060606] uppercase tracking-widest hover:bg-black hover:text-white transition-all flex items-center gap-2 active:scale-95">
             <Download size={16} />
-            리포트 추출
+            데이터 내보내기
           </button>
         </div>
       </div>
 
       {/* 핵심 지표 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 !mt-[30px]">
         <MetricCard
           title="총 매출액"
           value={`${Number(stats.totalRevenue).toLocaleString()}`}
@@ -137,20 +135,19 @@ export default function SalesPage() {
         />
       </div>
 
+      {/* 매출 통계 */}
+      <StatChart data={monthlyData} />
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* 월별 매출 그래프 */}
         <div className="lg:col-span-2 bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-[480px] flex flex-col group">
           <div className="flex justify-between items-start mb-8">
             <div>
-              <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">기간별 성장</div>
-              <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">월별 매출 흐름</h3>
+              <h4 className="my-[15px] text-[21px] font-black text-[#060606] uppercase tracking-tighter">일별 매출 흐름</h4>
             </div>
-            <button className="p-3 bg-gray-50 rounded-[8px] text-[#D1D5DB] group-hover:bg-black group-hover:text-white transition-all">
-              <ArrowUpRight size={20} />
-            </button>
           </div>
           <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center">
-            {!stats.monthlySales || stats.monthlySales.every((m: any) => m.amount === 0) ? (
+            {!stats.dailySales || stats.dailySales.every((d: any) => d.amount === 0) ? (
               <div className="relative w-full h-[220px]">
                 <div className="h-full flex items-end gap-2 pb-4 blur-[5px] opacity-60">
                   {[45, 70, 55, 85, 60, 75].map((height, i) => (
@@ -164,17 +161,18 @@ export default function SalesPage() {
               </div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stats.monthlySales}>
+                <BarChart data={stats.dailySales}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f8fafc" />
                   <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#cbd5e1', fontSize: 10, fontWeight: 700 }} dy={10} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: '#cbd5e1', fontSize: 10, fontWeight: 700 }} />
                   <RechartsTooltip
                     cursor={{ fill: '#f8fafc' }}
-                    contentStyle={{ backgroundColor: '#000', borderRadius: '16px', border: 'none', color: '#fff', padding: '12px' }}
-                    itemStyle={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase' }}
-                    labelStyle={{ display: 'none' }}
+                    contentStyle={{ backgroundColor: '#fff', borderRadius: '16px', border: '1px solid #D1D5DB', color: '#060606', padding: '12px' }}
+                    itemStyle={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', color: '#060606' }}
+                    formatter={(value: number) => [`${Number(value).toLocaleString()} ₩`, '매출']}
+                    labelStyle={{ color: '#94a3b8', fontSize: '10px', fontWeight: 700, marginBottom: '4px' }}
                   />
-                  <Bar dataKey="amount" fill="#000000" radius={[12, 12, 0, 0]} barSize={40} isAnimationActive={false} />
+                  <Bar dataKey="amount" fill="#000000" radius={[12, 12, 0, 0]} barSize={16} isAnimationActive={false} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -185,8 +183,7 @@ export default function SalesPage() {
         <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-[480px] flex flex-col group">
           <div className="flex justify-between items-start mb-10">
             <div>
-              <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">자산 구성</div>
-              <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">서비스 비중</h3>
+              <h4 className="my-[15px] text-[21px] font-black text-[#060606] uppercase tracking-tighter">서비스 비중</h4>
             </div>
             <div className="p-3 bg-gray-50 rounded-[8px] text-[#4B5563] group-hover:text-[#060606] transition-all">
               <PieIcon size={20} />
@@ -229,8 +226,7 @@ export default function SalesPage() {
       <div className="bg-white rounded-[8px] border border-[#D1D5DB] overflow-hidden">
         <div className="px-10 py-8 border-b border-[#D1D5DB] flex justify-between items-end">
           <div>
-            <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">거래 히스토리</div>
-            <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">전체 거래 내역</h3>
+            <h4 className="my-[15px] text-[21px] font-black text-[#060606] uppercase tracking-tighter">전체 거래 내역</h4>
           </div>
           <div className="flex gap-4">
             <button 
@@ -257,7 +253,7 @@ export default function SalesPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50/30 h-[84px]">
+              <tr className="border-b border-[#D1D5DB] h-[65px]">
                 <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">거래 참조 번호</th>
                 <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">책임 당사자</th>
                 <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left">거래 금액</th>
@@ -265,7 +261,7 @@ export default function SalesPage() {
                 <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left">프로토콜 날짜</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#D1D5DB]">
+            <tbody className="divide-y divide-gray-200">
               {transactions && transactions.length > 0 ? (
                 pageTx
                   .map((tx) => (
@@ -274,9 +270,9 @@ export default function SalesPage() {
                       #{tx.id.substring(0, 8).toUpperCase()}
                     </td>
                     <td className="px-10 py-8">
-                      <div className="font-black text-gray-900 uppercase tracking-tight">{tx.customerName || tx.customer?.name}</div>
+                      <div className="text-base font-black text-gray-900 uppercase tracking-tight">{tx.customerName || tx.customer?.name}</div>
                     </td>
-                    <td className="px-10 py-8 text-left font-black text-[#060606] text-lg">
+                    <td className="px-10 py-8 text-left font-black text-[#060606] text-base">
                       {Number(tx.amount).toLocaleString()} <span className="text-xs text-[#4B5563]">₩</span>
                     </td>
                     <td className="px-10 py-8 text-left">
@@ -285,8 +281,8 @@ export default function SalesPage() {
                         {tx.status === 'completed' ? '정산 완료' : '대기 중'}
                       </span>
                     </td>
-                    <td className="px-10 py-8 text-left text-gray-400 font-mono text-xs font-bold">
-                      {fmt(tx.date)}
+                    <td className="px-10 py-8 text-left text-gray-900 text-base font-bold">
+                      {formatDot(tx.date)}
                     </td>
                   </tr>
                 ))

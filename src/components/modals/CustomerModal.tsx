@@ -176,12 +176,12 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                       setFormData({ ...formData, email: e.target.value });
                       if (errors.email) setErrors({ ...errors, email: '' });
                     }}
-                    className={`w-full pl-12 pr-6 py-4 bg-white border rounded-[8px] outline-none transition-all font-bold text-[#060606] placeholder:text-gray-200 ${errors.email ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-[#D1D5DB] focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                    className={`w-full pl-12 pr-6 py-4 bg-white border rounded-[8px] outline-none transition-all font-bold text-[#060606] placeholder:text-gray-200 ${errors.email ? 'border-[#060606] focus:ring-4 focus:ring-black/5' : 'border-[#D1D5DB] focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                     placeholder="example@vault.com"
                     readOnly={isReadOnly}
                   />
                 </div>
-                {errors.email && <p className="mt-2 text-[10px] text-red-500 font-black uppercase tracking-widest ml-1">{errors.email}</p>}
+                {errors.email && <p className="mt-2 text-[10px] text-[#060606] font-black uppercase tracking-widest ml-1">{errors.email}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -211,12 +211,12 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer, is
                         setFormData({ ...formData, phone: val });
                         if (errors.phone) setErrors({ ...errors, phone: '' });
                       }}
-                      className={`w-full pl-12 pr-6 py-4 bg-white border rounded-[8px] outline-none transition-all font-bold text-[#060606] placeholder:text-gray-200 ${errors.phone ? 'border-red-500 focus:ring-4 focus:ring-red-100' : 'border-[#D1D5DB] focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
+                      className={`w-full pl-12 pr-6 py-4 bg-white border rounded-[8px] outline-none transition-all font-bold text-[#060606] placeholder:text-gray-200 ${errors.phone ? 'border-[#060606] focus:ring-4 focus:ring-black/5' : 'border-[#D1D5DB] focus:ring-4 focus:ring-black/5'} ${isReadOnly ? 'bg-gray-50 text-gray-500 cursor-default' : ''}`}
                       placeholder="숫자만 입력"
                       readOnly={isReadOnly}
                     />
                   </div>
-                  {errors.phone && <p className="mt-2 text-[10px] text-red-500 font-black uppercase tracking-widest ml-1">{errors.phone}</p>}
+                  {errors.phone && <p className="mt-2 text-[10px] text-[#060606] font-black uppercase tracking-widest ml-1">{errors.phone}</p>}
                 </div>
               </div>
 

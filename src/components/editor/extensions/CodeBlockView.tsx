@@ -26,10 +26,10 @@ export function CodeBlockView({ node, updateAttributes, extension }: NodeViewPro
         contentEditable={false}
         value={current}
         onChange={(e) => updateAttributes({ language: e.target.value })}
-        className="absolute right-2 top-2 z-10 h-6 rounded-[8px] border border-white/20 bg-white/10 px-1.5 text-[11px] text-slate-300 focus:outline-none"
+        className="absolute right-2 top-2 z-10 h-6 rounded-[8px] border border-white/20 bg-white/10 px-1.5 text-[11px] text-gray-300 focus:outline-none"
       >
         {LANGUAGES.map((l) => (
-          <option key={l.value} value={l.value} className="text-slate-900">
+          <option key={l.value} value={l.value} className="text-[#060606]">
             {l.label}
           </option>
         ))}

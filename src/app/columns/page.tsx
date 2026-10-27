@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { getColumns, deleteColumn, publishColumn, unpublishColumn } from '@/lib/actions';
 import ConfirmModal from '@/components/common/ConfirmModal';
 import Pagination, { PAGE_SIZE } from '@/components/common/Pagination';
-import { useFormatDate } from '@/lib/SystemConfigContext';
+import { formatDot } from '@/lib/dateFormat';
 
 type Column = {
   id: string;
@@ -21,7 +21,6 @@ type Column = {
 
 export default function ColumnsPage() {
   const router = useRouter();
-  const fmt = useFormatDate();
   const [rows, setRows] = useState<Column[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -63,12 +62,8 @@ export default function ColumnsPage() {
   const pageRows = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
-    <div className="space-y-6 py-10">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-5xl font-black tracking-tight text-[#060606]">칼럼 관리</h1>
-          <p className="mt-1 text-sm text-gray-400">픽셀커넥트 공개 사이트에 발행하는 칼럼</p>
-        </div>
+    <div className="space-y-4 pt-0 pb-10">
+      <div className="flex items-center justify-end">
         <Link
           href="/columns/new"
           className="inline-flex items-center gap-1.5 rounded-[8px] bg-black px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
@@ -98,7 +93,7 @@ export default function ColumnsPage() {
         ) : (
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="h-[84px] border-b border-[#D1D5DB] text-[11px] font-bold uppercase tracking-wider text-gray-400">
+              <tr className="h-[65px] border-b border-[#D1D5DB] text-[11px] font-bold uppercase tracking-wider text-gray-400">
                 <th className="px-6 !py-0 align-middle">제목</th>
                 <th className="px-4 py-4">카테고리</th>
                 <th className="px-4 py-4">상태</th>
@@ -112,22 +107,22 @@ export default function ColumnsPage() {
                 const published = r.status === 'published';
                 const rowBusy = busyId === r.id;
                 return (
-                  <tr key={r.id} className="border-b border-[#D1D5DB] last:border-0 hover:bg-gray-50/60">
+                  <tr key={r.id} className="border-b border-gray-200 last:border-0 hover:bg-gray-50/60">
                     <td className="px-6 py-4">
-                      <Link href={`/columns/${r.id}/edit`} className="font-semibold text-[#060606] hover:underline">
+                      <Link href={`/columns/${r.id}/edit`} className="text-base font-bold text-gray-900 hover:underline">
                         {r.title || '(제목 없음)'}
                       </Link>
                     </td>
-                    <td className="px-4 py-4 text-gray-500">{r.category}</td>
+                    <td className="px-4 py-4 text-base font-bold text-gray-900">{r.category}</td>
                     <td className="px-4 py-4">
                       <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
-                        published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+                        published ? 'bg-black text-white' : 'bg-gray-100 text-gray-500'
                       }`}>
                         {published ? '발행됨' : '임시저장'}
                       </span>
                     </td>
-                    <td className="px-4 py-4 text-gray-500">{fmt(r.publishedAt)}</td>
-                    <td className="px-4 py-4 text-gray-500">{fmt(r.updatedAt)}</td>
+                    <td className="px-4 py-4 text-base font-bold text-gray-900">{formatDot(r.publishedAt)}</td>
+                    <td className="px-4 py-4 text-base font-bold text-gray-900">{formatDot(r.updatedAt)}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-1.5">
                         <button
@@ -148,7 +143,7 @@ export default function ColumnsPage() {
                         ) : (
                           <button
                             onClick={() => doPublish(r.id)} disabled={rowBusy}
-                            className="rounded-[8px] p-1.5 text-gray-400 hover:bg-gray-100 hover:text-green-600 disabled:opacity-40"
+                            className="rounded-[8px] p-1.5 text-gray-400 hover:bg-gray-100 hover:text-[#060606] disabled:opacity-40"
                             title="발행"
                           >
                             {rowBusy ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
@@ -156,7 +151,7 @@ export default function ColumnsPage() {
                         )}
                         <button
                           onClick={() => setDeleteId(r.id)}
-                          className="rounded-[8px] p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
+                          className="rounded-[8px] p-1.5 text-gray-400 hover:bg-gray-100 hover:text-[#060606]"
                           title="삭제"
                         >
                           <Trash2 size={15} />

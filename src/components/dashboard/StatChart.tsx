@@ -1,48 +1,28 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { getMonthlySalesStats } from '@/lib/actions';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip as RechartsTooltip, ResponsiveContainer
 } from 'recharts';
-import { TrendingUp, ArrowUpRight } from 'lucide-react';
-import Link from 'next/link';
+import { TrendingUp } from 'lucide-react';
 
 // 스켈레톤 막대 높이 — 서버/클라이언트 렌더 결과가 같아야 하므로 고정값 사용
 const SKELETON_HEIGHTS = [45, 70, 55, 85, 60, 75];
 
-export default function StatChart() {
-  const [data, setData] = useState<{ name: string; amount: number }[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    getMonthlySalesStats().then(result => {
-      setData(result);
-      setIsLoading(false);
-    });
-  }, []);
+// 데이터는 부모(매출 분석 페이지)에서 함께 불러와 넘김 → 카드 단독 로딩 스켈레톤이 생기지 않음
+export default function StatChart({ data, isLoading = false }: { data: { name: string; amount: number }[]; isLoading?: boolean }) {
 
   const total = data.reduce((sum, d) => sum + d.amount, 0);
 
   return (
-    <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] flex flex-col gap-6 h-full group">
+    <div className="bg-white p-4 rounded-[8px] border border-[#D1D5DB] flex flex-col gap-6 h-full group">
       {/* 헤더 */}
       <div className="flex justify-between items-start">
         <div>
-          <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">
-            월별 수익 흐름
-          </div>
-          <h3 className="text-2xl font-black text-[#060606] tracking-tighter uppercase">
-            매출 통계
-          </h3>
+          <h4 className="my-[15px] text-[21px] font-black text-[#060606] tracking-tighter uppercase">
+            월별 매출 통계
+          </h4>
         </div>
-        <Link
-          href="/sales"
-          className="p-3 bg-gray-50 rounded-[8px] text-[#D1D5DB] group-hover:bg-black group-hover:text-white transition-all duration-300"
-        >
-          <ArrowUpRight size={20} />
-        </Link>
       </div>
 
       {/* 총액 */}
@@ -52,20 +32,20 @@ export default function StatChart() {
             {total.toLocaleString()}
           </span>
           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-            KRW 누적
+            총 원
           </span>
         </div>
       )}
 
       {/* 차트 영역 */}
-      <div className="flex-1 min-h-[180px]">
+      <div className="h-[220px]">
         {isLoading ? (
           // 스켈레톤
-          <div className="h-full flex items-end gap-2 pb-4">
+          <div className="h-full flex items-end justify-around pb-8">
             {SKELETON_HEIGHTS.map((height, i) => (
               <div
                 key={i}
-                className="flex-1 bg-gray-100 rounded-t-lg animate-pulse"
+                className="w-20 bg-gray-100 rounded-t-[8px] animate-pulse"
                 style={{ height: `${height}%` }}
               />
             ))}
@@ -111,10 +91,11 @@ export default function StatChart() {
                   fontSize: '10px',
                   fontWeight: 900,
                 }}
+                itemStyle={{ color: '#fff' }}
                 formatter={(value: number) => [`${value.toLocaleString()} ₩`, '매출']}
-                labelStyle={{ display: 'none' }}
+                labelStyle={{ color: '#94a3b8', fontSize: '10px', fontWeight: 700, marginBottom: '4px' }}
               />
-              <Bar dataKey="amount" fill="#000000" radius={[8, 8, 0, 0]} barSize={28} isAnimationActive={false} />
+              <Bar dataKey="amount" fill="#000000" radius={[8, 8, 0, 0]} barSize={80} isAnimationActive={false} />
             </BarChart>
           </ResponsiveContainer>
         )}

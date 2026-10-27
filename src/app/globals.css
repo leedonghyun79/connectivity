@@ -46,6 +46,11 @@ thead th {
   font-family: var(--font-poppins), "Poppins", sans-serif;
 }
 
+/* 표 헤더 높이 통일 (모든 표) */
+thead th {
+  height: 65px;
+}
+
 /* 명시적 Poppins 클래스 — !important로 항상 우선 적용 */
 .font-poppins {
   font-family: var(--font-poppins), "Poppins", sans-serif !important;

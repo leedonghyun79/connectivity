@@ -72,19 +72,12 @@ export default function VisitorSitesPage() {
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
   const pageItems = items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  if (isLoading) return <PageLoader title="유입 경로 분석" variant="table" />;
+  if (isLoading) return <PageLoader title="유입 경로 분석" variant="table" toolbar="dates" />;
 
   return (
-    <div className="w-full animate-in fade-in duration-700 py-10 space-y-10">
+    <div className="w-full animate-in fade-in duration-700 pt-0 pb-10 space-y-4">
       {/* 프리미엄 헤더 섹션 */}
-      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
-        <div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">유입 경로 분석</h1>
-          <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
-            <Zap size={14} className="text-[#060606]" />
-            선택한 기간 동안 어느 사이트에서 방문했는지 도메인별 세션 수를 확인하세요.
-          </p>
-        </div>
+      <div className="flex flex-col sm:flex-row justify-end items-end gap-6 !mt-[30px]">
 
         <div className="flex items-center gap-2">
           <input
@@ -107,7 +100,7 @@ export default function VisitorSitesPage() {
       </div>
 
       <div className="bg-white rounded-[8px] border border-[#D1D5DB] overflow-hidden">
-        <div className="grid grid-cols-[1fr_120px] gap-4 px-8 py-4 bg-gray-50 border-b border-[#D1D5DB] text-[10px] font-black uppercase tracking-widest text-gray-400">
+        <div className="grid grid-cols-[1fr_120px] gap-4 px-8 h-[65px] items-center bg-white border-b border-[#D1D5DB] text-[11px] font-bold uppercase tracking-wider text-gray-400">
           <span>도메인 (URL)</span>
           <span className="text-right">세션</span>
         </div>
@@ -118,10 +111,10 @@ export default function VisitorSitesPage() {
           pageItems.map((item) => (
             <div
               key={`${item.source}-${item.medium}`}
-              className="grid grid-cols-[1fr_120px] gap-4 px-8 py-5 border-b border-[#D1D5DB] last:border-b-0 items-center"
+              className="grid grid-cols-[1fr_120px] gap-4 px-8 py-5 border-b border-gray-200 last:border-b-0 items-center"
             >
-              <span className="text-sm font-bold text-[#060606] truncate">{sourceLabel(item)}</span>
-              <span className="text-sm font-black text-[#060606] text-right tabular-nums">{item.sessions.toLocaleString()}</span>
+              <span className="text-base font-bold text-gray-900 truncate">{sourceLabel(item)}</span>
+              <span className="text-base font-bold text-gray-900 text-right tabular-nums">{item.sessions.toLocaleString()}</span>
             </div>
           ))
         )}

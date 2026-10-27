@@ -29,11 +29,10 @@ export default function DailySummary() {
   }, []);
 
   return (
-    <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-full flex flex-col">
+    <div className="bg-white p-4 rounded-[8px] border border-[#D1D5DB] h-full flex flex-col">
       <div className="flex justify-between items-start mb-8">
         <div>
-          <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">업무 현황</div>
-          <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">오늘 작업 요약</h3>
+          <h4 className="my-[15px] text-[21px] font-black text-[#060606] uppercase tracking-tighter">오늘 작업 요약</h4>
         </div>
         <div className="p-3 text-right">
           <div className="text-xl font-black text-[#4B5563] tracking-tighter leading-none">{today}</div>

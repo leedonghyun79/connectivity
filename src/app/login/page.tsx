@@ -89,10 +89,10 @@ export default function LoginPage() {
                 value={formData.username}
                 onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
                 className={`w-full pl-12 pr-4 py-4 bg-gray-50 border rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none font-bold text-sm transition-all text-gray-900 placeholder:text-gray-400
-                  ${errors.username ? 'border-red-300 focus:border-red-500' : 'border-transparent focus:border-[#D1D5DB]'}`}
+                  ${errors.username ? 'border-[#060606] focus:border-[#060606]' : 'border-transparent focus:border-[#D1D5DB]'}`}
               />
             </div>
-            {errors.username && <p className="text-xs text-red-500 font-bold ml-1 mt-1">{errors.username}</p>}
+            {errors.username && <p className="text-xs text-[#060606] font-bold ml-1 mt-1">{errors.username}</p>}
           </div>
 
           <div className="space-y-2 group">
@@ -107,7 +107,7 @@ export default function LoginPage() {
                 value={formData.password}
                 onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                 className={`w-full pl-12 pr-12 py-4 bg-gray-50 border rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none font-bold text-sm transition-all text-gray-900 placeholder:text-gray-400
-                  ${errors.password ? 'border-red-300 focus:border-red-500' : 'border-transparent focus:border-[#D1D5DB]'}`}
+                  ${errors.password ? 'border-[#060606] focus:border-[#060606]' : 'border-transparent focus:border-[#D1D5DB]'}`}
               />
               <button
                 type="button"
@@ -117,7 +117,7 @@ export default function LoginPage() {
                 {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
               </button>
             </div>
-            {errors.password && <p className="text-xs text-red-500 font-bold ml-1 mt-1">{errors.password}</p>}
+            {errors.password && <p className="text-xs text-[#060606] font-bold ml-1 mt-1">{errors.password}</p>}
           </div>
 
           <button

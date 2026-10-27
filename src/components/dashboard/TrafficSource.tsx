@@ -45,7 +45,7 @@ export default function TrafficSource() {
   // 데이터 도착 전에는 도넛과 막대 모양의 스켈레톤 표시
   if (isLoading) {
     return (
-      <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-full flex flex-col animate-pulse">
+      <div className="bg-white p-4 rounded-[8px] border border-[#D1D5DB] h-full flex flex-col animate-pulse">
         <div className="space-y-2 mb-10">
           <div className="h-2.5 w-20 bg-gray-50 rounded" />
           <div className="h-6 w-40 bg-gray-100 rounded" />
@@ -66,15 +66,14 @@ export default function TrafficSource() {
   }
 
   return (
-    <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-full flex flex-col group">
+    <div className="bg-white p-4 rounded-[8px] border border-[#D1D5DB] h-full flex flex-col group">
       <div className="flex justify-between items-start mb-10">
         <div>
-          <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">유입 로그</div>
-          <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">유입 경로 분석</h3>
+          <h4 className="my-[15px] text-[21px] font-black text-[#060606] uppercase tracking-tighter">유입 경로 분석</h4>
         </div>
         <Link
           href="/visitors/sites"
-          className="p-3 bg-gray-50 rounded-[8px] text-[#D1D5DB] group-hover:bg-black group-hover:text-white transition-all duration-300"
+          className="p-3 bg-gray-50 rounded-[8px] text-[#D1D5DB] group-hover:bg-black group-hover:text-white transition-all duration-300 shrink-0"
         >
           <ArrowUpRight size={20} />
         </Link>

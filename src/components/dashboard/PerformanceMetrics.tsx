@@ -125,31 +125,81 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
   const totalPages = Math.max(1, Math.ceil(stats.length / PAGE_SIZE));
   const pageRows = stats.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  return (
-    <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-[650px] flex flex-col group">
-      <div className="flex justify-between items-start mb-3">
-        <div>
-          <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">트래픽 분석</div>
-          <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">방문자 통계</h3>
-        </div>
-        <div className="flex items-center gap-2">
+  // 일별/월별 탭과 기간 선택은 카드 밖(위)에 둔다
+  const detailControls = (
+    <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <div className="flex gap-2">
+        {(['daily', 'monthly'] as DetailView[]).map(view => (
           <button
-            onClick={() => setIsDetail(v => !v)}
-            className="px-3 py-2 rounded-[8px] text-[10px] font-black uppercase tracking-widest text-[#4B5563] hover:text-[#060606] hover:bg-gray-50 transition-all"
+            key={view}
+            onClick={() => setDetailView(view)}
+            className={`px-3 py-1.5 rounded-[8px] text-[10px] font-black uppercase tracking-widest transition-all ${detailView === view ? 'bg-black text-white' : 'bg-gray-50 text-gray-400 hover:text-[#060606]'}`}
           >
-            {isDetail ? '요약' : '자세히 보기'}
+            {view === 'daily' ? '일별' : '월별'}
+            <span className="ml-1 text-[8px] normal-case tracking-normal font-bold opacity-70">
+              {view === 'daily' ? '(30일 기준)' : '(12개월 기준)'}
+            </span>
           </button>
-          <button
-            onClick={handleSync}
-            disabled={isSyncing}
-            className={`p-3 rounded-[8px] transition-all flex items-center gap-2 group/btn ${isSyncing ? 'bg-black text-white' : 'bg-gray-50 text-gray-200 group-hover:bg-black group-hover:text-white'}`}
-            title="원격 DB 동기화"
-          >
-            <RefreshCcw size={20} className={isSyncing ? 'animate-spin' : 'group-hover/btn:rotate-180 transition-transform duration-500'} />
-            {isSyncing && <span className="text-[10px] font-black uppercase tracking-widest">동기화 중</span>}
-          </button>
-        </div>
+        ))}
       </div>
+
+      {detailView === 'daily' ? (
+        <div className="flex items-center gap-2">
+          <input
+            type="date"
+            value={dailyStart}
+            max={dailyEnd}
+            onChange={e => handleDailyChange('start', e.target.value)}
+            className="px-3 py-1.5 rounded-[8px] bg-gray-50 text-xs font-bold text-gray-600 outline-none focus:ring-1 focus:ring-black"
+          />
+          <span className="text-xs font-black text-[#4B5563]">~</span>
+          <input
+            type="date"
+            value={dailyEnd}
+            min={dailyStart}
+            max={today}
+            onChange={e => handleDailyChange('end', e.target.value)}
+            className="px-3 py-1.5 rounded-[8px] bg-gray-50 text-xs font-bold text-gray-600 outline-none focus:ring-1 focus:ring-black"
+          />
+        </div>
+      ) : (
+        <div className="flex items-center gap-2">
+          <input
+            type="month"
+            value={monthStart}
+            max={monthEnd}
+            onChange={e => handleMonthChange('start', e.target.value)}
+            className="px-3 py-1.5 rounded-[8px] bg-gray-50 text-xs font-bold text-gray-600 outline-none focus:ring-1 focus:ring-black"
+          />
+          <span className="text-xs font-black text-[#4B5563]">~</span>
+          <input
+            type="month"
+            value={monthEnd}
+            min={monthStart}
+            max={thisMonth}
+            onChange={e => handleMonthChange('end', e.target.value)}
+            className="px-3 py-1.5 rounded-[8px] bg-gray-50 text-xs font-bold text-gray-600 outline-none focus:ring-1 focus:ring-black"
+          />
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <>
+    <div className="flex justify-start items-center mb-3">
+      <button
+        onClick={handleSync}
+        disabled={isSyncing}
+        className={`p-3 rounded-[8px] transition-all flex items-center gap-2 group/btn ${isSyncing ? 'bg-black text-white' : 'bg-gray-50 text-gray-200 group-hover:bg-black group-hover:text-white'}`}
+        title="원격 DB 동기화"
+      >
+        <RefreshCcw size={20} className={isSyncing ? 'animate-spin' : 'group-hover/btn:rotate-180 transition-transform duration-500'} />
+        {isSyncing && <span className="text-[10px] font-black uppercase tracking-widest">동기화 중</span>}
+      </button>
+    </div>
+    {isDetail && detailControls}
+    <div className="bg-white p-4 rounded-[8px] border border-[#D1D5DB] h-[650px] flex flex-col group">
 
       {!isDetail && (
         <div className="flex-1 min-h-0 w-full flex flex-col">
@@ -255,75 +305,18 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
 
       {isDetail && (
         <>
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-            <div className="flex gap-2">
-              {(['daily', 'monthly'] as DetailView[]).map(view => (
-                <button
-                  key={view}
-                  onClick={() => setDetailView(view)}
-                  className={`px-3 py-1.5 rounded-[8px] text-[10px] font-black uppercase tracking-widest transition-all ${detailView === view ? 'bg-black text-white' : 'bg-gray-50 text-gray-400 hover:text-[#060606]'}`}
-                >
-                  {view === 'daily' ? '일별' : '월별'}
-                  <span className="ml-1 text-[8px] normal-case tracking-normal font-bold opacity-70">
-                    {view === 'daily' ? '(30일 기준)' : '(12개월 기준)'}
-                  </span>
-                </button>
-              ))}
-            </div>
-
-            {detailView === 'daily' ? (
-              <div className="flex items-center gap-2">
-                <input
-                  type="date"
-                  value={dailyStart}
-                  max={dailyEnd}
-                  onChange={e => handleDailyChange('start', e.target.value)}
-                  className="px-3 py-1.5 rounded-[8px] bg-gray-50 text-xs font-bold text-gray-600 outline-none focus:ring-1 focus:ring-black"
-                />
-                <span className="text-xs font-black text-[#4B5563]">~</span>
-                <input
-                  type="date"
-                  value={dailyEnd}
-                  min={dailyStart}
-                  max={today}
-                  onChange={e => handleDailyChange('end', e.target.value)}
-                  className="px-3 py-1.5 rounded-[8px] bg-gray-50 text-xs font-bold text-gray-600 outline-none focus:ring-1 focus:ring-black"
-                />
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <input
-                  type="month"
-                  value={monthStart}
-                  max={monthEnd}
-                  onChange={e => handleMonthChange('start', e.target.value)}
-                  className="px-3 py-1.5 rounded-[8px] bg-gray-50 text-xs font-bold text-gray-600 outline-none focus:ring-1 focus:ring-black"
-                />
-                <span className="text-xs font-black text-[#4B5563]">~</span>
-                <input
-                  type="month"
-                  value={monthEnd}
-                  min={monthStart}
-                  max={thisMonth}
-                  onChange={e => handleMonthChange('end', e.target.value)}
-                  className="px-3 py-1.5 rounded-[8px] bg-gray-50 text-xs font-bold text-gray-600 outline-none focus:ring-1 focus:ring-black"
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="flex-1 min-h-0">
+          <div className="flex-1 min-h-0 -mx-4">
             <table className="w-full text-left">
-              <thead className="border-b border-[#D1D5DB]">
-                <tr>
-                  <th className="pb-4 uppercase tracking-widest text-[9px] font-black text-gray-400">{isMonthly ? '월' : '날짜'}</th>
-                  <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">페이지 뷰</th>
-                  <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">순 방문자수</th>
-                  <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">가입</th>
-                  <th className="pb-4 text-left uppercase tracking-widest text-[9px] font-black text-gray-400">리드</th>
+              <thead>
+                <tr className="h-[65px] border-b border-[#D1D5DB] text-[11px] font-bold uppercase tracking-wider text-gray-400">
+                  <th className="px-6 !py-0 align-middle text-left">{isMonthly ? '월' : '날짜'}</th>
+                  <th className="px-6 !py-0 align-middle text-left">페이지 뷰</th>
+                  <th className="px-6 !py-0 align-middle text-left">순 방문자수</th>
+                  <th className="px-6 !py-0 align-middle text-left">가입</th>
+                  <th className="px-6 !py-0 align-middle text-left">리드</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#D1D5DB]">
+              <tbody className="divide-y divide-gray-200">
                 {!isLoaded ? (
                   <tr>
                     <td colSpan={5} className="py-6">
@@ -337,17 +330,17 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
                 ) : pageRows.length > 0 ? (
                   pageRows.map((row) => (
                     <tr key={isMonthly ? row.month : row.date.toString()} className="hover:bg-gray-50/50 transition-colors group/row">
-                      <td className="py-3 text-xs font-black text-[#060606]">
+                      <td className="px-6 py-5 text-base font-bold text-gray-900">
                         {isMonthly
                           ? row.month
                           : new Date(row.date).toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' })}
                       </td>
-                      <td className="py-3 text-left text-xs font-bold text-gray-900">{row.pageViews.toLocaleString()}</td>
-                      <td className="py-3 text-left text-xs font-bold text-gray-900">{row.visitors.toLocaleString()}</td>
-                      <td className="py-3 text-left text-xs font-black text-[#060606]">
+                      <td className="px-6 py-5 text-left text-base font-bold text-gray-900">{row.pageViews.toLocaleString()}</td>
+                      <td className="px-6 py-5 text-left text-base font-bold text-gray-900">{row.visitors.toLocaleString()}</td>
+                      <td className="px-6 py-5 text-left text-base font-bold text-gray-900">
                         <span className={row.signups > 0 ? 'bg-black text-white px-2 py-0.5 rounded-[8px]' : 'text-[#4B5563]'}>{row.signups}</span>
                       </td>
-                      <td className="py-3 text-left text-xs font-bold text-gray-900">{row.inquiries}</td>
+                      <td className="px-6 py-5 text-left text-base font-bold text-gray-900">{row.inquiries}</td>
                     </tr>
                   ))
                 ) : (
@@ -367,10 +360,10 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
                     <td className="py-3 text-xs font-black text-[#060606] uppercase tracking-widest">
                       {isMonthly ? '기간 합계 (월)' : '기간 합계 (일)'}
                     </td>
-                    <td className="py-3 text-left text-xs font-black text-[#060606]">{totals.pageViews.toLocaleString()}</td>
-                    <td className="py-3 text-left text-xs font-black text-[#060606]">{totals.visitors.toLocaleString()}</td>
-                    <td className="py-3 text-left text-xs font-black text-[#060606]">{totals.signups}</td>
-                    <td className="py-3 text-left text-xs font-black text-[#060606]">{totals.inquiries}</td>
+                    <td className="px-6 py-5 text-left text-base font-black text-[#060606]">{totals.pageViews.toLocaleString()}</td>
+                    <td className="px-6 py-5 text-left text-base font-black text-[#060606]">{totals.visitors.toLocaleString()}</td>
+                    <td className="px-6 py-5 text-left text-base font-black text-[#060606]">{totals.signups}</td>
+                    <td className="px-6 py-5 text-left text-base font-black text-[#060606]">{totals.inquiries}</td>
                   </tr>
                 </tfoot>
               )}
@@ -385,5 +378,6 @@ export default function PerformanceMetrics({ initialDetail = false }: { initialD
         </>
       )}
     </div>
+    </>
   );
 }

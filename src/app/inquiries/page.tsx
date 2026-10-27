@@ -1,21 +1,33 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Search, MessageCircle, AlertCircle, CheckCircle2, MessageSquare } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Search, Filter, MessageCircle, AlertCircle, CheckCircle2, MessageSquare } from 'lucide-react';
 import PageLoader from '@/components/common/PageLoader';
 import Pagination, { PAGE_SIZE } from '@/components/common/Pagination';
 import { getInquiries, getInquiryStats } from '@/lib/actions';
 import InquiryDetailModal from '@/components/modals/InquiryDetailModal';
-import { useFormatDate } from '@/lib/SystemConfigContext';
+import { formatDot } from '@/lib/dateFormat';
 
 type FilterTab = 'all' | 'pending' | 'answered';
 
 export default function InquiriesPage() {
-  const fmt = useFormatDate();
   const [isLoading, setIsLoading] = useState(true);
   const [inquiries, setInquiries] = useState<any[]>([]);
   const [stats, setStats] = useState({ total: 0, pending: 0, answered: 0 });
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
+
+  // 필터 드롭메뉴 바깥을 누르면 닫기
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setIsFilterOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [selectedInquiry, setSelectedInquiry] = useState<any>(null);
@@ -79,7 +91,7 @@ export default function InquiriesPage() {
   if (isLoading) return <PageLoader title="문의 게시판" variant="inquiries" />;
 
   return (
-    <div className="space-y-10 py-10">
+    <div className="space-y-4 pt-0 pb-10">
       {/* 모달 */}
       <InquiryDetailModal
         isOpen={isModalOpen}
@@ -92,18 +104,9 @@ export default function InquiriesPage() {
       />
 
       {/* 헤더 섹션 */}
-      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
-        <div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">문의 게시판</h1>
-          <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
-            <MessageSquare size={14} className="text-[#060606]" />
-            고객님들의 소중한 문의사항을 확인하고 관리합니다. <span className="text-[#060606] uppercase">지원 센터</span>
-          </p>
-        </div>
-      </div>
 
       {/* 요약 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white p-8 rounded-[8px] border border-[#D1D5DB] group hover:bg-black hover:text-white transition-all duration-500">
           <div className="flex justify-between items-start mb-6">
             <p className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest group-hover:text-gray-500">답변 대기 중</p>
@@ -140,30 +143,9 @@ export default function InquiriesPage() {
       </div>
 
       {/* 검색 및 필터 탭 */}
-      <div className="flex flex-col sm:flex-row gap-6 items-center justify-between">
-        {/* 필터 탭 */}
-        <div className="flex gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar">
-          {([
-            { id: 'all', label: '전체 보기' },
-            { id: 'pending', label: '답변 대기' },
-            { id: 'answered', label: '해결 완료' },
-          ] as { id: FilterTab; label: string }[]).map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-2.5 rounded-[8px] text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
-                activeTab === tab.id
-                  ? 'bg-black text-white'
-                  : 'bg-white border border-[#D1D5DB] text-[#4B5563] hover:text-[#060606]'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
+      <div className="flex flex-col sm:flex-row gap-6 items-center justify-start !mt-[30px]">
         {/* 검색 */}
-        <div className="relative w-full sm:w-96 group">
+        <div className="relative w-full sm:w-[480px] group">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4B5563] group-focus-within:text-[#060606] transition-all" size={20} />
           <input
             type="text"
@@ -173,6 +155,44 @@ export default function InquiriesPage() {
             className="w-full pl-12 pr-6 py-4 bg-white border border-[#D1D5DB] rounded-[8px] focus:ring-4 focus:ring-black/5 outline-none text-sm font-bold transition-all"
           />
         </div>
+
+        {/* 상태 필터 */}
+        <div className="relative shrink-0" ref={filterRef}>
+          <button
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
+            className={`flex items-center gap-3 px-8 py-4 rounded-[8px] text-[11px] font-black uppercase tracking-widest transition-all border
+              ${isFilterOpen || activeTab !== 'all' ? 'bg-black text-white border-black' : 'bg-white text-gray-400 border-[#D1D5DB] hover:text-[#060606] hover:border-black'}`}
+          >
+            <Filter size={18} />
+            {activeTab === 'all' ? '상세 검색 필터' : `필터: ${activeTab === 'pending' ? '답변 대기' : '해결 완료'}`}
+          </button>
+
+          {isFilterOpen && (
+            <div className="absolute left-0 top-full mt-4 w-64 bg-white border border-[#D1D5DB] rounded-[8px] shadow-[0_40px_80px_rgba(0,0,0,0.12)] z-40 p-6 animate-in fade-in slide-in-from-top-4 duration-300">
+              <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-4">상태별 보기</div>
+              <div className="space-y-2">
+                {([
+                  { id: 'all', label: '전체 보기' },
+                  { id: 'pending', label: '답변 대기' },
+                  { id: 'answered', label: '해결 완료' },
+                ] as { id: FilterTab; label: string }[]).map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => {
+                      setActiveTab(option.id);
+                      setIsFilterOpen(false);
+                    }}
+                    className={`w-full px-4 py-3 text-left text-[11px] font-black uppercase tracking-widest rounded-[8px] transition-colors ${
+                      activeTab === option.id ? 'bg-black text-white' : 'text-gray-500 hover:bg-gray-50'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* 문의 목록 테이블 */}
@@ -180,7 +200,7 @@ export default function InquiriesPage() {
         <div className="min-h-[600px] overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50/30 border-b border-[#D1D5DB] h-[84px]">
+              <tr className="border-b border-[#D1D5DB] h-[65px]">
                 <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left w-24">번호</th>
                 <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 w-32 text-left">유형</th>
                 <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400">문의 제목 및 내용</th>
@@ -189,7 +209,7 @@ export default function InquiriesPage() {
                 <th className="px-10 !py-0 align-middle uppercase tracking-[0.2em] text-[10px] font-black text-gray-400 text-left w-40">상태</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#D1D5DB]">
+            <tbody className="divide-y divide-gray-200">
               {filteredInquiries.length > 0 ? (
                 pageInquiries.map((inquiry, index) => (
                   <tr
@@ -199,7 +219,7 @@ export default function InquiriesPage() {
                   >
                     <td className="px-10 py-8 text-left text-xs font-mono font-bold text-[#4B5563] group-hover:text-[#060606] transition-colors">{index + 1}</td>
                     <td className="px-10 py-8 text-left">
-                      <span className="inline-block whitespace-nowrap px-3 py-1 rounded-[8px] bg-gray-50 text-gray-400 text-[10px] font-black uppercase tracking-widest border border-[#D1D5DB]">
+                      <span className="text-base font-bold text-gray-900">
                         {inquiry.type || '일반'}
                       </span>
                     </td>
@@ -211,11 +231,11 @@ export default function InquiriesPage() {
                       {inquiry.authorName || inquiry.customer?.name || '익명'}
                     </td>
                     <td className="px-10 py-8 text-left text-gray-400 font-mono text-[10px] font-bold uppercase tracking-widest">
-                      {fmt(inquiry.createdAt)}
+                      {formatDot(inquiry.createdAt)}
                     </td>
                     <td className="px-10 py-8 text-left">
                       {inquiry.status === 'pending' ? (
-                        <span className="inline-flex items-center whitespace-nowrap px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-orange-100 bg-orange-50 text-orange-600">
+                        <span className="inline-flex items-center whitespace-nowrap px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-gray-200 bg-gray-100 text-[#060606]">
                           답변 대기
                         </span>
                       ) : (

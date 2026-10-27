@@ -8,11 +8,9 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
-  Legend
+  Tooltip
 } from 'recharts';
-import { TrendingUp, ArrowUpRight } from 'lucide-react';
-import Link from 'next/link';
+import { TrendingUp } from 'lucide-react';
 import { useChartSize } from '@/hooks/useChartSize';
 
 export default function VisitorTrendCard() {
@@ -29,7 +27,7 @@ export default function VisitorTrendCard() {
 
   // 시간순으로 뒤집어서 표시
   const chartData = [...stats].reverse().map(s => ({
-    date: new Date(s.date).toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' }),
+    date: new Date(s.date).toLocaleDateString('ko-KR', { month: '2-digit', day: '2-digit' }).replace(/\.$/, ''),
     pv: s.pageViews,
     visitor: s.visitors,
   }));
@@ -43,25 +41,12 @@ export default function VisitorTrendCard() {
   const isEmpty = totalPv === 0 && totalVisitor === 0;
 
   return (
-    <div className="bg-white p-10 rounded-[8px] border border-[#D1D5DB] h-[420px] flex flex-col group">
-      <div className="flex justify-between items-start mb-3">
+    <div className="bg-white p-4 rounded-[8px] border border-[#D1D5DB] h-full flex flex-col group">
+      <div className="flex justify-between items-center mb-3">
         <div>
-          <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">트래픽 분석</div>
-          <h3 className="text-2xl font-black text-[#060606] uppercase tracking-tighter">방문자 분석</h3>
+          <h4 className="my-[15px] text-[21px] font-black text-[#060606] uppercase tracking-tighter">방문자 분석 (7일)</h4>
         </div>
-        <Link
-          href="/visitors"
-          className="p-3 bg-gray-50 rounded-[8px] text-[#D1D5DB] group-hover:bg-black group-hover:text-white transition-all duration-300"
-        >
-          <ArrowUpRight size={20} />
-        </Link>
       </div>
-
-      {!isLoading && stats.length > 0 && (
-        <p className="text-sm font-bold text-gray-400 mb-2">
-          페이지뷰 <span className="text-[#060606]">{totalPv.toLocaleString()}</span> · 방문자 <span className="text-[#060606]">{totalVisitor.toLocaleString()}</span> (최근 7일)
-        </p>
-      )}
 
       {/* 차트 영역 — 항상 렌더링해서 크기를 재고, 준비되기 전에는 스켈레톤 */}
       <div ref={chart.ref} className="flex-1 min-h-0 w-full relative">
@@ -84,8 +69,15 @@ export default function VisitorTrendCard() {
           </div>
         ) : (
           <div className="relative h-full w-full">
+            {/* 요약 + 범례: 차트 상단 영역 안에 표시 */}
+            <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-end pointer-events-none">
+              <div className="flex items-center gap-4 text-xs font-black uppercase tracking-[0.1em]">
+                <span className="flex items-center gap-2 text-[#060606]"><span className="w-3 h-3 bg-black" />방문자 {totalVisitor.toLocaleString()}</span>
+                <span className="flex items-center gap-2 text-[#4B5563]"><span className="w-3 h-3 bg-[#CBD5E1]" />페이지뷰 {totalPv.toLocaleString()}</span>
+              </div>
+            </div>
             <div className={isEmpty ? 'h-full w-full blur-[5px] opacity-60' : 'h-full w-full'}>
-          <AreaChart width={chart.width} height={chart.height} data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+          <AreaChart width={chart.width} height={chart.height} data={chartData} margin={{ top: 44, right: 10, left: -25, bottom: 0 }}>
             <defs>
               <linearGradient id="dashColorPv" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.25} />
@@ -124,19 +116,12 @@ export default function VisitorTrendCard() {
               itemStyle={{ fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', color: '#fff' }}
               labelStyle={{ color: '#94a3b8', fontSize: '12px', marginBottom: '4px', fontWeight: 700 }}
             />
-            <Legend
-              iconType="rect"
-              wrapperStyle={{ fontSize: '12px', fontWeight: 900, paddingTop: '20px', textTransform: 'uppercase', letterSpacing: '0.1em' }}
-              align="right"
-              verticalAlign="top"
-              height={36}
-            />
             <Area
               isAnimationActive={false}
               type="monotone"
               dataKey="pv"
               name="페이지뷰"
-              stroke="#94a3b8"
+              stroke="#CBD5E1"
               strokeWidth={3}
               fill="none"
               activeDot={{ r: 4, strokeWidth: 0, fill: '#000' }}

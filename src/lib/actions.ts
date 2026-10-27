@@ -581,11 +581,30 @@ export async function getSalesStats() {
       value
     })).sort((a, b) => b.value - a.value);
 
+    // 4. 일별 매출 집계 (최근 14일, 거래 없는 날은 0)
+    const dailyMap: Record<string, number> = {};
+    transactions.forEach(tx => {
+      const date = new Date(tx.date);
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      dailyMap[key] = (dailyMap[key] || 0) + Number(tx.amount);
+    });
+
+    const dailySales = Array.from({ length: 14 }).map((_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (13 - i));
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      return {
+        name: `${d.getMonth() + 1}.${d.getDate()}`,
+        amount: dailyMap[key] || 0,
+      };
+    });
+
     return {
       totalRevenue,
       completedCount,
       pendingCount,
       monthlySales,
+      dailySales,
       serviceDistribution
     };
   } catch (error) {

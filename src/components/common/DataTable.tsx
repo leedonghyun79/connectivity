@@ -34,7 +34,7 @@ export default function DataTable<T extends { id: string }>({
       <div className="overflow-x-auto min-h-[500px]">
         <table className="w-full text-left">
           <thead>
-            <tr className="bg-gray-50/50 border-b border-[#D1D5DB] h-[84px]">
+            <tr className="border-b border-[#D1D5DB] h-[65px]">
               {columns.map((col, index) => (
                 <th
                   key={index}
@@ -45,7 +45,7 @@ export default function DataTable<T extends { id: string }>({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#D1D5DB]">
+          <tbody className="divide-y divide-gray-200">
             {data.length > 0 ? (
               data.map((item) => (
                 <tr

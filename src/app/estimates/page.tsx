@@ -10,10 +10,9 @@ import { toast } from 'sonner';
 import DataTable from '@/components/common/DataTable';
 import { PAGE_SIZE } from '@/components/common/Pagination';
 import ConfirmModal from '@/components/common/ConfirmModal';
-import { useFormatDate } from '@/lib/SystemConfigContext';
+import { formatDot } from '@/lib/dateFormat';
 
 export default function EstimatesPage() {
-  const fmt = useFormatDate();
   const [isLoading, setIsLoading] = useState(true);
   const [estimates, setEstimates] = useState<any[]>([]);
   const [stats, setStats] = useState({ totalAmount: 0, pending: 0, approved: 0 });
@@ -120,27 +119,7 @@ export default function EstimatesPage() {
   if (!estimates) return <div>데이터를 불러오지 못했습니다.</div>;
 
   return (
-    <div className="space-y-10 py-10">
-      {/* 헤더 섹션 */}
-      <div className="flex flex-col sm:flex-row justify-between items-end gap-6 border-b-2 border-black pb-8">
-        <div>
-          <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">견적서 관리</h1>
-          <p className="text-sm font-bold text-gray-400 mt-2 flex items-center gap-2">
-            <FileText size={14} />
-            발행된 견적서를 관리하고 새로운 견적서를 작성합니다.
-          </p>
-        </div>
-        <div className="flex gap-4">
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="px-8 py-3 bg-black text-white rounded-[8px] text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 flex items-center gap-2"
-          >
-            <Plus size={16} />
-            신규 견적서 작성
-          </button>
-        </div>
-      </div>
-
+    <div className="space-y-4 pt-0 pb-10">
       <EstimateModal
         isOpen={isModalOpen}
         onClose={() => {
@@ -168,7 +147,7 @@ export default function EstimatesPage() {
       />
 
       {/* 요약 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white p-8 rounded-[8px] border border-[#D1D5DB]">
           <div className="flex items-center justify-between mb-6">
             <span className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest">총 가치 평가</span>
@@ -206,7 +185,7 @@ export default function EstimatesPage() {
       </div>
 
       {/* 검색 및 필터 */}
-      <div className="flex flex-col sm:flex-row gap-6 items-center justify-between">
+      <div className="flex flex-col sm:flex-row gap-6 items-center justify-start !mt-[30px]">
         <div className="relative w-full sm:w-[480px] group">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#060606] transition-all" size={20} />
           <input
@@ -235,7 +214,7 @@ export default function EstimatesPage() {
           {/* 필터 드롭다운 */}
           {isFilterOpen && (
             <div
-              className="absolute right-0 top-full mt-4 w-64 bg-white border border-[#D1D5DB] rounded-[8px] shadow-[0_40px_80px_rgba(0,0,0,0.12)] z-40 p-6 animate-in fade-in slide-in-from-top-4 duration-300"
+              className="absolute left-0 top-full mt-4 w-64 bg-white border border-[#D1D5DB] rounded-[8px] shadow-[0_40px_80px_rgba(0,0,0,0.12)] z-40 p-6 animate-in fade-in slide-in-from-top-4 duration-300"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-4">상태별 보기</div>
@@ -267,13 +246,21 @@ export default function EstimatesPage() {
                   setStatusFilter('all');
                   setIsFilterOpen(false);
                 }}
-                className="w-full py-3 text-center text-[10px] font-black text-gray-400 hover:text-red-500 transition-colors uppercase tracking-widest"
+                className="w-full py-3 text-center text-[10px] font-black text-gray-400 hover:text-[#060606] transition-colors uppercase tracking-widest"
               >
                 필터 초기화
               </button>
             </div>
           )}
         </div>
+
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="px-8 py-4 bg-black text-white rounded-[8px] text-[11px] font-black uppercase tracking-[0.2em] hover:bg-gray-800 transition-all active:scale-95 flex items-center gap-2 shrink-0 ml-auto"
+        >
+          <Plus size={16} />
+          신규 견적서 작성
+        </button>
       </div>
 
       <DataTable
@@ -284,24 +271,28 @@ export default function EstimatesPage() {
         onRowClick={handleRowClick}
         columns={[
           {
-            header: '프로젝트 / 고객사',
+            header: '프로젝트',
             className: 'px-10 py-8',
             cell: (estimate) => (
-              <>
-                <div className="font-black text-xl text-gray-900 mb-0.5 group-hover:translate-x-1 transition-transform">{estimate.title}</div>
-                <div className="text-gray-400 text-[10px] font-bold uppercase tracking-tight">
-                  {estimate.customer?.name || estimate.customerName || '고객 정보 없음'}
-                </div>
-              </>
+              <div className="font-black text-xl text-gray-900 group-hover:translate-x-1 transition-transform">{estimate.title}</div>
+            )
+          },
+          {
+            header: '고객사',
+            className: 'px-10 py-8',
+            cell: (estimate) => (
+              <div className="text-gray-900 text-xl font-bold">
+                {estimate.customer?.company || '-'}
+              </div>
             )
           },
           {
             header: '금액',
-            className: 'px-10 py-8 text-left font-black text-gray-900 text-2xl tracking-tighter',
+            className: 'px-10 py-8 text-left',
             cell: (estimate) => (
-              <>
+              <span className="font-black text-gray-900 text-2xl tracking-tighter">
                 {Number(estimate.amount).toLocaleString()} <span className="text-sm text-[#4B5563]">₩</span>
-              </>
+              </span>
             )
           },
           {
@@ -309,10 +300,10 @@ export default function EstimatesPage() {
             className: 'px-10 py-8 text-left',
             cell: (estimate) => (
               <span className={`inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border
-                ${estimate.status === 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' :
-                  estimate.status === 'sent' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                ${estimate.status === 'pending' ? 'bg-gray-100 text-[#060606] border-gray-200' :
+                  estimate.status === 'sent' ? 'bg-gray-200 text-[#060606] border-gray-300' :
                     estimate.status === 'approved' ? 'bg-black text-white border-black' :
-                      'bg-red-50 text-red-600 border-red-100'}`}>
+                      'bg-white text-[#060606] border-[#060606]'}`}>
                 {estimate.status === 'pending' ? '대기 중' :
                   estimate.status === 'sent' ? '발송됨' :
                     estimate.status === 'approved' ? '승인됨' : '거절됨'}
@@ -321,8 +312,12 @@ export default function EstimatesPage() {
           },
           {
             header: '발행일',
-            className: 'px-10 py-8 text-left text-gray-400 font-mono text-xs font-bold',
-            cell: (estimate) => estimate.issueDate ? fmt(estimate.issueDate) : '-'
+            className: 'px-10 py-8 text-left',
+            cell: (estimate) => (
+              <div className="text-gray-900 text-xl font-bold">
+                {formatDot(estimate.issueDate)}
+              </div>
+            )
           },
           {
             header: '',
@@ -346,7 +341,7 @@ export default function EstimatesPage() {
                     </button>
                     <button
                       onClick={(e) => handleDelete(e, estimate.id)}
-                      className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-50 flex items-center gap-2"
+                      className="w-full px-4 py-3 text-left text-xs font-bold text-[#060606] hover:bg-gray-100 flex items-center gap-2"
                     >
                       <Trash2 size={14} /> 삭제하기
                     </button>

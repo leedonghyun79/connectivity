@@ -19,7 +19,7 @@ const statusLabel: Record<string, string> = {
   pending: '대기', processing: '진행 중', closed: '완료',
 };
 const statusStyle: Record<string, string> = {
-  pending: 'bg-orange-50 text-orange-600 border-orange-100',
+  pending: 'bg-gray-100 text-[#060606] border-gray-200',
   processing: 'bg-black text-white border-black',
   closed: 'bg-gray-50 text-gray-400 border-[#D1D5DB]',
 };
@@ -27,7 +27,7 @@ const projectStatusLabel: Record<string, string> = {
   PENDING: '대기', PROGRESS: '진행', REST: '일시정지', COMPLETED: '완료',
 };
 const projectStatusStyle: Record<string, string> = {
-  PENDING: 'bg-orange-50 text-orange-600 border-orange-100',
+  PENDING: 'bg-gray-100 text-[#060606] border-gray-200',
   PROGRESS: 'bg-black text-white border-black',
   REST: 'bg-gray-50 text-gray-400 border-[#D1D5DB]',
   COMPLETED: 'bg-gray-100 text-gray-500 border-[#D1D5DB]',
@@ -84,7 +84,7 @@ export default function CustomerDetailPage() {
   ] as const;
 
   return (
-    <div className="space-y-10 py-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+    <div className="space-y-4 pt-0 pb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
       {/* 편집 모달 */}
       <CustomerModal
         isOpen={isModalOpen}
@@ -119,7 +119,7 @@ export default function CustomerDetailPage() {
               <ArrowLeft size={12} className="group-hover/back:-translate-x-1 transition-transform" />
               목록으로 복귀
             </Link>
-            <h1 className="text-6xl font-black text-gray-900 tracking-tighter uppercase leading-none">{customer.name}</h1>
+            <h1 className="py-[30px] text-[32px] font-black text-gray-900 tracking-tighter uppercase leading-none">{customer.name}</h1>
             <div className="flex flex-wrap items-center gap-4 mt-6">
               {customer.company && (
                 <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-[8px] border border-[#D1D5DB] text-[11px] font-bold text-gray-500">
@@ -143,7 +143,7 @@ export default function CustomerDetailPage() {
             </button>
             <button
               onClick={handleDelete}
-              className="px-4 py-4 bg-white border border-red-100 rounded-[8px] text-red-500 hover:bg-red-50 transition-all active:scale-95 group/del"
+              className="px-4 py-4 bg-white border border-[#060606] rounded-[8px] text-[#060606] hover:bg-gray-100 transition-all active:scale-95 group/del"
               title="삭제"
             >
               <Trash2 size={16} className="group-hover:scale-110 transition-transform" />
@@ -153,7 +153,7 @@ export default function CustomerDetailPage() {
       </div>
 
       {/* 정보 메트릭스 그리드 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* 연락처 & 채널 */}
         <div className="md:col-span-1 bg-white p-10 rounded-[8px] border border-[#D1D5DB] relative overflow-hidden group">
           <Phone className="absolute -bottom-6 -right-6 text-gray-50 opacity-[0.05] group-hover:scale-110 transition-transform duration-700" size={140} />
@@ -337,10 +337,10 @@ export default function CustomerDetailPage() {
                         </div>
                       </div>
                       <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-[8px] border ${
-                        est.status === 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' :
+                        est.status === 'pending' ? 'bg-gray-100 text-[#060606] border-gray-200' :
                         est.status === 'approved' ? 'bg-black text-white border-black shadow-lg shadow-black/10' :
-                        est.status === 'sent' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                        'bg-red-50 text-red-600 border-red-100'
+                        est.status === 'sent' ? 'bg-gray-200 text-[#060606] border-gray-300' :
+                        'bg-white text-[#060606] border-[#060606]'
                       }`}>
                         {est.status === 'pending' ? '대기' : est.status === 'approved' ? '승인' : est.status === 'sent' ? '발송' : '거절'}
                       </span>
@@ -360,7 +360,7 @@ export default function CustomerDetailPage() {
                 {(customer.transactions || []).map((tx: any) => (
                   <div key={tx.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[8px] transition-all group">
                     <div className="flex items-center gap-6">
-                      <div className="w-12 h-12 bg-gray-50 rounded-[8px] flex items-center justify-center text-gray-400 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
+                      <div className="w-12 h-12 bg-gray-50 rounded-[8px] flex items-center justify-center text-gray-400 group-hover:bg-black group-hover:text-white transition-all duration-500">
                         <Banknote size={20} />
                       </div>
                       <div>
@@ -374,8 +374,8 @@ export default function CustomerDetailPage() {
                     <div className="flex items-center gap-8">
                       <div className="text-right">
                         <div className="text-[10px] font-black text-[#4B5563] uppercase tracking-widest mb-1">Settled Amount</div>
-                        <div className="text-2xl font-black text-blue-600 tracking-tighter">
-                          {Number(tx.amount).toLocaleString()} <span className="text-xs text-blue-300 font-normal ml-1">₩</span>
+                        <div className="text-2xl font-black text-[#060606] tracking-tighter">
+                          {Number(tx.amount).toLocaleString()} <span className="text-xs text-gray-400 font-normal ml-1">₩</span>
                         </div>
                       </div>
                       <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-[8px] border ${
@@ -400,7 +400,7 @@ export default function CustomerDetailPage() {
                   <div key={inq.id} className="p-8 flex items-center justify-between hover:bg-gray-50/80 rounded-[8px] transition-all group">
                     <div className="flex-1 min-w-0 pr-8">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className={`w-1.5 h-1.5 rounded-full ${inq.status === 'pending' ? 'bg-orange-400' : 'bg-black'}`} />
+                        <div className={`w-1.5 h-1.5 rounded-full ${inq.status === 'pending' ? 'bg-gray-400' : 'bg-black'}`} />
                         <div className="text-lg font-black text-gray-900 truncate">{inq.title}</div>
                       </div>
                       <div className="text-[11px] text-gray-400 font-bold line-clamp-1">{inq.content}</div>
@@ -409,7 +409,7 @@ export default function CustomerDetailPage() {
                       </div>
                     </div>
                     <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-[8px] border flex-shrink-0 transition-all ${
-                      inq.status === 'pending' ? 'bg-orange-50 text-orange-600 border-orange-100' : 'bg-black text-white border-black shadow-lg shadow-black/10'
+                      inq.status === 'pending' ? 'bg-gray-100 text-[#060606] border-gray-200' : 'bg-black text-white border-black shadow-lg shadow-black/10'
                     }`}>
                       {inq.status === 'pending' ? 'Action Required' : 'Solved'}
                     </span>

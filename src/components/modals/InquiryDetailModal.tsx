@@ -114,7 +114,7 @@ export default function InquiryDetailModal({
                 </span>
                 <span className={`inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${
                   inquiry.status === 'pending'
-                    ? 'bg-orange-50 text-orange-600 border-orange-100'
+                    ? 'bg-gray-100 text-[#060606] border-gray-200'
                     : 'bg-black text-white border-black'
                 }`}>
                   {inquiry.status === 'pending'
@@ -215,7 +215,7 @@ export default function InquiryDetailModal({
           <button
             onClick={handleDelete}
             disabled={isUpdating}
-            className="flex items-center gap-2 px-5 py-3 text-[11px] font-black uppercase tracking-widest text-red-500 border border-red-100 rounded-[8px] hover:bg-red-50 transition-all disabled:opacity-50"
+            className="flex items-center gap-2 px-5 py-3 text-[11px] font-black uppercase tracking-widest text-[#060606] border border-[#060606] rounded-[8px] hover:bg-gray-100 transition-all disabled:opacity-50"
           >
             <Trash2 size={14} />
             삭제
@@ -242,7 +242,7 @@ export default function InquiryDetailModal({
               <button
                 onClick={handleMarkPending}
                 disabled={isUpdating}
-                className="px-6 py-3 bg-orange-50 text-orange-600 border border-orange-100 rounded-[8px] text-[11px] font-black uppercase tracking-widest hover:bg-orange-100 transition-all disabled:opacity-50 flex items-center gap-2"
+                className="px-6 py-3 bg-gray-100 text-[#060606] border border-gray-200 rounded-[8px] text-[11px] font-black uppercase tracking-widest hover:bg-gray-200 transition-all disabled:opacity-50 flex items-center gap-2"
               >
                 <AlertCircle size={14} />
                 답변 취소 (대기)

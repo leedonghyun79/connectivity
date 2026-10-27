@@ -1,13 +1,37 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Bell, Search, User, LogOut, Settings, ChevronDown, MessageSquare } from 'lucide-react';
+import { Bell, Search, User, LogOut, Settings, MessageSquare, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { usePendingInquiries } from '@/hooks/usePendingInquiries';
 
 const SEEN_KEY = 'notif:lastSeenAt';
+
+// 현재 경로에 맞는 페이지 제목 (긴 경로를 먼저 검사)
+const PAGE_TITLES: [string, string][] = [
+  ['/visitors/keywords', '유입 검색어 분석'],
+  ['/visitors/sites', '유입 경로 분석'],
+  ['/visitors', '방문자 분석'],
+  ['/customers', '고객 관리'],
+  ['/estimates', '견적서 관리'],
+  ['/inquiries', '문의 게시판'],
+  ['/sales', '매출 통계 분석'],
+  ['/logs', '일일 활동 내역'],
+  ['/settings', '환경 설정'],
+  ['/columns', '칼럼 관리'],
+  ['/portfolios', '작업물 관리'],
+];
+
+function getPageTitle(pathname: string) {
+  if (pathname === '/') return '대시보드';
+  // 고객 상세는 고객 이름이 본문 제목이라 헤더에서는 비움
+  if (pathname.startsWith('/customers/') && !pathname.startsWith('/customers/page/')) return '';
+  const match = PAGE_TITLES.find(([path]) => pathname === path || pathname.startsWith(`${path}/`));
+  return match ? match[1] : '';
+}
 
 function timeAgo(iso: string) {
   const diff = Math.max(0, Date.now() - new Date(iso).getTime());
@@ -21,6 +45,7 @@ function timeAgo(iso: string) {
 
 export default function Header() {
   const { data: session } = useSession();
+  const pathname = usePathname();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
@@ -64,25 +89,26 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="h-24 bg-white/80 backdrop-blur-md border-b border-[#D1D5DB] flex items-center justify-between px-10 sticky top-0 z-30">
-      <div className="flex items-center flex-1 max-w-2xl">
-        <div className="relative w-full group">
-          <Search className="absolute left-0 top-1/2 transform -translate-y-1/2 text-[#4B5563] group-focus-within:text-[#060606] transition-colors" size={20} />
+    <header className="h-24 bg-white/80 backdrop-blur-md border-b border-[#D1D5DB] flex items-center justify-between px-6 sticky top-0 z-30">
+      <div className="flex items-center flex-1 min-w-0">
+        <h1 className="text-[32px] font-black text-gray-900 tracking-tighter uppercase truncate">{getPageTitle(pathname)}</h1>
+      </div>
+
+      <div className="flex items-center gap-6 ml-8">
+        <div className="relative w-56">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#4B5563]" size={18} />
           <input
             type="text"
-            placeholder="전체 검색: 프로젝트, 고객사..."
-            className="w-full pl-10 pr-4 py-3 bg-transparent text-sm font-medium focus:outline-none transition-all placeholder:text-gray-400 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
+            placeholder="Search"
+            className="w-full pl-10 pr-4 py-2.5 rounded-[8px] border border-[#D1D5DB] bg-white text-sm font-medium focus:outline-none focus:border-black transition-colors placeholder:text-gray-400"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 toast.info('통합 검색 엔진은 현재 개발 중입니다.');
               }
             }}
           />
-          <div className="absolute bottom-0 left-0 w-0 h-px bg-black group-focus-within:w-full transition-all duration-500"></div>
         </div>
-      </div>
 
-      <div className="flex items-center gap-8 ml-8">
         <div className="relative" ref={notifRef}>
           <button
             onClick={toggleNotif}
@@ -138,23 +164,19 @@ export default function Header() {
           )}
         </div>
 
-        <div className="flex items-center gap-4 pl-8 border-l border-[#D1D5DB] relative" ref={dropdownRef}>
-          <div className="text-right hidden sm:block">
-            <p className="text-[11px] font-black text-[#060606] uppercase tracking-wider leading-tight">
-              {session?.user?.name || '관리자'}
-            </p>
-            <p className="text-[10px] font-bold text-[#4B5563] uppercase">ADMINISTRATOR LEVEL</p>
-          </div>
-          <button 
+        <div className="relative" ref={dropdownRef}>
+          <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="relative group focus:outline-none"
+            className="flex items-center gap-3 focus:outline-none group"
           >
-            <div className={`h-12 w-12 rounded-[8px] flex items-center justify-center border transition-all duration-300 overflow-hidden ${isDropdownOpen ? 'bg-black text-white border-black' : 'bg-gray-50 text-[#060606] border-[#D1D5DB] hover:border-black'}`}>
-              <User size={24} />
+            <div className="h-11 w-11 rounded-[8px] bg-gray-100 border border-[#D1D5DB] flex items-center justify-center text-[#4B5563] overflow-hidden group-hover:border-black transition-colors">
+              <User size={20} />
             </div>
-            <div className={`absolute -bottom-1 -right-1 w-5 h-5 bg-white border rounded-full flex items-center justify-center transition-transform duration-300 ${isDropdownOpen ? 'rotate-180 border-black' : 'border-[#D1D5DB]'}`}>
-              <ChevronDown size={10} className={isDropdownOpen ? 'text-[#060606]' : 'text-gray-400'} />
+            <div className="text-left hidden sm:block">
+              <p className="text-sm font-black text-[#060606] leading-tight">{session?.user?.name || '관리자'}</p>
+              <p className="text-[11px] font-bold text-[#4B5563] leading-tight">Admin</p>
             </div>
+            <ChevronDown size={16} className={`text-[#4B5563] transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
           </button>
 
           {/* 드롭다운 메뉴 */}
@@ -181,9 +203,9 @@ export default function Header() {
                   setIsDropdownOpen(false);
                   signOut({ callbackUrl: '/login' });
                 }}
-                className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-[8px] transition-all group"
+                className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-[#060606] hover:bg-gray-100 rounded-[8px] transition-all group"
               >
-                <div className="p-2 bg-red-50 rounded-[8px] group-hover:bg-white transition-colors">
+                <div className="p-2 bg-gray-100 rounded-[8px] group-hover:bg-white transition-colors">
                   <LogOut size={16} />
                 </div>
                 로그아웃

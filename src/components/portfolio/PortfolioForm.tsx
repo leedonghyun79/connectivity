@@ -237,7 +237,7 @@ export default function PortfolioForm({ mode, id }: Props) {
             {mode === 'create' ? '새 작업물 등록' : '작업물 수정'}
           </h1>
           <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
-            status === 'published' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
+            status === 'published' ? 'bg-black text-white' : 'bg-gray-100 text-gray-500'
           }`}>
             {status === 'published' ? '발행됨' : '임시저장'}
           </span>
@@ -292,7 +292,7 @@ export default function PortfolioForm({ mode, id }: Props) {
             <div className="flex items-center justify-between">
               <label className="text-sm font-semibold text-gray-800">SEO 요약 (meta description)</label>
               <span className={`text-xs font-medium ${
-                description.length > 160 ? 'text-red-500' : 'text-gray-400'
+                description.length > 160 ? 'text-[#060606] font-black' : 'text-gray-400'
               }`}>
                 {description.length}/160
               </span>
@@ -367,7 +367,7 @@ export default function PortfolioForm({ mode, id }: Props) {
                 {thumbUploading ? '업로드 중...' : thumbnail ? '대표 이미지 변경' : '대표 이미지 추가'}
               </button>
               {thumbnail && (
-                <button type="button" onClick={() => setThumbnail('')} className="text-[13px] font-semibold text-gray-400 hover:text-red-500">
+                <button type="button" onClick={() => setThumbnail('')} className="text-[13px] font-semibold text-gray-400 hover:text-[#060606]">
                   제거
                 </button>
               )}

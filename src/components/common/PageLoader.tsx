@@ -2,9 +2,12 @@
 // 제목(title)이 있으면 실제 글자로, 없으면 막대로 표시
 type Variant = 'table' | 'sales' | 'settings' | 'generic' | 'estimates' | 'inquiries';
 
+type ToolbarKind = 'search' | 'tabs' | 'dates' | 'nav';
+
 interface PageLoaderProps {
   title?: string;
   variant?: Variant;
+  toolbar?: ToolbarKind;
 }
 
 const box = 'bg-white rounded-[8px] border border-[#D1D5DB]';
@@ -14,23 +17,10 @@ const gridCols: Record<number, string> = {
   4: 'lg:grid-cols-4',
 };
 
-function Header({ title }: { title?: string }) {
-  return (
-    <div className="border-b-2 border-black pb-8 space-y-3">
-      {title ? (
-        <h1 className="text-5xl font-black text-gray-900 tracking-tighter uppercase">{title}</h1>
-      ) : (
-        <div className="h-12 w-64 bg-gray-100 rounded-[8px]" />
-      )}
-      <div className="h-3 w-80 bg-gray-50 rounded" />
-    </div>
-  );
-}
-
 // 요약 카드 — darkLast면 마지막 카드를 검은 카드로 표시
 function SummaryCards({ count = 4, darkLast = false, md = 'md:grid-cols-2' }: { count?: number; darkLast?: boolean; md?: string }) {
   return (
-    <div className={`grid grid-cols-1 ${md} gap-6 ${gridCols[count] ?? ''}`}>
+    <div className={`grid grid-cols-1 ${md} gap-4 ${gridCols[count] ?? ''}`}>
       {Array.from({ length: count }).map((_, i) => {
         const dark = darkLast && i === count - 1;
         return (
@@ -83,10 +73,10 @@ function AreaChart({ height = 'h-[360px]' }: { height?: string }) {
 function BarChart({ height = 'h-[320px]' }: { height?: string }) {
   const heights = [45, 70, 55, 85, 60, 75, 50];
   return (
-    <div className={`${height} w-full flex items-end gap-4 pb-8 relative`}>
+    <div className={`${height} w-full flex items-end justify-around pb-8 relative`}>
       <GridLines />
       {heights.map((h, i) => (
-        <div key={i} className="flex-1 bg-gray-100 rounded-t-[8px]" style={{ height: `${h}%` }} />
+        <div key={i} className="w-4 bg-gray-100 rounded-t-[8px]" style={{ height: `${h}%` }} />
       ))}
     </div>
   );
@@ -119,7 +109,29 @@ function ListRows({ count = 4 }: { count?: number }) {
 }
 
 // 상단 도구 줄: 검색 + 필터 버튼, 또는 탭 + 검색
-function Toolbar({ kind = 'search', tabs = 4 }: { kind?: 'search' | 'tabs'; tabs?: number }) {
+function Toolbar({ kind = 'search', tabs = 4 }: { kind?: ToolbarKind; tabs?: number }) {
+  // 날짜 범위 (방문자 통계 - 유입 경로 / 검색어)
+  if (kind === 'dates') {
+    return (
+      <div className="flex justify-end items-center gap-2 !mt-[30px]">
+        <div className="h-9 w-32 bg-gray-50 rounded-[8px]" />
+        <div className="h-3 w-3 bg-gray-100 rounded" />
+        <div className="h-9 w-32 bg-gray-50 rounded-[8px]" />
+      </div>
+    );
+  }
+  // 날짜 이동 (일일 활동 내역)
+  if (kind === 'nav') {
+    return (
+      <div className="flex justify-end !mt-[30px]">
+        <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-[8px] border border-[#D1D5DB]">
+          <div className="h-9 w-9 bg-gray-100 rounded-[8px]" />
+          <div className="h-9 w-32 bg-gray-100 rounded-[8px]" />
+          <div className="h-9 w-9 bg-gray-100 rounded-[8px]" />
+        </div>
+      </div>
+    );
+  }
   if (kind === 'tabs') {
     return (
       <div className="flex justify-between items-center gap-4">
@@ -133,41 +145,40 @@ function Toolbar({ kind = 'search', tabs = 4 }: { kind?: 'search' | 'tabs'; tabs
     );
   }
   return (
-    <div className="flex justify-between items-center">
-      <div className="h-10 w-72 bg-gray-50 rounded-[8px]" />
-      <div className="h-10 w-24 bg-gray-100 rounded-[8px]" />
+    <div className="flex items-center gap-6">
+      <div className="h-14 w-[480px] max-w-full bg-white border border-[#D1D5DB] rounded-[8px]" />
+      <div className="h-14 w-44 bg-white border border-[#D1D5DB] rounded-[8px]" />
     </div>
   );
 }
 
 // 도구 줄 + 표 (열 개수는 실제 표와 맞춤)
-function TableBlock({ rows = 6, cols = 5, toolbar = 'search' as 'search' | 'tabs' }: { rows?: number; cols?: number; toolbar?: 'search' | 'tabs' }) {
-  const colStyle = { gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` };
+function TableBlock({ rows = 4, toolbar = 'search' }: { rows?: number; cols?: number; toolbar?: ToolbarKind }) {
   return (
     <div className="space-y-6">
       <Toolbar kind={toolbar} />
-      <div className={`${box} p-8`}>
-        <div className="grid gap-6 pb-4 border-b border-[#D1D5DB]" style={colStyle}>
-          {Array.from({ length: cols }).map((_, i) => (
-            <div key={i} className="h-2.5 w-16 bg-gray-100 rounded" />
+      {/* 칼럼 관리 표와 같은 스켈레톤 */}
+      <div className="overflow-hidden rounded-[8px] border border-[#D1D5DB] bg-white shadow-sm">
+        <div className="p-8 space-y-5 animate-pulse">
+          {Array.from({ length: rows }).map((_, i) => (
+            <div key={i} className="flex items-center justify-between gap-6">
+              <div className="flex-1 space-y-2">
+                <div className="h-3 w-1/3 bg-gray-100 rounded" />
+                <div className="h-2.5 w-1/5 bg-gray-50 rounded" />
+              </div>
+              <div className="h-6 w-16 bg-gray-100 rounded-[8px]" />
+            </div>
           ))}
         </div>
-        {Array.from({ length: rows }).map((_, r) => (
-          <div key={r} className="grid gap-6 py-5 border-b border-gray-50 last:border-0" style={colStyle}>
-            {Array.from({ length: cols }).map((_, c) => (
-              <div key={c} className={`h-3 ${c === 0 ? 'w-3/4' : 'w-1/2'} bg-gray-100 rounded`} />
-            ))}
-          </div>
-        ))}
       </div>
     </div>
   );
 }
 
-export default function PageLoader({ title, variant = 'table' }: PageLoaderProps) {
+export default function PageLoader({ variant = 'table', toolbar = 'search' }: PageLoaderProps) {
+  // 제목은 상단 헤더(Header)가 보여주므로 스켈레톤에서는 그리지 않음
   return (
-    <div className="w-full py-10 space-y-10 animate-pulse">
-      <Header title={title} />
+    <div className="w-full pt-0 pb-10 space-y-4 animate-pulse">
 
       {variant === 'estimates' && (
         <>
@@ -179,13 +190,35 @@ export default function PageLoader({ title, variant = 'table' }: PageLoaderProps
       {variant === 'inquiries' && (
         <>
           <SummaryCards count={3} darkLast md="md:grid-cols-3" />
-          <TableBlock rows={6} cols={6} toolbar="tabs" />
+          <TableBlock rows={6} cols={6} />
         </>
       )}
 
       {variant === 'sales' && (
         <>
-          <SummaryCards count={3} />
+          {/* 상단 버튼 */}
+          <div className="flex justify-end">
+            <div className="h-11 w-44 bg-gray-100 rounded-[8px]" />
+          </div>
+          {/* 지표 4칸 (한 박스) */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 !mt-[30px]">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className={`${box} p-8 space-y-6`}>
+                <div className="h-4 w-24 bg-gray-100 rounded" />
+                <div className="h-9 w-28 bg-gray-100 rounded" />
+              </div>
+            ))}
+          </div>
+          {/* 매출 통계 차트 */}
+          <div className={`${box} p-4`}>
+            <CardTitle />
+            <div className="h-8 w-40 bg-gray-100 rounded-[8px] mt-6 mb-4" />
+            <div className="h-[220px] w-full flex items-end justify-around pb-8">
+              {[45, 70, 55, 85, 60, 75, 50, 65, 40, 80, 55, 70].map((h, i) => (
+                <div key={i} className="w-20 bg-gray-100 rounded-t-[8px]" style={{ height: `${h}%` }} />
+              ))}
+            </div>
+          </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className={`${box} p-10 lg:col-span-2`}>
               <CardTitle />
@@ -196,7 +229,21 @@ export default function PageLoader({ title, variant = 'table' }: PageLoaderProps
               <DonutChart />
             </div>
           </div>
-          <TableBlock rows={5} />
+          {/* 거래 표 */}
+          <div className={`${box} p-8`}>
+            <div className="grid grid-cols-4 gap-6 pb-4 border-b border-[#D1D5DB]">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="h-2.5 w-16 bg-gray-100 rounded" />
+              ))}
+            </div>
+            {Array.from({ length: 5 }).map((_, r) => (
+              <div key={r} className="grid grid-cols-4 gap-6 py-5 border-b border-gray-50 last:border-0">
+                {Array.from({ length: 4 }).map((_, c) => (
+                  <div key={c} className={`h-3 ${c === 0 ? 'w-3/4' : 'w-1/2'} bg-gray-100 rounded`} />
+                ))}
+              </div>
+            ))}
+          </div>
         </>
       )}
 
@@ -219,7 +266,7 @@ export default function PageLoader({ title, variant = 'table' }: PageLoaderProps
         </div>
       )}
 
-      {variant === 'table' && <TableBlock rows={6} />}
+      {variant === 'table' && <TableBlock rows={6} toolbar={toolbar} />}
 
       {variant === 'generic' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

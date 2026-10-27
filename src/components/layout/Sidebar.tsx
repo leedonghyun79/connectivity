@@ -108,7 +108,7 @@ export default function Sidebar() {
                   >
                     <div className="flex items-center">
                       <Icon size={18} className={`mr-3 ${childActive ? 'text-[#060606]' : 'text-[#4B5563] group-hover:text-[#060606] transition-colors'}`} />
-                      <span className="text-[13px] font-black uppercase tracking-widest leading-none">{item.name}</span>
+                      <span className="text-[18px] font-black uppercase tracking-widest leading-none">{item.name}</span>
                     </div>
                     {open ? <ChevronDown size={14} className="text-gray-400" /> : <ChevronRight size={14} className="text-[#4B5563]" />}
                   </button>
@@ -127,7 +127,7 @@ export default function Sidebar() {
                               }`}
                           >
                             <ChildIcon size={16} className={`mr-2.5 ${isActive ? 'text-white' : 'text-[#4B5563] group-hover:text-[#060606] transition-colors'}`} />
-                            <span className="text-[13px] font-bold">{child.name}</span>
+                            <span className="text-[18px] font-bold">{child.name}</span>
                           </Link>
                         );
                       })}
@@ -149,7 +149,7 @@ export default function Sidebar() {
               >
                 <div className="flex items-center">
                   <Icon size={18} className={`mr-3 ${isActive ? 'text-white' : 'text-[#4B5563] group-hover:text-[#060606] transition-colors'}`} />
-                  <span className="text-[13px] font-black uppercase tracking-widest leading-none">{item.name}</span>
+                  <span className="text-[18px] font-black uppercase tracking-widest leading-none">{item.name}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   {item.path === '/inquiries' && pendingCount > 0 && (

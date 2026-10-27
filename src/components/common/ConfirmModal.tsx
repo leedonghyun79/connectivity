@@ -43,21 +43,21 @@ export default function ConfirmModal({
     switch (type) {
       case 'danger':
         return {
-          icon: <AlertCircle className="text-red-500" size={24} />,
-          button: 'bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-100',
-          bg: 'bg-red-50'
+          icon: <AlertCircle className="text-[#060606]" size={24} />,
+          button: 'bg-black hover:bg-gray-800 text-white shadow-lg shadow-black/10',
+          bg: 'bg-gray-100'
         };
       case 'success':
         return {
-          icon: <CheckCircle className="text-green-500" size={24} />,
+          icon: <CheckCircle className="text-[#060606]" size={24} />,
           button: 'bg-black hover:bg-gray-800 text-white shadow-lg shadow-gray-200',
-          bg: 'bg-green-50'
+          bg: 'bg-gray-100'
         };
       default:
         return {
-          icon: <HelpCircle className="text-blue-500" size={24} />,
+          icon: <HelpCircle className="text-[#060606]" size={24} />,
           button: 'bg-black hover:bg-gray-800 text-white shadow-lg shadow-gray-200',
-          bg: 'bg-blue-50'
+          bg: 'bg-gray-100'
         };
     }
   };

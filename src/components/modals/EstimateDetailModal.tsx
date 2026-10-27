@@ -318,7 +318,7 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
             <button 
               onClick={() => handleStatusUpdate('approved')}
               disabled={isUpdating}
-              className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-[8px] font-bold hover:bg-green-100 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-[8px] font-bold hover:bg-gray-800 transition-all disabled:opacity-50"
             >
               {isUpdating ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle size={16} />} 
               승인 처리
@@ -326,7 +326,7 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
             <button 
               onClick={() => handleStatusUpdate('rejected')}
               disabled={isUpdating}
-              className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-[8px] font-bold hover:bg-red-100 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-[#060606] rounded-[8px] font-bold hover:bg-gray-200 transition-all disabled:opacity-50"
             >
               {isUpdating ? <Loader2 size={16} className="animate-spin" /> : <XCircle size={16} />} 
               거절 처리
@@ -501,8 +501,8 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
                       ) : (
                         <>
                           <span className="text-sm font-bold text-gray-400 absolute bottom-0 right-0 z-0 opacity-20">(STAMP)</span>
-                          <div className="w-12 h-12 border-2 border-red-500/30 rounded-full flex items-center justify-center rotate-[-15deg] select-none scale-110">
-                            <span className="text-[12px] font-black text-red-500/40 leading-none text-center">
+                          <div className="w-12 h-12 border-2 border-[#060606]/30 rounded-full flex items-center justify-center rotate-[-15deg] select-none scale-110">
+                            <span className="text-[12px] font-black text-[#060606]/40 leading-none text-center">
                               {(estimate.customer?.name || estimate.customerName || '의뢰인').substring(0, 3)}<br />인
                             </span>
                           </div>
@@ -533,8 +533,8 @@ export default function EstimateDetailModal({ estimate, isOpen, onClose }: Estim
                       {providerStamp ? (
                         <img src={providerStamp} alt="공급자 도장" className="absolute inset-0 w-full h-full object-contain z-20 rotate-6" />
                       ) : (
-                        <div className="absolute inset-0 border-4 border-red-500/80 rounded flex items-center justify-center p-1 rotate-6 select-none shadow-[2px_2px_0_rgba(239,68,68,0.1)] bg-white/50 scale-110">
-                          <div className="text-[11px] font-black text-red-500/80 leading-tight text-center transform -rotate-6">
+                        <div className="absolute inset-0 border-4 border-[#060606]/80 rounded flex items-center justify-center p-1 rotate-6 select-none shadow-[2px_2px_0_rgba(0,0,0,0.1)] bg-white/50 scale-110">
+                          <div className="text-[11px] font-black text-[#060606]/80 leading-tight text-center transform -rotate-6">
                             {(estimate.bizName || '공급자').substring(0, 2)}<br />
                             {(estimate.bizName || '공급자').length > 2 ? (estimate.bizName || '공급자').substring(2, 4) : '인'}<br />
                             {(estimate.bizName || '공급자').length > 4 ? '인' : ''}
